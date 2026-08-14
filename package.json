@@ -1,0 +1,9 @@
+{
+  "name": "stretchicorn",
+  "version": "0.15.0",
+  "private": true,
+  "description": "A 13KB desktop action game where an elastic rainbow unicorn restores a storm-darkened sky.",
+  "scripts": {
+    "check:size": "node scripts/check-size.mjs"
+  }
+}
