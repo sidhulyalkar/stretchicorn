@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/cover.webp" alt="Stretchicorn: Rainbow Eternal cover art" width="760">
+<a href="docs/cover.webp"><img src="docs/cover.webp" alt="Stretchicorn: Rainbow Eternal cover art" width="1000"></a>
 
 # Stretchicorn: Rainbow Eternal
 
@@ -27,7 +27,7 @@ The game is designed as a **Desktop-first js13kGames entry**. The competition bu
 
 <div align="center">
 
-<img src="docs/title-screen.webp" alt="Stretchicorn title screen showing controls and 13-trial premise" width="900">
+<a href="docs/title-screen.webp"><img src="docs/title-screen.webp" alt="Stretchicorn title screen showing controls and 13-trial premise" width="1000"></a>
 
 </div>
 
