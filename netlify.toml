@@ -1,0 +1,8 @@
+[build]
+  command = "rm -rf public && mkdir public && unzip -o dist/stretchicorn-rainbow-eternal-desktop-v0.15.0.zip -d public"
+  publish = "public"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
