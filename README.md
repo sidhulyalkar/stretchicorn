@@ -9,6 +9,8 @@
 **A tiny desktop action game about stretching a unicorn into a rainbow weapon.**  
 Built for **js13kGames 2026 — Unicorns & Rainbows**.
 
+[Download the v0.15.0 competition ZIP](dist/stretchicorn-rainbow-eternal-desktop-v0.15.0.zip)
+
 </div>
 
 ---
@@ -21,7 +23,7 @@ Built for **js13kGames 2026 — Unicorns & Rainbows**.
 
 You have **13 hearts** and **13 trials** to break the storm and restore color to the sky.
 
-The game is designed as a **Desktop-first js13kGames entry**. Everything is rendered procedurally with Canvas and Web Audio: no image assets, no audio files, no frameworks, and no game engine inside the competition build.
+The game is designed as a **Desktop-first js13kGames entry**. The competition build renders everything procedurally with Canvas and Web Audio: no image assets, no audio files, no frameworks, and no game engine.
 
 <div align="center">
 
@@ -155,18 +157,19 @@ The final Level 13 encounter introduces the **Voidbow** with a dedicated entranc
 
 ---
 
-## Technical Constraints
+## Technical Snapshot
 
 Stretchicorn is intentionally built inside the js13kGames constraint box.
 
 - **Single-file HTML competition build**
 - **Canvas 2D rendering**
 - **Procedural Web Audio**
-- **No external runtime assets**
+- **No external runtime assets in the competition ZIP**
 - **No frameworks or engine**
 - **Desktop keyboard controls**
 - **13,312-byte compressed competition limit**
-- Current development line: **v0.15.x / Stormbreak**
+- **v0.15.0 competition ZIP: 11,805 bytes**
+- **1,507 bytes of compressed headroom**
 
 The tiny size is part of the design. Mechanics are intentionally constructed so one small system can serve several purposes.
 
@@ -183,43 +186,59 @@ For example, the rainbow spring simultaneously acts as:
 
 ## Running Locally
 
-The competition build is self-contained.
-
-For a quick local test, open:
-
-```text
-index.html
-```
-
-in a modern desktop browser.
-
-For the most reliable local behavior, especially while developing, serve the repository with any small static HTTP server rather than opening the file directly.
-
-Example:
+The root `index.html` loads the readable, split source in `src/` and is the easiest development/playtest entrypoint.
 
 ```bash
 python3 -m http.server 8080
 ```
 
-Then visit `http://localhost:8080`.
+Then open:
+
+```text
+http://localhost:8080
+```
+
+The exact js13k-ready single-file artifact is stored in the ZIP under `dist/`.
+
+Check the archive against the 13,312-byte limit with:
+
+```bash
+npm run check:size
+```
+
+---
+
+## Netlify
+
+The repository includes `netlify.toml` and can be deployed directly from `main`.
+
+When connecting the repository in Netlify:
+
+- **Build command:** none
+- **Publish directory:** repository root (`.`)
+
+Every push to the connected production branch can then update the same playtest URL automatically.
 
 ---
 
 ## Repository Layout
 
-Repository structure:
-
 ```text
 stretchicorn/
-├── index.html                 # current playable desktop build
+├── index.html                 # runnable readable-source entrypoint
 ├── README.md
+├── CHANGELOG.md
 ├── docs/
 │   ├── cover.webp
 │   └── title-screen.webp
 ├── src/
-│   └── index.html             # source snapshot
+│   ├── style.css
+│   ├── 00-core.js
+│   ├── 01-combat.js
+│   ├── 02-update.js
+│   ├── 03-render.js
+│   └── 04-ui-input.js
 ├── dist/
-│   ├── index.html
 │   └── stretchicorn-rainbow-eternal-desktop-v0.15.0.zip
 ├── scripts/
 │   └── check-size.mjs
@@ -227,9 +246,7 @@ stretchicorn/
 └── netlify.toml
 ```
 
-`src/index.html` currently preserves the single-file source snapshot used for the playable build. Before the final js13kGames submission, the source will remain available here alongside the byte-golfed competition artifact so the implementation can be studied independently of the ZIP.
-
-The compressed `dist/` artifact is the competition deliverable.
+The root game uses the split `src/` files so the implementation can be inspected by subsystem. The `dist/` ZIP preserves the exact byte-constrained competition artifact.
 
 ---
 
