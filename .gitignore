@@ -1,9 +1,3 @@
-# OS/editor noise
-.DS_Store
-Thumbs.db
-*.swp
-
-# Local tooling
 node_modules/
-.env
-.netlify/
+.DS_Store
+dist/stretchicorn-cornstorm-build.zip
