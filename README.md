@@ -1,717 +1,803 @@
 <div align="center">
 
-<a href="docs/stretchicorn-hero.png"><img src="docs/stretchicorn-hero.png" alt="Stretchicorn promotional key art" width="1100"></a>
+<a href="docs/stretchicorn-hero.png"><img src="docs/stretchicorn-hero.png" alt="Stretchicorn key art: a rainbow-stretched unicorn battling a chaotic corn army" width="1000"></a>
 
-# STRETCHICORN
+# 🌽🦄 STRETCHICORN
 
-### **STRETCH · SNAP · SHUCK.** 🌈🦄🌽
+### **STRETCH · SNAP · SHUCK.**
 
-**A 13KB desktop action game about stretching a unicorn into a rainbow weapon against an inexplicably hostile corn civilization.**
+A tiny desktop action game where **your body is your health, your head is your weapon, and the rainbow between them is a spring**.
 
-Built for **js13kGames 2026 — Unicorns & Rainbows**.
+Built for **js13kGames 2026 · Unicorns & Rainbows**.
+
+[**Download the v0.20.2 competition ZIP**](dist/stretchicorn-desktop-v0.20.2.zip)
+
+**13 hearts · 13 trials · way too much corn**
 
 </div>
 
 ---
 
-## The pitch
+## What is Stretchicorn?
 
-**Stretchicorn** is built around one ridiculous physical rule:
+Stretchicorn started with one deliberately strange control idea:
 
-> **Your unicorn's ♥ body is vulnerable, its head is safe, and the rainbow between them is a spring.**
+> **Move the vulnerable unicorn body, independently steer the safe head, pull the body away from the horn to load the rainbow, then release the stored tension as movement and attack.**
 
-Move the body with **WASD**, steer the head with the **Arrow Keys**, pull away from the horn to store spring energy, then hit **Space** to turn the whole creature into a rainbow slingshot.
+That rule became the entire game.
 
-The result sits somewhere between an arcade shooter, an elastic movement game, a geometry puzzle, and a very strange Saturday morning cartoon.
+You are not moving a conventional single hitbox. You are controlling a two-point elastic creature:
 
-You begin with **13 hearts**, survive **13 trials**, and fight your way through an escalating army of weaponized corn before facing the final **Cobtopus**.
+```text
+PULL ←     ♥ BODY ═══════ 🌈 RAINBOW ═══════ 🦄 HEAD / HORN     → AIM
+           vulnerable         safe                 safe
+```
+
+Only the **♥ body** can be hurt. The head and rainbow can deliberately occupy dangerous space, intercept projectiles, collect pickups, attack around obstacles, and establish the geometry for the next launch.
+
+Then the corn arrived.
+
+The enemy roster, bosses, projectiles, power-ups and arena language were rebuilt around the Stretchi**CORN** joke so the name is no longer just a pun. You now fight Kernel Kamikazes, Pop-Gunners, Husk Rams, the Maize Monarch and finally the deeply unreasonable **Cobtopus**.
 
 <div align="center">
 
-<a href="docs/stretchicorn-title-v017.png"><img src="docs/stretchicorn-title-v017.png" alt="Stretchicorn v0.17 title screen" width="1000"></a>
+<a href="docs/stretchicorn-title-v017.png"><img src="docs/stretchicorn-title-v017.png" alt="Stretchicorn title screen and animated unicorn-versus-corn presentation" width="1000"></a>
 
 </div>
 
 ---
 
-# Why the game feels different
+# Current release: v0.20.2 MIXER
 
-Most action games bind movement, aiming, attacking, dodging, and item collection to separate systems.
+v0.20.2 is the current stable competition build. It preserves the responsive SETFLOW controller and procedural dubstep system while adding a proper **Settings** page with independent **Music** and **Game Sounds** volume controls.
 
-Stretchicorn tries to make them consequences of the **same elastic body**.
-
-```text
-steer head
-    ↓
-position vulnerable body
-    ↓
-pull body away from horn
-    ↓
-🌈 load the rainbow spring
-    ↓
-SPACE
-    ↓
-RAINBOW SNAP
-    ↓
-attack / dodge / travel / collect / reposition
-    ↓
-set up the next spring
-```
-
-At higher skill levels, that loop becomes:
+This release deliberately favors reliability over exotic build tricks. After an experimental v0.21 branch failed to load reliably in a playtest, the project was rebuilt from the last proven working gameplay branch and returned to one canonical release path:
 
 ```text
-Snap → Graze → Parry → Recharge → Double Rainbow → Power-up route → Snap
+readable source
+      ↓
+safe comment / whitespace compaction
+      ↓
+dist/index.html
+      ↓
+TEST THIS EXACT HTML
+      ↓
+ZIP THIS EXACT HTML
 ```
 
-The goal was not to squeeze many unrelated features into 13KB. It was to make **a few small systems interact so strongly that they create more game than their byte cost suggests**.
+There is no hidden competition-only gameplay rewrite after testing.
+
+### Current archive
+
+```text
+13,308 / 13,312 bytes
+4 bytes free
+```
+
+Yes, four. 🌽
+
+The competition runtime contains **no image assets, audio files, fonts, frameworks or game engine**. The promotional images above live only in the repository and are not part of the submission ZIP.
 
 ---
 
-# Controls
+# Quick start
+
+### Default controls
 
 | Input | Action |
 |---|---|
 | **W A S D** | Move the vulnerable ♥ body |
 | **Arrow Keys** | Smoothly steer the safe head |
 | **Space** | Horn strike / Rainbow Snap |
-| **P** | Pause |
-| **M** | Menu |
+| **P** | Pause / resume |
+| **M** | Return to menu |
+| **C** | Controls page from title screen |
+| **R** | Rules page from title screen |
+| **S** | Settings page from title screen |
 
-v0.17 also includes a dedicated **Controls** screen with custom keyboard remapping, plus a separate **Rules** page so the title screen can stay visual and inviting instead of becoming a wall of instructions.
+The game intentionally has very few gameplay buttons. Depth comes from the relationship between body movement, aim direction, stored spring energy, projectile geometry and timing.
 
-## The one rule to learn first
+## Custom controls
 
-> **Only the ♥ body takes damage. The head and rainbow are safe.**
-
-That rule is intentionally generous, but it is also the foundation of the tactics.
-
-The safe head and rainbow can occupy dangerous space, collect power-ups, intercept projectiles, and attack around obstacles while the body stays somewhere else.
-
-Once that clicks, Stretchicorn stops behaving like a conventional shooter and starts behaving like an articulated weapon.
-
----
-
-# Core mechanics
-
-## 🌈 Rainbow Spring
-
-Move the body **away from the direction the horn is pointing** to charge the spring.
-
-A short deliberate pull is enough. The player should be springing constantly, not dragging across half the arena waiting for a super meter.
-
-When Snap is ready:
-
-- the rainbow visibly stretches,
-- the head gains a rainbow pulse,
-- small sparks appear,
-- a procedural elastic **boing** plays.
-
-### Why the head is not a normal physics object
-
-Early prototypes used a freely moving 2-D spring head. It looked elastic, but the head followed the body too aggressively and made precise aiming frustrating.
-
-The final controller separates **angle** from **stretch**:
+The **Controls** page supports real persistent rebinding for all nine gameplay actions:
 
 ```text
-Arrow Keys → authoritative aim angle
-                      +
-scalar spring → elastic head distance
-                      =
-precise aiming + expressive spring motion
+↑ / ↓         select action
+ENTER         start rebinding
+press a key   assign it
+D             restore defaults
+M / ESC       back
 ```
 
-The head can overshoot and rebound along the aim ray, but it cannot drift sideways away from the player's intended direction.
+Rebinding is not cosmetic. The input layer actually reads the customized mapping during gameplay.
 
-That small architectural choice is the mechanical heart of the game.
+If the requested key is already used by another action, the two bindings **swap** instead of creating an ambiguous duplicate. Bindings are saved through `localStorage` and restored on the next session.
 
----
+## Settings
 
-## ⚡ Rainbow Snap
+Press **S** on the title screen.
 
-A charged Space attack becomes a **Rainbow Snap**.
-
-Snap simultaneously acts as:
-
-- a high-damage attack,
-- an evasive dash,
-- a traversal move,
-- a combo extender,
-- a power-up collection route,
-- a way through dense projectile patterns.
-
-The game is strongest when Snap becomes ordinary locomotion rather than a rare special move.
-
----
-
-## 🌈🌈 Double Rainbow
-
-Snap again quickly after a successful Rainbow Snap to trigger **Double Rainbow**.
-
-The second release gains additional damage, horn reach, visual spectacle, combo value, and a short safety burst.
-
-The design purpose is simple: after committing to an aggressive move, the game should tempt you to become **more aggressive**, not immediately retreat into neutral play.
-
----
-
-## 🍿 Popcorn Graze
-
-Enemy kernels and popcorn are not only hazards.
-
-Projectiles have two meaningful zones around the ♥ body:
+Music and gameplay sound effects are controlled independently:
 
 ```text
-far away      → safe
-near miss     → POPCORN GRAZE
-body contact  → damage
+MUSIC       OFF · 25% · 50% · 75% · 100%
+SFX         OFF · 25% · 50% · 75% · 100%
 ```
 
-A Graze awards **+13**, restores spring energy, creates a small visual pop, and can push the player toward another Snap.
+Use **Up/Down** to choose a row and **Left/Right or Enter** to change the level. Settings persist locally.
 
-Each projectile can only be grazed once, preventing passive score farming.
-
-The risk ladder becomes:
-
-> **avoid → graze → parry**
+That separation matters because the soundtrack is intentionally energetic while Graze, Parry, Snap, hit and boss sounds carry gameplay information. A player can lower the music without losing combat feedback, or mute SFX without disabling the procedural set.
 
 ---
 
-## 💥 Kernel Parry
+# The elastic controller
 
-Strike hostile projectiles with the horn to reflect them.
-
-A successful parry:
-
-- flips projectile ownership,
-- sends the kernel back at high speed,
-- restores spring energy,
-- gives score,
-- grants a tiny fairness window,
-- allows reflected projectiles to hurt enemies.
-
-This creates sequences such as:
+Stretchicorn is represented by two important points:
 
 ```text
-Rainbow Snap
-      ↓
-Pop-Gunner fires
-      ↓
-Kernel Parry
-      ↓
-reflected kernel kills another cob
-      ↓
-short pull
-      ↓
-DOUBLE RAINBOW
-```
-
-Enemy pressure becomes ammunition.
-
----
-
-## 🍀 Lucky 13
-
-Every **13 defeated enemies** triggers Lucky 13.
-
-It grants:
-
-- +1 heart, up to 13,
-- an instant shield,
-- spring energy,
-- Snap-ready time,
-- +130 score,
-- expanding rainbow-ring spectacle.
-
-The number 13 is therefore not merely a reference to the competition limit. It changes how players route fights.
-
-If the counter reads **11/13** during a boss encounter, two weak kernels may be more valuable than immediately attacking the boss.
-
----
-
-# The corn problem 🌽
-
-Stretchicorn originally fought generic storm creatures. The game became far more memorable when the title itself became the enemy roster.
-
-The world is now populated by an aggressively unnecessary corn civilization.
-
-| Enemy | Role |
-|---|---|
-| **Kernel Kamikaze** | Fast pursuit pressure |
-| **Cob Charger** | Telegraph → charge → recover |
-| **Pop-Gunner** | Ranged kernel artillery |
-| **Prism Popper** | Curved multi-shot pressure |
-| **Husk Bruiser** | Armored heavy |
-| **Husk Ram** | Armored charging threat |
-| **Maize Monarch** | Mid-campaign boss |
-| **Cobtopus** | Final Level 13 boss |
-
-The joke also helps readability. Silhouette, color, armor, movement, and projectile behavior communicate what each cob is trying to do without requiring a large enemy-art pipeline.
-
-### Environment as a weapon
-
-Charging corn can be baited into husk barricades.
-
-Walls therefore serve several jobs:
-
-- cover for the vulnerable body,
-- spring-length constraints,
-- navigation obstacles,
-- projectile blockers,
-- offensive tools against chargers.
-
-A good stage object should earn its bytes more than once.
-
----
-
-# Power-ups
-
-| Power-up | Effect | Good use |
-|---|---|---|
-| ♥ **Heart** | Restore one heart | Stabilize long boss attempts |
-| ☁ **Shield** | Absorb the next hit | Bank before dense phases |
-| » **Sugar Rush** | Temporary speed boost | Wider routes and faster repositioning |
-| ★ **Star Power** | Easier spring charging | Aggressive Snap chains |
-| **2× Horseshoe** | Score multiplier | Dense waves / boss summons |
-
-## The rainbow can collect them
-
-You do **not** need to touch a power-up with the ♥ body.
-
-The closest-point test runs against the stretched body segment, and Snap temporarily expands the collection radius.
-
-```text
-♥ body -------- 🌈 rainbow -------- head
-                    ↑
-                 power-up
-```
-
-That means one movement can simultaneously:
-
-1. attack a corn enemy,
-2. cross the arena,
-3. collect a Star,
-4. begin the next spring setup.
-
----
-
-# Boss design
-
-Bosses use four **health-derived phases** instead of long scripted timelines:
-
-```text
-100–75%  → Phase 1
-75–50%   → Phase 2
-50–25%   → Phase 3
-25–0%    → Phase 4
-```
-
-As health falls, the same compact equations increase combinations of:
-
-- pursuit speed,
-- projectile count,
-- projectile speed,
-- curvature,
-- attack cadence,
-- summon pressure.
-
-This produces a readable dramatic arc without paying for a large scripting system.
-
-The **Cobtopus** reuses this phase model while adding radial fire and tentacle-like visual language. The final encounter gets its own entrance and a dedicated transformation into the victory state.
-
----
-
-# Strategy guide
-
-## Beginner: learn the rhythm
-
-Do not begin by trying to maximize damage.
-
-Learn this first:
-
-> **aim → pull → Snap → recover**
-
-1. Watch the ♥ body.
-2. Point the safe head toward a target or escape lane.
-3. Move the body briefly in the opposite direction.
-4. Wait for the pulse / boing.
-5. Snap.
-
-Use Snap to escape as often as you use it to attack.
-
-## Intermediate: separate danger from offense
-
-Because the head and rainbow are safe, try to:
-
-- keep the ♥ body behind a barricade while reaching the head around it,
-- stretch the rainbow through a power-up,
-- put the head into a projectile lane while the body stays outside it,
-- Snap **through** enemies rather than stopping in front of them.
-
-## Advanced: convert pressure into momentum
-
-A projectile can be:
-
-- avoided,
-- grazed for charge,
-- parried for more charge,
-- reflected into another enemy.
-
-A strong boss rhythm becomes:
-
-```text
-Snap
- ↓
-turn during recovery
- ↓
-Graze / Parry incoming kernel pattern
- ↓
-short pull
- ↓
-Double Rainbow
- ↓
-use the new position to start another route
-```
-
-## Wall baiting
-
-Chargers can hurt themselves against barricades.
-
-```text
-body near wall
-     ↓
-enemy telegraphs
-     ↓
-Snap away
-     ↓
-CORN → WALL 💥
-     ↓
-punish recovery
-```
-
-## Lucky 13 routing
-
-Watch the kill counter.
-
-Being at `12/13` changes the value of every weak enemy on screen because the next kill can immediately generate health, shield, spring charge, score, and breathing room.
-
-## The expert idea
-
-> **The rainbow is not baggage. It is usable space.**
-
-Once this becomes intuitive, the game changes from a difficult shooter into a spatial-routing game.
-
----
-
-# Player-experience design
-
-A 13KB game has another constraint besides file size: **attention**.
-
-The title screen therefore avoids presenting every mechanic at once.
-
-v0.17 uses a small front-end structure:
-
-```text
-TITLE
- ├── SPACE → PLAY
- ├── C → CONTROLS / custom bindings
- └── R → RULES
-```
-
-The main title screen exists to sell the toy visually.
-
-The Rules page teaches the four concepts that matter most. Contextual messages then introduce Graze, Parry, Double Rainbow, armor, walls, and boss behavior only when they become relevant.
-
-### Why 13 hearts?
-
-The game deliberately starts generously.
-
-Stretchicorn has a novel controller, and early deaths are often learning deaths. Giving players 13 hearts lets them discover the spring, survive mistakes, reach later mechanics, and form an opinion of the whole game before being thrown back to the menu.
-
-Difficulty then comes from overlapping decisions rather than starving the player of attempts.
-
-### Why custom controls?
-
-WASD + Arrow Keys + Space is the intended Desktop layout, but keyboard comfort varies dramatically. The rebinding screen improves accessibility without changing the mechanical model or adding more gameplay buttons.
-
----
-
-# Theme integration
-
-The 2026 theme is **Unicorns & Rainbows**, but the goal was to make the theme structural rather than decorative.
-
-## Unicorn
-
-The unicorn anatomy defines the rules:
-
-- ♥ body = vulnerable anchor,
-- head = safe aiming platform,
-- horn = attack geometry,
-- body/head separation = spring charge.
-
-## Rainbow
-
-The rainbow simultaneously acts as:
-
-1. the elastic body,
-2. spring-charge feedback,
-3. movement geometry,
-4. Snap exhaust,
-5. Double Rainbow identity,
-6. pickup-routing surface,
-7. visual reward language.
-
-## Corn
-
-The corn layer gives the project its own absurd identity beyond the competition theme.
-
-**Stretchicorn** is no longer only a name. It is a promise that the player will stretch a unicorn while being assaulted by corn.
-
----
-
-# Designing for 13KB
-
-The final archive constraint is not approached as "write a normal game and minify it later."
-
-The design itself is built around **multi-purpose systems**.
-
-## One spring, many jobs
-
-The rainbow spring handles:
-
-1. animation,
-2. charge visualization,
-3. movement,
-4. attack setup,
-5. traversal,
-6. pickup routing,
-7. combo expression,
-8. theme.
-
-## One projectile representation, many interactions
-
-A tiny projectile object handles:
-
-- enemy fire,
-- curved fire,
-- Graze,
-- Parry,
-- reflected friendly fire,
-- boss patterns.
-
-## One enemy state vocabulary
-
-Rather than separate class hierarchies, enemies reuse small states such as:
-
-```text
-idle → telegraph → charge → recover
-```
-
-or compact steering/shooting rules inside a shared update loop.
-
-## One particle pool
-
-The same lightweight effect objects become:
-
-- rainbow exhaust,
-- Snap sparks,
-- Lucky 13 bursts,
-- impacts,
-- popcorn / kernel debris,
-- victory effects.
-
-The target is **emergent depth per byte**, not feature count per byte.
-
----
-
-# Technical architecture
-
-The public repository keeps a readable source layout separate from the byte-constrained competition artifact.
-
-```text
-src/
-├── 00-core.js       state, helpers, stages, enemies, geometry
-├── 01-combat.js     Snap, Double Rainbow, damage, kills, Parry
-├── 02-update.js     spring physics, movement, AI, bosses, Graze
-├── 03-render.js     procedural world, unicorn, corn, HUD, effects
-├── 04-ui-input.js   title/rules/controls, fixed loop, bindings
-└── style.css
-```
-
-## Two-point player model
-
-The entire Stretchicorn is built around two important points:
-
-```text
-A = vulnerable ♥ body
+A = vulnerable ♥ body / rear anchor
 P = safe head / horn endpoint
 ```
 
-Each update reconstructs the head approximately as:
+The head is reconstructed every fixed update from the body position, aim angle and one scalar spring length:
 
 ```text
 P = A + aimVector × springLength
 ```
 
-This is dramatically cheaper and easier to reason about than a full articulated-body simulation.
+That decision is one of the most important pieces of the project.
 
-## Scalar spring
-
-The rainbow uses a scalar spring length and scalar spring velocity:
+Earlier prototypes allowed the head to behave as a freely moving 2-D spring body. It looked elastic, but movement continuously dragged the head away from the player's intended attack direction. The final architecture separates precision from elasticity:
 
 ```text
-velocity += (targetLength - length) × strength × dt
-velocity *= damping
-length += velocity × dt
+Arrow keys       → authoritative angle
+Spring length    → elastic distance
+WASD             → body movement + spring loading
 ```
 
-Charge increases the target length. Snap changes the target and injects spring velocity, creating visible compression and rebound.
+The result keeps the visual rebound and stretch while preserving predictable aiming.
 
-## Directional charge
+## Continuous aiming
 
-Charging uses the relationship between movement and the opposite aim vector:
+Arrow input is converted into a target angle and the current aim rotates toward it smoothly. The final tuning uses a fast angular response while retaining arbitrary intermediate angles.
+
+The player is not restricted to eight discrete directions.
+
+A dashed attack ray and endpoint reticle communicate the exact current horn trajectory. A second indicator behind the ♥ body points in the opposite direction and brightens when body movement is correctly aligned to charge the spring.
+
+So the arena itself answers both questions:
 
 ```text
-away = dot(moveDirection, -aimDirection)
+Where will I attack?     → reticle
+Where should I pull?     → rear arrow
 ```
 
-The result is remapped into a forgiving charge rate. This makes diagonal pulls work and prevents the mechanic from depending on one perfect axis.
+## Deterministic horn direction
 
-## Collision model
+Horn attacks snapshot the aim angle the instant **Space** is pressed.
 
-The collision contract is intentionally asymmetric:
+```text
+aim ↗
+SPACE
+   ↓
+kickA = aim
+   ↓
+render + hitbox + parry + knockback all use kickA
+```
 
-- ♥ body collides with enemies and hostile projectiles,
-- head/rainbow do not take normal contact damage,
-- horn attack uses segment-distance geometry,
-- the head is shortened by wall ray intersection,
-- the body resolves wall movement axis by axis,
-- `safeSpawn()` repairs invalid stage-transition configurations.
+That means rotating or moving during the short active horn animation cannot bend the collision direction away from what the player saw when they committed.
 
-Those rules create the safe-head / vulnerable-body strategy without requiring expensive articulated collision.
-
-## Fixed timestep
-
-Gameplay updates at a fixed **60 Hz** timestep while rendering follows `requestAnimationFrame`.
-
-That keeps spring tuning, AI timers, charge timing, and collisions substantially more predictable across display refresh rates.
+Movement remains available. Only the attack direction is stabilized for the strike.
 
 ---
 
-# Three budgets
+# Rainbow Spring
 
-A useful way to summarize the project is that Stretchicorn is designed against three budgets at once.
+Spring charge comes from the relationship between movement and horn direction.
+
+Conceptually:
+
+```text
+away = dot(movementDirection, -aimDirection)
+```
+
+Pull directly away from the horn and charge rises quickly. Move sideways and the contribution falls. Move toward the horn and the spring does not load.
+
+The threshold is intentionally reached with a **short purposeful pull**, not a full-arena stretch. Rainbow Snap is meant to become normal movement vocabulary rather than a rare super move.
+
+## Snap-ready feedback
+
+When the player crosses the spring threshold, several cues fire together:
+
+- a procedural **boing**,
+- rainbow sparks along the stretched body,
+- a pulsing ring at the head,
+- a whole-character rainbow aura.
+
+The unicorn itself becomes the meter.
+
+That is an intentional usability principle: in a dense boss pattern, the player should not need to stare at a tiny HUD bar to know that the main movement verb is ready.
+
+---
+
+# Combat grammar
+
+## 🌈 Rainbow Snap
+
+A charged attack does several jobs at once:
+
+- horn attack,
+- forward launch,
+- evasive dash,
+- traversal,
+- brief safety window,
+- combo extension,
+- power-up routing,
+- visual payoff.
+
+This multi-use design is crucial to both the gameplay and the byte budget. Movement and offense reinforce one another instead of living in separate systems.
+
+## 🌈🌈 Double Rainbow
+
+A short chaining window remains after a Snap. Recharge and Snap again before it expires to trigger **Double Rainbow**.
+
+The follow-up gets additional reach, damage, particles and safety, encouraging players to stay active after committing instead of resetting to passive neutral play.
+
+A strong rhythm becomes:
+
+```text
+Snap
+  ↓
+turn during recovery
+  ↓
+Graze / Parry incoming fire
+  ↓
+short pull
+  ↓
+Double Rainbow
+  ↓
+route into the next setup
+```
+
+## 🍿 Popcorn Graze
+
+Hostile kernels use two meaningful radii around the ♥ body:
+
+```text
+far away     → safe
+near miss    → POPCORN GRAZE +13 + spring energy
+body contact → damage
+```
+
+Each projectile can award the Graze only once.
+
+This transforms enemy bullets from a binary hazard into a resource. A skilled player can deliberately fly close enough to recharge without accepting the hit.
+
+## 💥 Kernel Parry
+
+Strike hostile popcorn with the horn and ownership flips.
+
+The reflected kernel:
+
+- travels back at high speed,
+- damages corn enemies,
+- awards score,
+- restores spring energy,
+- grants a tiny fairness window around the reflection.
+
+Enemy pressure can therefore become ammunition.
+
+## 🍀 Lucky 13
+
+Every 13 defeated enemies triggers a Lucky 13 burst:
+
+- +1 heart, capped at 13,
+- Husk Shield,
+- spring energy,
+- Snap-ready time,
+- +130 score,
+- rainbow-ring spectacle.
+
+The number 13 is part of the actual rules rather than only the archive limit.
+
+---
+
+# 🌽 Power-ups that belong in the world
+
+The pickups were redesigned from abstract rings into tiny magical cobs with husks, kernel texture and distinctive colors.
+
+| Pickup | Effect | Good use |
+|---|---|---|
+| **♥ Heart Kernel** | Restore one heart | Stabilize a long run |
+| **Husk Shield** | Absorb the next hit | Carry into dense boss patterns |
+| **Butter Boost** | Faster body movement | Reposition and create wider Snap routes |
+| **Prism Cob** | Easier spring charging | Aggressive chain setups |
+| **Gold Cob** | Temporary 2× score | Combine with high combo / add waves |
+
+The important geometric rule remains: **the entire stretched rainbow can collect a pickup**.
+
+During a Snap, the collection radius expands further. A single route can therefore attack an enemy, cross a projectile lane and sweep through a power-up without putting the vulnerable body directly on the item.
+
+---
+
+# 🌽 The corn roster
+
+Different enemies share one compact object representation and a small integer `type`. Variety comes from tiny state-machine branches rather than separate class hierarchies.
+
+| Enemy | Tactical role |
+|---|---|
+| **Kernel Kamikaze** | Fast direct pressure on the ♥ body |
+| **Cob Charger** | Telegraph → charge → recover; can be baited into walls |
+| **Pop-Gunner** | Maintains range and creates Graze/Parry opportunities |
+| **Prism Popper** | Curved multi-shot pressure and lateral movement |
+| **Husk Bruiser** | Slow armored threat requiring committed damage |
+| **Husk Ram** | Heavy armored charger with valuable wall-crash interactions |
+| **Maize Monarch** | Four-phase mid-campaign boss |
+| **Cobtopus** | Final radial-pattern corn monstrosity |
+
+## Walls are weapons
+
+Charging enemies can damage themselves when they hit geometry at speed.
+
+That converts walls from static blockers into tactical tools:
+
+```text
+♥ lure charger toward barricade
+          ↓
+telegraph
+          ↓
+Snap away
+          ↓
+🌽💥 WALL
+          ↓
+punish recovery
+```
+
+Husk barricades simultaneously provide navigation, cover, head-ray constraints and enemy self-damage. Again, one tiny system performs several jobs.
+
+---
+
+# 🔊 Procedural dubstep / gaming-EDM
+
+Stretchicorn ships with no music file.
+
+The soundtrack is synthesized entirely with Web Audio oscillators and a tiny sequencer. Rather than storing a song, the game stores compact rhythmic rules and recreates musical structure at runtime.
+
+The current set moves through contrasting two-bar sections:
+
+```text
+BUILD
+  ↓
+DROP
+  ↓
+BREAK
+  ↓
+DROP 2
+  ↓
+repeat with root movement
+```
+
+Tempo is recomputed from section and step state, giving builds acceleration and drops noticeably different pacing instead of a single monotonous four-on-the-floor loop.
+
+### Tiny musical vocabulary
+
+The engine combines:
+
+- pitch-swept low kicks,
+- syncopated kick masks,
+- filtered saw growls,
+- dedicated sine sub-bass,
+- sparse high percussion,
+- arcade-like melodic punctuation,
+- rising build gestures,
+- heavier drop entrances,
+- slower breakdown contrast,
+- boss-dependent intensity.
+
+Rhythmic patterns are bit-packed integers rather than verbose arrays.
+
+### Bass without samples
+
+A bass hit is approximately:
+
+```text
+filtered saw growl
+       +
+clean sine sub
+```
+
+The growl's low-pass cutoff moves during the note, creating a compact `wub` gesture while the sine layer preserves low-frequency weight.
+
+No MP3, OGG, sample pack or decoded buffer is needed.
+
+---
+
+# ✨ Audio-reactive environment
+
+The arena reacts to the music, but there is no FFT or analyser pipeline.
+
+Because the game itself generates the sequencer, it already knows when musically important events occur. Those events raise a tiny shared `beat` envelope:
+
+```text
+sequencer event
+      │
+      ├── synthesize sound
+      │
+      └── raise beat envelope
+                 ↓
+        rainbow tears / sparks / specks
+```
+
+The renderer uses that envelope to make faint colored streaks lengthen and small background particles brighten slightly.
+
+This is intentionally restrained. Enemy bullets, the ♥ body, the horn, the aim reticle and pickups remain higher contrast than the decoration. The background should make the game feel alive without becoming another thing the player must parse.
+
+---
+
+# 13 trials
+
+The campaign contains 13 increasingly mixed encounters:
+
+1. **Pastel Patch**
+2. **Kernel Panic**
+3. **Popcorn Front**
+4. **Husk Maze**
+5. **The Maize Monarch**
+6. **Butter Blitz**
+7. **Husk Armor**
+8. **Prism Popcorn**
+9. **The Cob Crusher**
+10. **Sugar Corn**
+11. **Kernel Gauntlet**
+12. **Double Cornbow**
+13. **The Cobtopus**
+
+Large trial cards provide rhythm between encounters and make progression legible without introducing a separate campaign UI.
+
+Bosses derive four phases directly from remaining health rather than running a large scripted timeline:
+
+```text
+100–75% → Phase 1
+75–50%  → Phase 2
+50–25%  → Phase 3
+25–0%   → Phase 4
+```
+
+Projectile count, curvature, pursuit and cadence intensify as health falls. The final Cobtopus reuses the same compact phase grammar with denser radial geometry.
+
+---
+
+# Player-experience design
+
+The 13KB constraint is not only a compression problem. The game is designed around three simultaneous budgets.
 
 ### 1. Byte budget
 
-Can the mechanic justify its compressed cost?
+Can the feature fit, and can one implementation do multiple jobs?
 
 ### 2. Attention budget
 
-Can a new player understand what matters without reading a manual?
+Can a first-time player understand the feature while angry corn is firing popcorn at them?
 
 ### 3. Decision budget
 
-Does the mechanic create a meaningful choice during play?
+Does the feature create an interesting choice, or merely another rule to memorize?
 
-A feature that is cheap in bytes but expensive in confusion is not actually cheap.
+Those questions drove many of the final decisions.
 
-This is why the final game asks for only:
+## Why 13 hearts?
 
-> **WASD + Arrow Keys + Space**
+The control scheme is unusual. A new player needs enough runway to discover that the head is safe, learn the pull direction, understand Snap, then encounter Graze, Parry, walls and bosses.
 
-while still supporting movement, aiming, charging, attacking, dodging, grazing, parrying, chaining, item routing, wall baiting, and boss strategy.
+Thirteen hearts make the first serious run educational rather than forcing a restart every few seconds.
 
----
+## Why separate Controls, Rules and Settings pages?
 
-# Running locally
+Earlier title screens became walls of instructions. The current first screen has one job: make the premise memorable and get the player into the game.
 
-Serve the repository with any static HTTP server:
-
-```bash
-python3 -m http.server 8080
-```
-
-Then open:
+Optional information lives behind three simple choices:
 
 ```text
-http://localhost:8080
+C → Controls
+R → Rules
+S → Settings
 ```
 
-The repository root is also configured for simple Netlify deployment.
+Players who want chaos can press Space immediately. Players who want precision can configure first.
+
+## Progressive teaching
+
+Early gameplay messages are contextual rather than modal:
+
+- first identify the vulnerable ♥ body,
+- then explain body/head control separation,
+- then teach pulling,
+- then announce Snap readiness,
+- then introduce chaining.
+
+The tutorial therefore grows with the player's actions instead of front-loading a manual.
+
+## The character is the UI
+
+Important information is embedded into Stretchicorn whenever possible:
+
+- ♥ marks the damage anchor,
+- rainbow length communicates stored tension,
+- whole-character glow communicates Snap readiness,
+- aim ray communicates horn geometry,
+- pull arrow communicates charge geometry,
+- shield ring communicates protection,
+- rainbow exhaust communicates a committed launch.
+
+The HUD reinforces these signals rather than replacing them.
 
 ---
 
-# Repository layout
+# Strategy ladder
+
+### Beginner
+
+Learn one rhythm first:
+
+```text
+aim → short pull → Snap → recover
+```
+
+Watch the ♥ body more than the head. Use Snap to escape just as often as you use it to attack.
+
+### Intermediate
+
+Exploit the safe parts of the creature.
+
+Keep the ♥ body behind geometry while the head threatens open space. Sweep pickups with the rainbow. Snap *through* enemies rather than stopping in front of them.
+
+### Advanced
+
+Treat every hostile projectile as a decision:
+
+```text
+avoid  → safest
+graze  → spring energy
+parry  → spring energy + reflected weapon
+```
+
+Rotate during recovery so the next pull is already aligned.
+
+### Expert
+
+Plan around **Lucky 13**, Gold Cob timing, combo decay, reflected projectiles, wall crashes, pickup routes and boss add timing at the same time.
+
+At that point the arena stops feeling like a conventional shooter and becomes a moving geometry puzzle.
+
+> **The rainbow is not baggage. It is usable space.**
+
+---
+
+# Why this fits 13KB
+
+The goal has never been to build ten unrelated systems and then crush them until the ZIP accepts them. The game instead tries to make every important system perform multiple roles.
+
+| System | Jobs it performs |
+|---|---|
+| **Rainbow spring** | character animation, charge feedback, movement, attack, traversal, pickup routing, theme |
+| **Projectiles** | danger, Graze, Parry, reflected damage, spring recharge, boss patterns |
+| **Walls** | navigation, cover, spring/head constraint, enemy self-damage, encounter variety |
+| **Music clock** | song structure, rhythm, bass timing, background visual timing |
+| **Enemy state field** | telegraphs, charges, recovery, boss sequencing |
+| **Character rendering** | personality plus gameplay-state communication |
+
+The joke, control scheme, visuals and byte strategy all point in the same direction.
+
+---
+
+# Architecture / source tour
 
 ```text
 stretchicorn/
+├── index.html
 ├── README.md
 ├── CHANGELOG.md
-├── index.html
 ├── docs/
-│   ├── stretchicorn-hero.png          # new README hero artwork
-│   └── stretchicorn-title-v017.png    # v0.17 title screenshot
+│   ├── stretchicorn-hero.png
+│   └── stretchicorn-title-v017.png
 ├── src/
 │   ├── style.css
-│   ├── 00-core.js
-│   ├── 01-combat.js
-│   ├── 02-update.js
-│   ├── 03-render.js
-│   └── 04-ui-input.js
-├── dist/
-│   └── ... competition artifact
+│   ├── 00-core.js       # state, geometry, audio, stages, corn roster
+│   ├── 01-combat.js     # Snap, damage, Parry, Lucky 13
+│   ├── 02-update.js     # fixed-step movement, spring physics, AI, Graze
+│   ├── 03-render.js     # procedural world, corn, pickups, reactive ambience
+│   └── 04-ui-input.js   # title/rules/controls/settings, rebinding, test hook
 ├── scripts/
+│   ├── build.mjs
+│   ├── package.py
+│   ├── check-size.mjs
+│   ├── test.mjs
+│   └── release-smoke.mjs
+├── dist/
+│   ├── index.html
+│   └── stretchicorn-desktop-v0.20.2.zip
 ├── package.json
-└── netlify.toml
+├── netlify.toml
+└── .gitignore
 ```
 
-> **Artwork note:** the README intentionally references `docs/stretchicorn-hero.png` and `docs/stretchicorn-title-v017.png`. Upload the two current images with those exact filenames and they will appear automatically without another README edit.
+The readable `src/` files intentionally keep descriptive names and comments around the unusual systems. The competition build derives from those same files.
+
+## Fixed timestep
+
+Rendering uses `requestAnimationFrame`, but gameplay advances in fixed 1/60-second steps.
+
+That keeps spring constants, collision timing, enemy telegraphs and attack windows much less dependent on monitor refresh rate.
+
+## Wall-safe head projection
+
+The head is not independently collision-resolved as a conventional body. Once spring length is calculated, the head is projected along the current aim ray and shortened by `rayW()` when arena geometry would block it.
+
+This preserves aiming direction while preventing the safe head from visibly penetrating walls.
+
+## Safe stage spawning
+
+`safeSpawn()` validates both the ♥ body and the projected head against arena geometry. If a stage transition ever produces an invalid placement, it searches a small deterministic grid for the nearest safe anchor and reconstructs the spring from there.
+
+This exists because a rare spawn-inside-wall bug was exactly the kind of tiny-game failure that can ruin an otherwise good run.
 
 ---
 
-# Playtesting checklist
+# Build pipeline
 
-Fresh-player confusion is useful data. If you test the game, the most valuable questions are:
+No JavaScript package dependencies are required.
 
-- Did you understand that only the ♥ body takes damage?
-- Did you understand Rainbow Snap within the first minute?
-- Did aiming feel controllable at arbitrary angles?
-- Did you discover Graze or Parry naturally?
-- Did the corn enemies read differently from one another?
-- Did boss phases feel difficult but understandable?
-- Did any wall, spawn, input, or transition state trap the player?
-- What was the most fun thing you discovered without being told?
-- Would you immediately play another run?
+```bash
+npm run build
+npm test
+npm run smoke
+npm run package
+```
+
+Or run the full release verification:
+
+```bash
+npm run verify
+```
+
+### `build.mjs`
+
+Concatenates the readable source and performs a conservative competition compaction pass:
+
+- removes block comments,
+- removes redundant whitespace outside strings,
+- preserves player-facing string content,
+- produces the single `dist/index.html` runtime.
+
+### `package.py`
+
+Packages that exact HTML as a deterministic standards-compliant DEFLATE ZIP.
+
+The official v0.20.2 artifact uses **Zopfli** compression and is **13,308 bytes**. A normal zlib fallback is still a valid ZIP but is larger than the current competition ceiling, so Zopfli is required when reproducing the final submission-sized artifact.
+
+### `check-size.mjs`
+
+Hard-checks the official `13,312` byte ceiling and fails if the archive is too large.
+
+---
+
+# Testing the thing we actually ship
+
+The project has two levels of lightweight regression coverage.
+
+## `scripts/test.mjs`
+
+Exercises the readable/build logic and checks:
+
+- 13-heart initialization,
+- custom binding persistence behavior,
+- **Enter** entering rebind mode,
+- duplicate-binding swap semantics,
+- independent Music/SFX settings,
+- procedural soundtrack scheduling,
+- filtered growl/sub synthesis,
+- responsive continuous aiming,
+- spring charging and Snap combat,
+- safe spawn placement across all 13 stages,
+- finite player state under sustained simulated input.
+
+## `scripts/release-smoke.mjs`
+
+Loads the JavaScript from the **actual generated `dist/index.html`** and drives it through:
+
+```text
+title
+  ↓
+Enter → play
+  ↓
+Controls → rebind
+  ↓
+Settings → alter Music and SFX independently
+  ↓
+procedural audio scheduling
+  ↓
+all 13 stages
+  ↓
+movement + attack simulation
+```
+
+That smoke test was added specifically so the byte-constrained artifact cannot quietly diverge from the version we believe we tested.
+
+The current v0.20.2 release passes both suites and ZIP integrity testing.
+
+---
+
+# Technical snapshot
+
+- **Canvas 2D** procedural rendering
+- **Web Audio** procedural soundtrack and SFX
+- **no runtime image/audio assets**
+- **fixed 60 Hz** gameplay simulation
+- continuous arbitrary-angle keyboard aiming
+- deterministic horn-angle snapshot per attack
+- persistent custom key bindings
+- independent persistent Music/SFX volume settings
+- 13 hearts
+- 13 trials
+- Lucky 13 every 13 kills
+- compact health-derived boss phases
+- single-file competition runtime
+- Desktop category target
+- **13,308 / 13,312 bytes**
+
+---
+
+# Playtesting
+
+For a useful first-play test, ask the player **not to read this README first**.
+
+The questions that matter most are:
+
+- Did they understand within the first minute that only the ♥ body takes damage?
+- Did they discover how to pull opposite the horn and trigger a Snap?
+- Did the aim reticle make horn direction trustworthy?
+- Did the whole-unicorn glow make Snap readiness obvious?
+- Did they naturally discover Graze or Parry?
+- Did the corn enemies read as mechanically different, not just differently colored?
+- Did the music feel energetic without covering combat sounds?
+- Were Music/SFX settings easy to find and understand?
+- Which death felt unfair rather than deserved?
+- How far did they reach?
+- Did they immediately want another attempt?
+- Did Firefox / Chrome / Safari behave differently?
+
+Fresh-player confusion is more valuable than polite praise at this stage.
 
 ---
 
 # js13kGames 2026
 
-Stretchicorn is being developed for **js13kGames 2026**, targeting the **Desktop** category and the **Unicorns & Rainbows** theme.
+Stretchicorn targets the **Desktop** category and the 2026 theme **Unicorns & Rainbows**.
 
-The submission philosophy is simple:
+The theme is implemented mechanically rather than used as a skin:
 
-> Make the constraint visible in the design, not only in the ZIP size.
+- the unicorn's anatomy defines the control system,
+- the rainbow is literally the spring, attack and movement connection,
+- color returns as the run progresses,
+- the 13KB constraint appears in the rules through 13 hearts, 13 trials and Lucky 13.
 
-That is why the game has **13 hearts**, **13 trials**, **Lucky 13**, +13 Graze rewards, and a combat system whose central object is literally a rainbow stretched between two pieces of a unicorn.
+The corn army is the absurd counterweight that gives the game its own identity.
 
 ---
 
 # Credits
 
-**Game design, development, and direction:** Sidharth Hulyalkar  
-**Technology:** HTML5 Canvas, JavaScript, Web Audio  
-**Promotional artwork:** created for the Stretchicorn project  
-**Runtime artwork:** procedurally rendered by the game
+**Game design, development and direction:** Sidharth Hulyalkar  
+**Built with:** JavaScript, HTML5 Canvas, Web Audio, aggressively reused systems, and an unreasonable quantity of corn.
+
+Promotional README artwork is repository-only. All visuals and audio in the actual competition runtime are generated procedurally.
 
 ---
 
 <div align="center">
 
-## 🌈🦄🌽
+## 🌈 STRETCH · SNAP · SHUCK. 🌽
 
-# **STRETCH · SNAP · SHUCK.**
-
-**13 hearts. 13 trials. Way too much corn.**
+**Protect the heart. Weaponize the rainbow. Parry the popcorn.**
 
 </div>
