@@ -1,8 +1,3 @@
-import { statSync } from "node:fs";
-
-const file = "dist/stretchicorn-rainbow-eternal-desktop-v0.15.0.zip";
-const max = 13_312;
-const size = statSync(file).size;
-const remaining = max - size;
-console.log(`${file}: ${size} / ${max} bytes (${remaining} bytes remaining)`);
-if (size > max) process.exit(1);
+import {statSync} from 'node:fs';
+const p=process.argv[2]||'dist/stretchicorn-desktop-v0.20.2.zip',n=statSync(p).size,L=13312;
+console.log(`${p}: ${n}/${L} bytes (${L-n} free)`); if(n>L)process.exit(1);
