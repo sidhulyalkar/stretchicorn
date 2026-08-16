@@ -1,9 +1,13 @@
 {
   "name": "stretchicorn",
-  "version": "0.15.0",
+  "version": "0.20.2",
   "private": true,
-  "description": "A 13KB desktop action game where an elastic rainbow unicorn restores a storm-darkened sky.",
   "scripts": {
-    "check:size": "node scripts/check-size.mjs"
+    "build": "node scripts/build.mjs",
+    "package": "npm run build && python3 scripts/package.py && npm run check:size",
+    "check:size": "node scripts/check-size.mjs",
+    "test": "npm run build && node scripts/test.mjs",
+    "smoke": "npm run build && node scripts/release-smoke.mjs",
+    "verify": "npm test && node scripts/release-smoke.mjs && python3 scripts/package.py && npm run check:size"
   }
 }
