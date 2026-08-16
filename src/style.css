@@ -1,1 +1,1 @@
-*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#101114;color:#fff8ff;font-family:monospace}body{display:grid;place-items:center}canvas{width:min(100vw,960px);height:auto;max-height:100vh;box-shadow:0 0 48px #08090b}#h{position:fixed;bottom:7px;font-size:11px;opacity:.45}
+html,body{margin:0;height:100%;overflow:hidden;background:#101114}body{display:grid;place-items:center}canvas{width:min(100vw,960px);height:auto;max-height:100vh}
