@@ -1,58 +1,27 @@
 'use strict';
-
-/*
- * CORE MODEL
- * ----------
- * The readable source intentionally keeps the same compact data model as the
- * byte-constrained build, but comments here explain the contracts behind it.
- *
- * A = vulnerable rear/body anchor. This is the only player point that takes damage.
- * P = safe head/horn endpoint. Its position is derived from A + aim + spring length.
- * E = enemies, B = projectiles, U = power-ups, R = walls, Q/G = transient particles.
- *
- * Keeping the player as two points joined by a scalar spring is the central size-saving
- * trick: the same state drives animation, charge feedback, movement, attacks, pickups,
- * collision strategy, and the Unicorns & Rainbows theme.
- */
+/* CORE WORLD + GEOMETRY
+   Shared state, procedural audio/FX, wall geometry, safe spawning, stage tables,
+   and the corn enemy roster. A and P are the two player control points: A is
+   the vulnerable heart/body; P is the safe head/horn endpoint. */
 const C=document.querySelector('#c'),X=C.getContext('2d'),W=960,H=640,T=Math.PI*2,MAX=13,K={},J={},RC=['#ff5d8f','#ff9f43','#ffe45a','#6fe38a','#61c8ff','#b28dff'],cl=(v,a,b)=>v<a?a:v>b?b:v,fa=()=>Math.atan2(P.y-A.y,P.x-A.x),ad=(a,b)=>Math.atan2(Math.sin(b-a),Math.cos(b-a)),ln=(x,y)=>Math.hypot(x,y)||1,ds=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),rn=(a=1)=>Math.random()*a;
-
-/* Runtime state. `ready` is a short grace window after charge crosses the Snap threshold;
-   `snapT` is the Double Rainbow chaining window; `hlen/hv` are the 1-D spring position
-   and velocity. Timers are deliberately scalar so multiple systems can reuse them. */
-let mode=0,last=0,acc=0,t=0,runT=0,wave=1,score=0,best=0,hearts=13,kills=0,inv=0,aim=0,charge=0,ready=0,snap=0,snapT=0,hlen=60,hv=0,pull=0,shot=0,kick=0,kickHit=[],sling=0,slingA=0,shake=0,hitstop=0,nextWave=0,msg='',msgT=0,tip=0,combo=1,comboT=0,aud,queen=0,shield=0,speed=0,gold=0,over=0,puT=4,luckyT=0,flash=0,winT=0,voidX=480,voidY=135;
-const P={x:515,y:360,vx:0,vy:0},A={x:445,y:360,vx:0,vy:0},E=[],B=[],Q=[],G=[],R=[],U=[];try{best=+localStorage.SR15||+localStorage.SR14||+localStorage.SR13||+localStorage.SR12||+localStorage.SR11||+localStorage.SR10||+localStorage.SR9||+localStorage.SR8||+localStorage.SR7||+localStorage.SR6||+localStorage.SR5||0}catch(e){}function save(){try{localStorage.SR15=best}catch(e){}}
-
-/* Tiny procedural audio palette. `duo` and `chime` turn the same oscillator primitive
-   into spring, phase-change, stage-clear, and victory punctuation without audio assets. */
-function snd(f=200,d=.05,v=.04,type='square'){try{aud||=new AudioContext;let o=aud.createOscillator(),g=aud.createGain();o.type=type;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(aud.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,aud.currentTime+d);o.stop(aud.currentTime+d)}catch(e){}}function chime(){[660,880,1100].forEach((f,i)=>setTimeout(()=>snd(f,.18,.05,'sine'),i*130))}function duo(a,b,y='sine'){snd(a,.08,.05,y);setTimeout(()=>snd(b,.13,.04,y),55)}
+let mode=0,last=0,acc=0,t=0,runT=0,wave=1,score=0,best=0,hearts=13,kills=0,inv=0,aim=0,charge=0,ready=0,snap=0,snapT=0,hlen=60,hv=0,pull=0,shot=0,kick=0,kickHit=[],sling=0,slingA=0,kickA=0,shake=0,hitstop=0,nextWave=0,msg='',msgT=0,tip=0,combo=1,comboT=0,aud,queen=0,shield=0,speed=0,gold=0,over=0,puT=4,luckyT=0,flash=0,winT=0,stageT=0,sel=0,bind=-1,mt=0,ms=0,beat=0,V=[4,4],mu=0,voidX=480,voidY=135;
+const P={x:515,y:360,vx:0,vy:0},A={x:445,y:360,vx:0,vy:0},E=[],B=[],Q=[],G=[],R=[],U=[],BK=['w','s','a','d','ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '],BL=['MOVE UP','MOVE DOWN','MOVE LEFT','MOVE RIGHT','AIM UP','AIM DOWN','AIM LEFT','AIM RIGHT','ATTACK / SNAP'];try{let q=localStorage.SK;if(q)q.split('|').forEach((v,i)=>BK[i]=v);let v=localStorage.SV;if(v)V=v.split(',');best=+localStorage.SR20||+localStorage.SR19||+localStorage.SR18||+localStorage.SR17||+localStorage.SR16||+localStorage.SR15||+localStorage.SR14||+localStorage.SR13||+localStorage.SR12||+localStorage.SR11||+localStorage.SR10||+localStorage.SR9||+localStorage.SR8||+localStorage.SR7||+localStorage.SR6||+localStorage.SR5||0}catch(e){}function save(){try{localStorage.SR20=best;localStorage.SK=BK.join('|');localStorage.SV=V}catch(e){}}
+function snd(f=200,d=.05,v=.04,type='square',end=0,cut=0){let z=V[mu];if(!z)return;try{aud||=new AudioContext;let o=aud.createOscillator(),g=aud.createGain(),p=cut&&aud.createBiquadFilter(),n=aud.currentTime;o.type=type;o.frequency.value=f;if(end)o.frequency.exponentialRampToValueAtTime(end,n+d);g.gain.value=v*z/4;if(p){p.type='lowpass';p.Q.value=7;p.frequency.value=95;p.frequency.linearRampToValueAtTime(cut,n+d*.45);o.connect(p);p.connect(g)}else o.connect(g);g.connect(aud.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,n+d);o.stop(n+d)}catch(e){}}function chime(){[660,880,1100].forEach((f,i)=>setTimeout(()=>snd(f,.18,.05,'sine'),i*130))}function duo(a,b,y='sine'){snd(a,.08,.05,y);setTimeout(()=>snd(b,.13,.04,y),55)}
+/* Tiny DJ-set sequencer. Sections change every two bars rather than looping one
+   house-like phrase: BUILD ramps tempo and snare density, DROP uses syncopated kick/bass,
+   BREAK strips back and slows down, DROP 2 returns faster/heavier. Tempo is recomputed per
+   step, giving audible rises without storing a song. Bitmasks keep all rhythm data tiny. */
+function music(dt){beat=Math.max(0,beat-dt*4.5);if((mt-=dt)>0)return;mu=1;let s=ms++&15,b=ms>>4,z=b>>1&3,I=[.48,1,.24,.9][z]+(queen?.1:0),v=[132,150,124,156][z]+(z==0?s*.7:0)+(z==2&&s>11?(s-11)*4:0)+(b&1)*(z==1||z==3?4:0),km=[0x421,0x2525,1,0x1549][z],bm=[0x1105,0x6d2d,0x101,0x5b6d][z],root=[55,49,44,41][b&3];mt=15/v*(s&1?1.07:1);if(km>>s&1){beat=1;snd(155,.18,.025,'sine',40)}if(s==8||z==0&&s>11&&(s&1)||z==3&&s==15){beat=Math.max(beat,.78);snd(185,.06,.012,'square',82);snd(330,.025,.004,'square')}if(bm>>s&1){let n=[0,0,7,3,0,12,10,3][s+b&7],q=root*2**(n/12),d=.09+(s&1?.07:0),c=190+I*650+(s*79+b*53)%210;snd(q,d,.008+I*.011,'sawtooth',0,c);snd(q/2,d,.006+I*.006,'sine');beat=Math.max(beat,.18+I*.3)}if(z==0&&s>9)snd(210+(s-9)*75,.04,.0025,'sawtooth',320+(s-9)*120);if(z==1||z==3){if(s&1)snd(900+(s&3)*120,.018,.0018,'square')}else if(z==2&&!(s&3))snd(300*2**([0,3,7,10][b&3]/12),.07,.0035,'triangle');if((z==1||z==3)&&s==0){beat=1;snd(root/2,.25,.012,'sine',32)}mu=0}
 function say(s,d=1.8){msg=s;msgT=d}
-
-/* Shared visual FX. Enemy deaths deliberately restore personality: birds shed rainbow
-   feathers; storm clouds briefly become smiling white clouds. */
-function puff(x,y,n=8){while(n--)Q.push({x,y,vx:rn(240)-120,vy:rn(240)-120,l:.25+rn(.35)})}function happy(x,y,z=1,a=1){X.save();X.globalAlpha=a;X.translate(x,y);X.scale(z,z);X.fillStyle='#fff';for(let i=0;i<4;i++){X.beginPath();X.arc(-12+i*8,i%2?-2:1,9,0,T);X.fill()}X.fillStyle='#343840';X.beginPath();X.arc(-5,-1,1.5,0,T);X.arc(6,-1,1.5,0,T);X.fill();X.strokeStyle='#343840';X.lineWidth=1.5;X.beginPath();X.arc(1,2,5,.15,Math.PI-.15);X.stroke();X.restore()}function deathFX(e){if(e.type==0||e.type==1||e.type==4||e.type==6){for(let i=0;i<2;i++)G.push({x:e.x,y:e.y,vx:rn(120)-60,vy:-40-rn(70),l:.45+rn(.2),c:~~rn(6),f:1,a:rn(T)})}else if(!(e.type==3&&wave==MAX))G.push({x:e.x,y:e.y,vx:0,vy:-22,l:.65,c:0,f:2,s:e.type==3?1.6:1})}
-
-/* Enemy `type` is intentionally an integer dispatch key instead of subclasses. The same
-   object shape supports chasers, chargers, shooters, bosses, prism birds, armor, etc. */
+function puff(x,y,n=8){while(n--)Q.push({x,y,vx:rn(240)-120,vy:rn(240)-120,l:.25+rn(.35)})}function pop(x,y,z=1,a=1){X.save();X.globalAlpha=a;X.translate(x,y);X.scale(z,z);X.fillStyle='#fff8d8';for(let i=0;i<5;i++){X.beginPath();X.arc(Math.cos(i*T/5)*7,Math.sin(i*T/5)*6,6,0,T);X.fill()}X.fillStyle='#ffd24a';X.beginPath();X.arc(0,1,4,0,T);X.fill();X.restore()}function deathFX(e){let n=e.type==3?9:3;while(n--)G.push({x:e.x+rn(16)-8,y:e.y+rn(16)-8,vx:rn(130)-65,vy:-30-rn(90),l:.4+rn(.3),c:n%6,f:n%2?1:2,a:rn(T),s:e.type==3?1.4:1})}
 function enemy(type,x,y){let hp=type==3?(wave==MAX?44:28):type==6?10:type==5?5:type==4?4:type==2?3:type==1?2:1;E.push({type,x,y,vx:0,vy:0,hp,max:hp,r:[15,18,18,42,20,23,31][type],cd:rn(1.2),state:0,tele:0,hit:0,a:0,p:0,in:0})}
 function edge(type){let s=~~rn(4),x=s<2?(s?W-30:30):rn(W-80)+40,y=s<2?rn(H-150)+110:(s==2?100:H-30);enemy(type,x,y)}
-
-/* Axis-aligned wall helpers. `rayW` casts the head along the current aim vector and returns
-   the maximum safe spring length before a wall. This prevents the safe head from visually
-   entering geometry while preserving free angular aiming. */
 function wall(x,y,w,h){R.push({x,y,w,h})}
 function hitW(x,y,r=0){return R.find(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h)}
 function rayW(x,y,dx,dy,m,r=22){for(let o of R){let x0=o.x-r,x1=o.x+o.w+r,y0=o.y-r,y1=o.y+o.h+r,a=-1e9,b=1e9,c=-1e9,d=1e9;if(Math.abs(dx)<1e-5){if(x<x0||x>x1)continue}else a=(x0-x)/dx,b=(x1-x)/dx;if(Math.abs(dy)<1e-5){if(y<y0||y>y1)continue}else c=(y0-y)/dy,d=(y1-y)/dy;let lo=Math.max(Math.min(a,b),Math.min(c,d)),hi=Math.min(Math.max(a,b),Math.max(c,d));if(hi>=0&&lo<=hi&&lo>=0)m=Math.min(m,Math.max(30,lo-3))}return m}
-
-/* Stage geometry can appear around the player between waves. `safeSpawn` validates BOTH
-   the vulnerable body and derived head, then searches a small deterministic grid for the
-   nearest legal placement. It also zeros spring/movement velocity so a rescued spawn does
-   not immediately fling itself back into a wall. */
 function safeSpawn(){let ox=A.x,oy=A.y,ok=(x,y)=>x>38&&x<W-38&&y>112&&y<H-38&&!hitW(x,y,27)&&!hitW(x+Math.cos(aim)*54,y+Math.sin(aim)*54,22);if(!ok(A.x,A.y)){let bx=90,by=150,bd=1e9;for(let y=135;y<H-55;y+=55)for(let x=70;x<W-55;x+=65)if(ok(x,y)){let d=(x-ox)**2+(y-oy)**2;if(d<bd)bd=d,bx=x,by=y}A.x=bx;A.y=by}A.vx=A.vy=P.vx=P.vy=hv=0;hlen=rayW(A.x,A.y,Math.cos(aim),Math.sin(aim),54,22);P.x=A.x+Math.cos(aim)*hlen;P.y=A.y+Math.sin(aim)*hlen}
 function walls(){R.length=0;if([4,5,6,8,9,11,12,13].includes(wave)){wall(285,215,85,150);wall(590,340,85,150)}if([8,9,11,12,13].includes(wave)){wall(465,120,45,125);wall(465,500,45,105)}if(wave==9){R.length=0;wall(240,180,70,280);wall(650,180,70,280);wall(425,115,110,55);wall(425,515,110,55)}}
 function drop(type=~~rn(5)){let bestx=80,besty=130,bd=0;for(let i=0;i<16;i++){let x=70+rn(W-140),y=115+rn(H-170),d=Math.hypot(x-A.x,y-A.y);if(!hitW(x,y,18)&&d>bd){bd=d;bestx=x;besty=y}}U.push({type,x:bestx,y:besty,l:7})}
-
-/* Compact campaign table: each row is a stage, each column the count of an enemy type.
-   This gives 13 hand-shaped encounters without a heavyweight level format. */
 const ST=[[5],[6,1],[6,2,1],[7,2,2],[3],[6,2,1,0,2],[6,2,1,0,1,2],[7,2,2,0,2,2],[3,0,0,0,0,0,1],[8,3,2,0,2,2],[9,3,3,0,3,3],[8,4,3,0,3,2],[3,0,0,0,2,2,1]];
-const SN=['PASTEL PASTURE','SPRINKLE STORM','GLOOMY CLOUDS','CLOUD COVER','THE STORM MARE','BENDY RAINBOW','HAIL ARMOR','PRISM CROSSFIRE','THE TEMPEST TROTTER','SUGAR SKY','GLITTER GAUNTLET','DOUBLE RAINSTORM','THE VOIDBOW'];
-function spawnWave(){E.length=B.length=U.length=0;queen=0;walls();safeSpawn();puT=wave==10?1:wave<5?5:3;let a=ST[wave-1]||[];for(let ty=0;ty<a.length;ty++)for(let i=0;i<(a[ty]||0);i++)edge(ty);if(wave==5||wave==MAX){queen=1;enemy(3,W/2,135);if(wave==MAX){let q=E[E.length-1];q.y=-55;q.in=1.55;edge(4);edge(5)}}say('LEVEL '+wave+' • '+SN[wave-1],2.2);if(wave==4)say('CLOUDS CRASH INTO WALLS • USE COVER',2.4);if(wave==6)say('GLOOM ORBS CURVE • HORN THEM BACK',2.2);if(wave==7)say('HAIL ARMOR NEEDS A CHARGED HORN',2.2);if(wave==9)say('TEMPEST TROTTER • BAIT IT INTO WALLS',2.5);if(wave==12)say('DOUBLE RAINBOW • KEEP MOVING',2.5);if(wave==13){say('THE VOIDBOW DESCENDS • BREAK THE STORM',2.5);flash=.18;duo(120,180,'sawtooth')}}
+const SN=['PASTEL PATCH','KERNEL PANIC','POPCORN FRONT','HUSK MAZE','THE MAIZE MONARCH','BUTTER BLITZ','HUSK ARMOR','PRISM POPCORN','THE COB CRUSHER','SUGAR CORN','KERNEL GAUNTLET','DOUBLE CORNBOW','THE COBTOPUS'];
+function spawnWave(){E.length=B.length=U.length=0;queen=0;walls();safeSpawn();puT=wave==10?1:wave<5?5:3;let a=ST[wave-1]||[];for(let ty=0;ty<a.length;ty++)for(let i=0;i<(a[ty]||0);i++)edge(ty);if(wave==5||wave==MAX){queen=1;enemy(3,W/2,135);if(wave==MAX){let q=E[E.length-1];q.y=-55;q.in=1.55;edge(4);edge(5)}}stageT=1.25;say('LEVEL '+wave+' • '+SN[wave-1],2.2);if(wave==4)say('COBS CRASH INTO WALLS • USE COVER',2.4);if(wave==6)say('POPCORN CURVES • HORN IT BACK',2.2);if(wave==7)say('HUSK ARMOR NEEDS A CHARGED HORN',2.2);if(wave==9)say('COB CRUSHER • BAIT IT INTO WALLS',2.5);if(wave==12)say('DOUBLE RAINBOW • KEEP MOVING',2.5);if(wave==13){say('THE COBTOPUS DESCENDS • SHUCK THE STORM',2.5);flash=.18;duo(120,180,'sawtooth')}}
