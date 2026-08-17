@@ -3,11 +3,11 @@ from zipfile import ZipFile, ZIP_DEFLATED, ZipInfo
 import struct, zlib
 
 p=Path('dist/index.html')
-out=Path('dist/stretchicorn-desktop-v0.20.2.zip')
+out=Path('dist/stretchicorn-desktop-v0.20.6.zip')
 data=p.read_bytes(); name=b'index.html'
 
-# Zopfli produces the official submission-sized deterministic DEFLATE ZIP.
-# The stdlib fallback remains a valid ZIP, but check:size will reject it if it exceeds 13,312 B.
+# Zopfli is optional: when present we build a deterministic standards-compliant
+# DEFLATE ZIP with better compression. The stdlib fallback is valid but may exceed 13,312 B.
 try:
     from zopfli.zlib import compress
     raw=compress(data,numiterations=30)[2:-4]
