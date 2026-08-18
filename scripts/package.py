@@ -3,7 +3,7 @@ from zipfile import ZipFile, ZIP_DEFLATED, ZipInfo
 import struct, zlib
 
 p=Path('dist/index.html')
-out=Path('dist/stretchicorn-desktop-v0.20.6.zip')
+out=Path('dist/stretchicorn-desktop-v0.20.7.zip')
 data=p.read_bytes(); name=b'index.html'
 
 # Zopfli is optional: when present we build a deterministic standards-compliant

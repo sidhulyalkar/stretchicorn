@@ -1,6 +1,6 @@
 {
   "name": "stretchicorn",
-  "version": "0.20.6",
+  "version": "0.20.7",
   "private": true,
   "scripts": {
     "build": "node scripts/build.mjs",
