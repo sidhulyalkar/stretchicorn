@@ -1,0 +1,32 @@
+name: release-verify
+
+on:
+  push:
+    branches: [main, 'release/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deterministic compressor
+        run: python -m pip install --disable-pip-version-check zopfli
+      - name: Verify exact competition artifact
+        run: npm run verify
+      - name: Upload verified release
+        uses: actions/upload-artifact@v4
+        with:
+          name: stretchicorn-v0.21.0-verified
+          path: |
+            dist/index.html
+            dist/stretchicorn-desktop-v0.21.0.zip
