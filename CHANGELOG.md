@@ -1,13 +1,24 @@
 # Changelog
 
+## v0.20.8 — RELEASE LOCK
+
+- Replaced the render-frame attack edge map with a fixed-step `fire` latch so short Space taps cannot disappear between simulation ticks on 120/144/240 Hz displays.
+- Preserved browser key-repeat suppression so holding Space still cannot auto-chain horn attacks or Rainbow Snaps.
+- Preserved `M` and `P` as reserved menu/pause keys during gameplay rebinding.
+- Restricted environmental wall-smash HP damage to Cob Chargers; bosses and other enemies can collide with geometry without the arena defeating them.
+- Preserved the 3:2 canvas aspect ratio on short browser windows.
+- Hardened exact-artifact tests so semantic aliases reference the real golfed lexical state instead of possible shadow globals.
+- Added a 120 Hz release-smoke check proving an attack press survives a render-only frame and is consumed once by the next 60 Hz update.
+- Preserved HUSKSHIFT, POP DROP audio, mixer/settings, custom controls, 13 hearts and all 13 trials.
+- Final competition ZIP: **13,274 / 13,312 bytes (38 bytes free)**.
+
 ## v0.20.7 — FINAL HARDENING
 
-- Ignore browser key-repeat events so holding Space cannot auto-chain horn attacks or Rainbow Snaps.
-- Keep one-shot attack input pending until the next fixed simulation step, so a Space press cannot be dropped on 120/144 Hz displays when a render frame occurs without a 60 Hz update.
-- Keep `M` and `P` reserved while rebinding controls so custom bindings cannot silently conflict with menu/pause shortcuts.
-- Remove the unused `nearest()` helper, reclaiming submission bytes with no gameplay change.
-- Preserve the complete HUSKSHIFT campaign, POP DROP audio, settings, custom controls, and exact-artifact validation.
-- Final competition ZIP: **13,291 / 13,312 bytes**.
+- Ignored browser key-repeat events so holding Space cannot auto-chain horn attacks or Rainbow Snaps.
+- Kept `M` and `P` reserved while rebinding controls so custom bindings cannot silently conflict with menu/pause shortcuts.
+- Removed the unused `nearest()` helper, reclaiming submission bytes without changing gameplay.
+- Preserved the complete HUSKSHIFT campaign, POP DROP audio, settings, custom controls and exact-artifact validation.
+- Final competition ZIP: **13,284 / 13,312 bytes (28 bytes free)**.
 
 ## v0.20.6 — HUSKSHIFT FIX
 
