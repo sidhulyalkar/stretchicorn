@@ -39,13 +39,9 @@ The result is part action game, part elastic slingshot, part bullet-dodging geom
 
 ## Gameplay in motion
 
-<div align="center">
-
-<img src="docs/stretchicorn-gameplay-demo.gif" alt="Gameplay recording of Stretchicorn showing the rainbow-stretch movement, horn combat, angry corn enemies, projectiles, and chaotic arena action" width="640">
+[![Stretchicorn gameplay demo](docs/stretchicorn-gameplay-demo.gif)](docs/stretchicorn-gameplay-demo.gif)
 
 *Rainbow-stretch, line up the horn, snap through the corn, and try to keep all 13 hearts.*
-
-</div>
 
 This animation is captured directly from the game. The GIF, hero art and controls diagram are **README-only documentation assets** and are not included in the competition build. The **13KB submission remains a single generated HTML file**.
 
