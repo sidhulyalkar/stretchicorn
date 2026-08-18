@@ -41,13 +41,13 @@ The result is part action game, part elastic slingshot, part bullet-dodging geom
 
 <div align="center">
 
-<img src="docs/huskshift-demo.gif" alt="Animated Stretchicorn mechanic walkthrough showing the title screen, a Husk Shift warning, hardened cover, and an open Cobtopus arena" width="900">
+<img src="docs/stretchicorn-gameplay.gif" alt="Gameplay recording of Stretchicorn showing the rainbow-stretch movement, horn combat, angry corn enemies, projectiles, and chaotic arena action" width="900">
 
-*Husk Shift in action: warning → hardening → temporary cover → open arena.*
+*Rainbow-stretch, line up the horn, snap through the corn, and try to keep all 13 hearts.*
 
 </div>
 
-The README uses lightweight visual documentation rather than adding any assets to the game itself. The GIF, hero art and diagrams live only in the repository. The **13KB submission remains a single generated HTML file**.
+This animation is captured directly from the game. The GIF, hero art and controls diagram are **README-only documentation assets** and are not included in the competition build. The **13KB submission remains a single generated HTML file**.
 
 ---
 
