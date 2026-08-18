@@ -424,8 +424,8 @@ The 13KB constraint rewards mechanics that multiply:
 The current competition archive is:
 
 ```text
-13,284 / 13,312 bytes
-28 bytes free
+13,291 / 13,312 bytes
+21 bytes free
 ```
 
 The runtime contains no external images, fonts, music files, frameworks or game engine. The hero art and control diagram in this README are repository documentation only.
@@ -444,6 +444,7 @@ The regression and smoke-test layers cover the systems most likely to regress:
 - duplicate key assignments swap correctly,
 - reserved menu/pause keys cannot be rebound over gameplay actions,
 - held-key repeat cannot auto-fire Snap attacks,
+- one-shot attacks survive 120 Hz render frames until the next fixed update,
 - Music and SFX settings remain independent,
 - Web Audio wakes from user input,
 - horn attacks keep their snapshotted direction,
@@ -458,15 +459,15 @@ The regression and smoke-test layers cover the systems most likely to regress:
 
 # 🔧 Current release: v0.20.7 FINAL HARDENING
 
-The final hardening pass deliberately avoids adding new gameplay systems. It fixes two input edge cases and removes one dead helper while preserving the complete v0.20.6 game.
+The final hardening pass deliberately avoids adding new gameplay systems. It fixes the last input-edge cases found in the final audit and removes one dead helper while preserving the complete v0.20.6 game.
 
 ### Input hardening
 
-Browser key-repeat events are ignored, so holding **Space** cannot repeatedly trigger horn attacks or automatically chain Rainbow Snaps. `M` and `P` are also kept reserved during rebinding so custom controls cannot silently conflict with the global menu and pause actions.
+Browser key-repeat events are ignored, so holding **Space** cannot repeatedly trigger horn attacks or automatically chain Rainbow Snaps. One-shot attack input is now retained until the next fixed 60 Hz simulation update, preventing a press from disappearing on 120/144 Hz displays when a render frame occurs without a simulation step. `M` and `P` are also kept reserved during rebinding so custom controls cannot silently conflict with the global menu and pause actions.
 
 ### Byte cleanup
 
-An unused `nearest()` helper was removed. That tiny cleanup more than pays for the input guards and increases the final compressed margin from **1 byte to 28 bytes**.
+An unused `nearest()` helper was removed. That tiny cleanup more than pays for the input guards and still leaves the final archive **21 bytes** below the limit.
 
 ### HUSKSHIFT remains intact
 
@@ -477,8 +478,9 @@ Trial 9 remains the Husk Architect encounter, and Cobtopus retains the dynamic c
 
 ### v0.20.7 · FINAL HARDENING
 - Prevented key-repeat auto-attacks.
+- Retained one-shot attacks across high-refresh render frames until a fixed simulation update consumes them.
 - Protected reserved menu/pause keys during rebinding.
-- Removed dead code and increased the submission margin to 28 bytes.
+- Removed dead code while keeping 21 bytes of submission margin.
 
 ### v0.20.6 · HUSKSHIFT FIX
 - Fixed the Canvas API rename bug in the competition build.
