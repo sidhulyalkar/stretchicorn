@@ -3,10 +3,11 @@
 ## v0.20.7 — FINAL HARDENING
 
 - Ignore browser key-repeat events so holding Space cannot auto-chain horn attacks or Rainbow Snaps.
+- Keep one-shot attack input pending until the next fixed simulation step, so a Space press cannot be dropped on 120/144 Hz displays when a render frame occurs without a 60 Hz update.
 - Keep `M` and `P` reserved while rebinding controls so custom bindings cannot silently conflict with menu/pause shortcuts.
 - Remove the unused `nearest()` helper, reclaiming submission bytes with no gameplay change.
 - Preserve the complete HUSKSHIFT campaign, POP DROP audio, settings, custom controls, and exact-artifact validation.
-- Final competition ZIP: **13,284 / 13,312 bytes**.
+- Final competition ZIP: **13,291 / 13,312 bytes**.
 
 ## v0.20.6 — HUSKSHIFT FIX
 
