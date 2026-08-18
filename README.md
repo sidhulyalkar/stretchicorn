@@ -10,7 +10,7 @@
 
 Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
-[**Download the current v0.20.8 competition ZIP**](dist/stretchicorn-desktop-v0.20.8.zip)
+[**Download the current v0.21.0 competition ZIP**](dist/stretchicorn-desktop-v0.21.0.zip)
 
 **13 hearts · 13 trials · way too much corn**
 
@@ -320,7 +320,7 @@ A recurring design rule is:
 
 ## Fastest way: use the competition build
 
-1. Download [`dist/stretchicorn-desktop-v0.20.8.zip`](dist/stretchicorn-desktop-v0.20.8.zip).
+1. Download [`dist/stretchicorn-desktop-v0.21.0.zip`](dist/stretchicorn-desktop-v0.21.0.zip).
 2. Unzip it.
 3. Open the included `index.html` in a modern desktop browser.
 4. Press a key to begin. That user gesture also unlocks Web Audio.
@@ -379,7 +379,7 @@ stretchicorn/
 │   ├── test.mjs
 │   └── release-smoke.mjs
 └── dist/
-    └── stretchicorn-desktop-v0.20.8.zip
+    └── stretchicorn-desktop-v0.21.0.zip
 ```
 
 ```mermaid
@@ -424,8 +424,8 @@ The 13KB constraint rewards mechanics that multiply:
 The current competition archive is:
 
 ```text
-13,274 / 13,312 bytes
-38 bytes free
+13,293 / 13,312 bytes
+19 bytes free
 ```
 
 The runtime contains no external images, fonts, music files, frameworks or game engine. The hero art and control diagram in this README are repository documentation only.
@@ -445,6 +445,11 @@ The regression and smoke-test layers cover the systems most likely to regress:
 - reserved menu/pause keys cannot be rebound over gameplay actions,
 - held-key repeat cannot auto-fire Snap attacks,
 - a Space tap survives render-only frames at a simulated 120 Hz refresh rate and is consumed once by the next fixed update,
+- high-refresh displays skip redundant Canvas paints between 60 Hz simulation ticks,
+- persisted OFF audio settings reload as numeric zero and allocate no silent oscillator nodes,
+- losing window focus clears input and automatically pauses an active run,
+- edge spawns maintain a safety radius around the vulnerable ♥ body,
+- returning to the title resets the Canvas transform so screen shake cannot leak into menu placement,
 - Music and SFX settings remain independent,
 - Web Audio wakes from user input,
 - horn attacks keep their snapshotted direction,
@@ -458,30 +463,44 @@ The regression and smoke-test layers cover the systems most likely to regress:
 
 ---
 
-# 🔧 Current release: v0.20.8 RELEASE LOCK
+# 🔧 Current release: v0.21.0 PERFORMANCE LOCK
 
-v0.20.8 is a release-lock pass, not a feature expansion. The goal is to remove the last ways browser timing or arena physics could undermine an otherwise good run while leaving the complete HUSKSHIFT game intact.
+v0.21.0 is a deliberately narrow performance and robustness pass. It keeps the complete HUSKSHIFT game intact while removing work that does not improve what the player sees or feels.
 
-### High-refresh input is now fixed-step safe
+### One simulation tick, one useful paint
 
-The previous input edge map was cleared once per rendered frame. On a 120/144/240 Hz display, a short Space tap could therefore be observed by a render frame and disappear before the next 60 Hz gameplay update consumed it. v0.20.8 replaces that transient edge with a **persistent attack latch**: a Space press stays pending until the fixed-step simulation consumes it exactly once.
+Stretchicorn already simulates at a fixed **60 Hz**, but older builds still repainted the entire procedural Canvas on every `requestAnimationFrame`. On 120/144/240 Hz displays that meant redrawing the same simulation state two to four times before anything in the world had changed.
 
-Browser key-repeat events are still ignored, so holding Space cannot auto-chain Snaps. `M` and `P` also remain reserved during rebinding so custom controls cannot conflict with menu or pause.
+v0.21.0 keeps RAF as the browser clock but only redraws after at least one 60 Hz simulation step has completed. The game still responds and animates at the same gameplay cadence, while high-refresh displays avoid most duplicate Canvas work. Because screen-shake decay lives in the draw path, it now also advances at a stable 60 Hz cadence rather than disappearing faster on faster monitors.
 
-### Wall damage now belongs to the Charger mechanic
+### Focus, audio and spawn safety
 
-Environmental wall-smash damage is now restricted to **Cob Chargers**. Other enemies and bosses can still collide with and route around geometry, but they cannot lose HP simply because knockback or movement sends them into a wall. This closes the same family of passive-arena exploit that originally motivated the Husk Architect redesign.
+Losing browser focus now clears held input, clears a pending attack and automatically pauses an active run. Persisted Music/SFX values are restored as numbers, so a saved **OFF** setting remains genuinely off after reload and skips silent Web Audio node allocation.
 
-### Viewport and release-test hardening
+Edge-spawned enemies now keep a safety radius around the vulnerable ♥ body. If a chosen edge point is too close, the spawn is mirrored to the opposite side instead of materializing on top of the player.
 
-The canvas now preserves its 3:2 aspect ratio even in short browser windows. The regression harness also aliases semantic test names directly onto the golfed lexical variables inside the exact built artifact, so tests can no longer accidentally mutate shadow globals instead of the real game state. The release smoke test explicitly simulates a 120 Hz render cadence and verifies that an attack tap survives a render-only frame until the next 60 Hz update.
+### Tiny hot-path cleanup
+
+Wall collision lookup now uses a direct early-return loop instead of an `Array.find()` callback. The redundant nested Charger type check was removed, and returning to the title explicitly resets the Canvas transform so a strong final frame of screen shake cannot offset the menu.
+
+### Exact-artifact validation
+
+The release tests now cover the 60 Hz paint gate, simulated 120 Hz Space-tap retention, numeric persisted mute, blur auto-pause, safe edge spawning, existing HUSKSHIFT/Cobtopus behavior, audio/mixer settings, horn-angle locking and all 13 trial spawns.
+
+The exact deterministic Zopfli competition artifact is **13,293 / 13,312 bytes**, leaving **19 bytes free**.
 
 ### Feature freeze
 
-Trial 9 remains the Husk Architect encounter, Cobtopus keeps its dynamic cover/no-cover rhythm, and POP DROP audio, custom controls, settings, 13 hearts and all 13 trials are otherwise unchanged. At this point the safest improvement is restraint: fix release risks, then stop adding systems.
+No enemies, power-ups, boss phases, music layers or scoring systems were added. v0.21.0 is the version where the byte-scalpel stops cutting unless a real bug appears.
 
 <details>
 <summary><strong>Recent release history</strong></summary>
+
+### v0.21.0 · PERFORMANCE LOCK
+- Avoids redundant Canvas redraws between fixed 60 Hz simulation ticks on high-refresh displays.
+- Restores persisted OFF audio as numeric zero, auto-pauses on blur and protects edge spawns around the ♥ body.
+- Uses a direct wall-collision loop and resets title transforms after screen shake.
+- Final ZIP: **13,293 / 13,312 bytes (19 bytes free)**.
 
 ### v0.20.8 · RELEASE LOCK
 - Latched attack input until the 60 Hz simulation consumes it, fixing short Space taps on high-refresh displays.
