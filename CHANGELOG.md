@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.21.0 — PERFORMANCE LOCK
+
+- Gated Canvas rendering to fixed 60 Hz simulation ticks, eliminating redundant full-scene redraws on 120/144/240 Hz displays without changing gameplay cadence.
+- Stabilized screen-shake decay across monitor refresh rates by tying scene draws to the fixed simulation cadence.
+- Reset the Canvas transform before drawing the title so a strong shake frame cannot leak an offset into menu rendering.
+- Restored persisted Music/SFX values as numbers; saved OFF settings now remain true zero after reload and skip silent oscillator allocation.
+- Auto-pause active gameplay on window blur after clearing held controls and the pending attack latch.
+- Added a 110 px safety radius for edge enemy spawns, mirroring unsafe spawn points to the opposite arena edge.
+- Replaced `hitW()`'s `Array.find()` callback with a direct early-return loop and removed a redundant nested Charger type check.
+- Extended exact-artifact regression coverage for persisted mute, blur pause, edge-spawn safety and simulated 120 Hz render gating while preserving the existing HUSKSHIFT, audio, controls and 13-stage checks.
+- No new gameplay systems were added; this is a performance/robustness-only release.
+- Final competition ZIP: **13,293 / 13,312 bytes (19 bytes free)**.
+
 ## v0.20.8 — RELEASE LOCK
 
 - Replaced the render-frame attack edge map with a fixed-step `fire` latch so short Space taps cannot disappear between simulation ticks on 120/144/240 Hz displays.
