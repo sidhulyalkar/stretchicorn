@@ -41,7 +41,7 @@ The result is part action game, part elastic slingshot, part bullet-dodging geom
 
 <div align="center">
 
-<img src="docs/stretchicorn-gameplay.gif" alt="Gameplay recording of Stretchicorn showing the rainbow-stretch movement, horn combat, angry corn enemies, projectiles, and chaotic arena action" width="900">
+<img src="docs/stretchicorn-gameplay-demo.gif" alt="Gameplay recording of Stretchicorn showing the rainbow-stretch movement, horn combat, angry corn enemies, projectiles, and chaotic arena action" width="640">
 
 *Rainbow-stretch, line up the horn, snap through the corn, and try to keep all 13 hearts.*
 
