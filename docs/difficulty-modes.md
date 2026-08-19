@@ -1,39 +1,68 @@
-# v0.21.0 Difficulty Modes RC
+# v0.21.1 Impossible Encore
 
-This feature candidate adds four launch modes while keeping **Normal mechanically identical to the v0.21.0 PERFORMANCE LOCK baseline**.
+Stretchicorn keeps four launch modes, but v0.21.1 deliberately widens the top end after the previous Impossible proved beatable on a first run.
 
-| Key | Mode | Pressure scalar | Stage density | Enemy attack cadence | Friendly power-up cadence |
+| Key | Mode | Pressure scalar | Enemy density / attacks | Resources | Extra rules |
 |---|---|---:|---|---|---|
-| `1` | Easy | `0.7` | lower | 0.7× cooldown clock | pickups arrive sooner |
-| `2` | Normal | `1.0` | baseline | baseline | baseline |
-| `3` | Hard | `1.3` | higher | 1.3× cooldown clock | pickups take about 1.3× as long |
-| `4` | Impossible | `1.6` | highest | 1.6× cooldown clock | pickups take about 1.6× as long |
+| `1` | Easy | `0.7` | reduced | friendlier pickup cadence | onboarding |
+| `2` | Normal | `1.0` | original baseline | original baseline | canonical campaign |
+| `3` | Hard | `1.6` | former Impossible | scarcer pickups | preserves the previous top mode |
+| `4` | Impossible | `2.4` | extreme | much scarcer pickups | +50% enemy HP, +25% hostile motion/projectiles, +25% Husk Shift cadence, boss-rush encore |
 
-**Space / Enter** from the title always launches Normal. A retry after Game Over preserves the chosen difficulty. Returning to the title lets the player choose another mode.
+**Space / Enter** always starts Normal. Game Over retry preserves the chosen mode. Returning to the title lets the player choose again.
 
-## Design rules
+## Scaling philosophy
 
-Difficulty is deliberately concentrated into one scalar, `D`. It scales:
+Easy, Normal and Hard retain the same readable control contract: player movement, rainbow spring physics, damage taken per hit and warning presentation are unchanged.
 
-- initial stage populations,
-- enemy attack/cooldown clocks,
-- boss reinforcement ceilings,
-- inverse friendly pickup cadence.
+Impossible adds pressure across the hostile side of the game instead of relying on enemy count alone:
 
-It deliberately does **not** scale player movement, spring physics, damage rules, enemy movement speed or telegraph duration. In particular, Cob Charger warnings stay real-time, so harder modes increase decision density without hiding information from the player.
+- initial stage populations use the `2.4` pressure scalar,
+- enemy cooldown / attack clocks run at 2.4× the Normal pressure clock,
+- boss reinforcement ceilings rise with the same scalar,
+- friendly pickup opportunities become substantially less frequent,
+- every spawned enemy receives **1.5× HP**,
+- hostile enemies move **1.25× faster**,
+- hostile projectiles travel **1.25× faster**,
+- Husk Shift warning / harden / open cycles progress **1.25× faster**.
 
-The stage-density formula preserves at least one enemy for every nonzero role on Easy, keeps Normal at the baseline counts, and creates a deliberate two-Architect Trial 9 only on Impossible.
+The player still gets the same responsive unicorn. Impossible makes the world more hostile rather than making the controls worse.
+
+## Representative starting populations
 
 | Trial | Easy | Normal | Hard | Impossible |
 |---|---:|---:|---:|---:|
-| 1 | 3 | 5 | 6 | 8 |
-| 5 | 3 | 4 | 5 | 6 |
-| 9 | 1 Architect | 1 Architect | 1 Architect | 2 Architects |
-| 11 | 14 | 21 | 28 | 34 |
-| 13 | 8 | 11 | 14 | 16 |
+| 1 · Pastel Patch | 3 | 5 | 8 | **12** |
+| 5 · Maize Monarch | 3 | 4 | 6 | **8** |
+| 9 · Husk Architect | 1 | 1 | 2 | **2** |
+| 11 · Kernel Gauntlet | 14 | 21 | 34 | **50** |
+| 13 · Cobtopus | 8 | 11 | 16 | **22** |
+
+The full 13-trial starting populations are:
+
+```text
+Easy       3  5  6  7  3   7   8   9  1  11  14  14   8
+Normal     5  7  9 11  4  11  12  15  1  17  21  20  11
+Hard       8 12 15 17  6  18  20  23  2  27  34  32  16
+Impossible 12 16 21 27  8  26  28  37  2  41  50  48  22
+```
+
+## Impossible Encore
+
+Defeating Cobtopus on Impossible is intentionally a false summit.
+
+The arena clears, Husk Shift starts a fresh warning cycle, and Stretchicorn must fight the three signature bosses **at the same time**:
+
+- **The Cobtopus** keeps its radial / curved projectile identity.
+- **The Maize Monarch** returns with its phased aimed-fan behavior.
+- **The Husk Architect** adds dynamic terrain and its own projectile fans.
+
+The normal victory sequence is locked until all three encore bosses are defeated. Clearing the trio unlocks the special **IMPOSSIBLE!** ending.
+
+Hard and lower difficulties still finish immediately when Trial 13 Cobtopus is defeated.
 
 ## Verification
 
-The exact built artifact is tested for all four launch keys, the Normal shortcut, retry preservation, the complete 13-stage density matrix, inverse pickup cadence, enemy attack cadence, unscaled Charger warnings, Architect scaling, boss reinforcement scaling, HUSKSHIFT/Cobtopus behavior, 120 Hz attack retention, and 30-second Impossible stress simulations for both the densest swarm trial and Cobtopus.
+The exact artifact regression suite checks all four launch scalars, Normal shortcut and retry behavior, Hard-vs-Impossible HP separation, pickup scarcity, hostile movement and projectile scaling, accelerated Husk Shift timing, safe spawns, fixed-step input behavior, and the complete Impossible boss-rush state transition. A bounded stress simulation also runs the encore with an invulnerable player to guard against runaway entity/projectile growth.
 
-Current candidate archive: **13,294 / 13,312 bytes (18 bytes free)**.
+Current v0.21.1 candidate archive: **13,308 / 13,312 bytes (4 bytes free)**.
