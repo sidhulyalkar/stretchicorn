@@ -53,7 +53,7 @@ The strongest plays make one movement solve several problems at once: dodge a pr
 
 # 🌈 Four difficulty modes
 
-Stretchicorn now supports four complete campaign modes. Difficulty changes **pressure and resource economy**, not the feel of the unicorn.
+Stretchicorn supports four complete campaign modes. Difficulty changes **pressure and resource economy**, not the feel of the unicorn.
 
 | Mode | Launch key | Enemy density | Attack pressure | Friendly pickups | Intended feel |
 |---|---:|---:|---:|---:|---|
@@ -93,7 +93,6 @@ See [`docs/difficulty-modes.md`](docs/difficulty-modes.md) for the complete 52-s
 | Input | Action |
 |---|---|
 | **1 / 2 / 3 / 4** | Start Easy / Normal / Hard / Impossible from title |
-| **Space / Enter** | Start Normal from title |
 | **W A S D** | Move the vulnerable ♥ body |
 | **Arrow Keys** | Smoothly steer the safe head / horn |
 | **Space** | Horn strike / Rainbow Snap |
@@ -105,26 +104,11 @@ See [`docs/difficulty-modes.md`](docs/difficulty-modes.md) for the complete 52-s
 
 ### Custom controls
 
-The Controls page supports persistent rebinding for all nine gameplay actions.
-
-```text
-↑ / ↓         select action
-ENTER         begin rebinding
-press a key   assign it
-D             restore defaults
-M / ESC       back
-```
-
-Duplicate assignments swap rather than coexist. `M` and `P` remain reserved for menu/pause so a custom binding cannot accidentally break those global controls. Bindings persist through `localStorage`.
+The Controls page supports persistent rebinding for all nine gameplay actions. Duplicate assignments swap rather than coexist. `M` and `P` remain reserved for menu/pause. Bindings persist through `localStorage`.
 
 ### Audio settings
 
-Music and gameplay sounds are independently adjustable and persistent:
-
-```text
-Music        OFF / 25 / 50 / 75 / 100%
-Game Sounds  OFF / 25 / 50 / 75 / 100%
-```
+Music and gameplay sounds are independently adjustable and persistent from OFF through 100%.
 
 ---
 
@@ -149,51 +133,25 @@ This keeps the character elastic **without sacrificing aiming precision**. Arrow
 
 ### Pull to charge
 
-Spring charge comes from movement opposite the horn direction:
+Spring charge comes from movement opposite the horn direction. Pull straight backward and charge quickly. Move sideways and the contribution falls. Move toward the horn and the spring does not load.
 
-```text
-charge contribution = dot(movementDirection, -aimDirection)
-```
+### Rainbow Snap
 
-Pull straight backward and charge quickly. Move sideways and the contribution falls. Move toward the horn and the spring does not load.
+A charged Space attack is attack, dash, traversal, dodge, pickup routing and combo setup in one verb.
 
-A rear arrow shows the correct pull direction directly in the arena.
-
-### Snap-ready feedback
-
-When the threshold is reached, the whole unicorn glows, the rainbow brightens, particles appear and a procedural **boing** sounds. The character itself becomes the readiness meter so the player does not need to stare at a HUD while dodging kernels.
-
-## Rainbow Snap
-
-A charged Space attack combines several jobs into one verb:
-
-- horn attack,
-- dash,
-- traversal,
-- evasive movement,
-- brief safety window,
-- pickup routing,
-- combo setup.
-
-## Double Rainbow
+### Double Rainbow
 
 Recharge and Snap again during the short follow-up window for extra reach, damage, particles and safety.
 
-## Popcorn Graze
+### Popcorn Graze
 
 Skim a hostile kernel without touching the ♥ body to gain **+13 score and spring energy**.
 
-```text
-far      → safe
-near     → GRAZE +13 + spring
-contact  → damage
-```
+### Kernel Parry
 
-## Kernel Parry
+Hit an incoming kernel with the horn to reflect it back into the corn army. Reflected kernels damage enemies and restore spring energy.
 
-Hit an incoming kernel with the horn to reflect it back into the corn army. Reflected kernels damage enemies, restore spring energy and briefly create breathing room.
-
-## Lucky 13
+### Lucky 13
 
 Every 13 defeated enemies triggers a Lucky 13 burst with health, shield, spring energy, score and rainbow spectacle.
 
@@ -219,7 +177,7 @@ The campaign mixes a compact roster of enemies with different tactical roles rat
 
 # 🌽 Power-ups
 
-Power-ups are tiny magical cobs that can be collected by the body **or anywhere along the stretched rainbow**.
+Power-ups can be collected by the body **or anywhere along the stretched rainbow**.
 
 | Pickup | Effect |
 |---|---|
@@ -229,7 +187,7 @@ Power-ups are tiny magical cobs that can be collected by the body **or anywhere 
 | **Prism Cob** | Easier spring charging |
 | **Gold Cob** | Temporary 2× score |
 
-Rainbow Snap temporarily increases collection reach, so efficient routes can attack and collect at the same time. Difficulty changes **how often** friendly pickups arrive, not what they do.
+Rainbow Snap temporarily increases collection reach, so efficient routes can attack and collect at the same time.
 
 ---
 
@@ -247,27 +205,15 @@ OPEN ARENA
 new layout + repeat
 ```
 
-One warning footprint freezes around the current ♥ body location. It does not chase the player. It gives two seconds to react.
-
 If the body is still inside when the block hardens, the player loses a life and is knocked out of the new geometry. Once solid, that same block becomes useful cover against hostile kernels. Then it disappears again.
-
-The same object therefore changes meaning over time:
-
-```text
-WARNING  → get out
-SOLID    → exploit the cover
-OPEN     → survive without it
-```
-
-Enemies are ejected from forming blocks **without taking environmental damage**, so the arena cannot solve the boss fight for you.
 
 ### Trial 9: The Husk Architect
 
-The Husk Architect is a 16-HP armored miniboss designed to teach the dynamic-cover rhythm before the finale. It uses compact projectile fans while terrain exists, then becomes faster and fires wider spreads during open-arena windows. Impossible mode raises the spatial load further by beginning with two Architects.
+The Husk Architect is an armored miniboss designed to teach the dynamic-cover rhythm before the finale.
 
 ### Trial 13: The Cobtopus
 
-Cobtopus combines radial projectile patterns, multiple health phases, adds and three-block Husk Shift formations. Phase changes clear the current terrain so the player repeatedly has to survive without dependable cover.
+Cobtopus combines radial projectile patterns, multiple health phases, adds and three-block Husk Shift formations.
 
 ---
 
@@ -287,76 +233,23 @@ Cobtopus combines radial projectile patterns, multiple health phases, adds and t
 12. **Double Cornbow**
 13. **The Cobtopus**
 
-The campaign deliberately layers the control language:
-
-```text
-early game  → body/head separation + spring
-mid game    → Graze / Parry / armor / mixed projectiles
-late game   → mixed enemy roles + dynamic geometry
-Trial 9     → learn Husk Shift
-Trial 13    → solve Husk Shift while fighting Cobtopus
-```
-
-You begin with **13 hearts** in every mode. The challenge comes from pressure, resource cadence and routing complexity rather than arbitrarily shrinking the player's health pool.
+You begin with **13 hearts** so a first run has enough room to learn the unusual controls before the campaign starts demanding precision.
 
 ---
 
 # 🎵 POP DROP: procedural gaming EDM
 
-Stretchicorn ships with **no audio files**. The soundtrack is synthesized at runtime with Web Audio oscillators and a tiny sequencer.
-
-The central audio idea is:
-
-> **If kernels are already popping constantly, make the pop part of the instrument.**
-
-The same pitched kernel-pop family appears in the soundtrack and in Parries, Grazes, enemy deaths and pickups, so good play naturally adds little accents to the music.
-
-The sequence moves through arcade-EDM energy, trap-flavored switches and a high-speed peak:
-
-```text
-168 → 174 BPM   build
-178 BPM         pop drop
-150 BPM         half-time trap switch
-162 BPM         sparse break
-184 BPM         high-speed peak
-176 BPM         drop variation
-154 BPM         trap fill
-repeat on a new root
-```
-
-A shared beat envelope also drives subtle rainbow sparks and streaks in the background. Every keyboard interaction wakes/resumes the `AudioContext`, avoiding common browser autoplay suspension problems.
-
----
-
-# ✨ Visual and UX design
-
-Everything in the competition build is procedural Canvas 2D.
-
-The visual language is intentionally readable during chaos:
-
-- bright white unicorn against a dark arena,
-- rainbow body doubles as character and state feedback,
-- distinct corn silhouettes for enemy recognition,
-- exact horn trajectory reticle,
-- pull-direction arrow,
-- whole-unicorn Snap-ready glow,
-- warning footprints exactly where future blocks will harden,
-- concise trial cards between encounters,
-- separate Controls, Rules and Settings pages instead of a crowded title screen.
-
-A recurring design rule is:
-
-> **Put important information as close as possible to the thing it describes.**
+Stretchicorn ships with **no audio files**. The soundtrack is synthesized at runtime with Web Audio oscillators and a tiny sequencer. Pitched kernel pops are shared between the soundtrack and gameplay so Parries, Grazes, enemy deaths and pickups become musical accents.
 
 ---
 
 # 🚀 Play and install
 
-## Fastest way: use the competition build
+## Competition build
 
 1. Download [`dist/stretchicorn-desktop-v0.21.0.zip`](dist/stretchicorn-desktop-v0.21.0.zip).
 2. Unzip it.
-3. Open the included `index.html` in a modern desktop browser.
+3. Open `index.html` in a modern desktop browser.
 4. Choose a difficulty with `1` through `4`, or press Space / Enter for Normal.
 
 The competition artifact is a self-contained single HTML file and works offline.
@@ -369,47 +262,40 @@ cd stretchicorn
 python3 -m http.server 8080
 ```
 
-Then open `http://localhost:8080`.
-
-## Build and verify
-
-Requires Node.js and Python 3. The release packer uses Python `zopfli` when available; install it for the same high-compression path used by the competition artifact:
-
-```bash
-python3 -m pip install zopfli
-npm run verify
-```
-
-Individual commands:
-
-```bash
-npm run build       # build dist/index.html
-npm test            # regression tests against the built game
-npm run smoke       # exact-artifact release smoke test
-npm run package     # build + package + 13KB size check
-npm run verify      # full release verification pipeline
-```
-
 ---
 
 # 🌊 Wavedash build
 
-The Wavedash integration is intentionally kept **outside the 13KB competition artifact**. `npm run wavedash:build` first creates the normal Stretchicorn build, then writes a platform build to `wavedash-dist/index.html` with the Wavedash loader handshake appended.
+The Wavedash integration lives only on the `platform/wavedash-v0.21.0` branch and stays **outside the 13KB competition artifact**.
 
-The platform wrapper reports 100% load progress and calls `Wavedash.init()` after Stretchicorn's single-file runtime has loaded. The original `dist/index.html` and competition ZIP remain untouched.
+### Direct dashboard upload
 
-### First-time Wavedash setup
+If you download this branch as a ZIP and upload the project directly through the Wavedash dashboard, use the repository-root `index.html` as the entry point. That shell now initializes the injected Wavedash SDK **after all five Stretchicorn runtime scripts have loaded**, reports 100% load progress, and calls `Wavedash.init()` so the Wavedash loading overlay is released.
 
-Install the Wavedash CLI, authenticate, then initialize the project from the repo root:
+This direct-upload handshake fixes the failure mode where a source-branch upload could sit forever at **0%** because the old root `index.html` never called the Wavedash SDK.
+
+### CLI platform build
+
+For a cleaner upload-only directory, the CLI path remains isolated:
+
+```bash
+npm run wavedash:build
+npm run wavedash:test
+npm run wavedash:dev
+npm run wavedash:push
+```
+
+`wavedash:build` creates `wavedash-dist/index.html` from the compact game and appends the same Wavedash load/init handshake. `wavedash:test` verifies both upload paths and also asserts that `dist/index.html` contains **no Wavedash code**, protecting the js13k artifact.
+
+First-time setup:
 
 ```bash
 curl -fsSL https://wavedash.com/cli/install.sh | sh
-wavedash --version
 wavedash auth login
 wavedash init
 ```
 
-When `wavedash init` creates `wavedash.toml`, keep the generated `game_id` and make sure the build fields point at the platform output:
+Keep the generated `game_id` and configure:
 
 ```toml
 game_id = "YOUR_REAL_GAME_ID"
@@ -417,220 +303,51 @@ upload_dir = "./wavedash-dist"
 entrypoint = "index.html"
 ```
 
-[`wavedash.example.toml`](wavedash.example.toml) contains the same layout as a reference.
-
-### Build and test inside the Wavedash sandbox
-
-```bash
-npm run wavedash:build
-wavedash dev
-```
-
-or use the convenience command:
-
-```bash
-npm run wavedash:dev
-```
-
-### Upload a playtest build
-
-```bash
-npm run wavedash:push
-```
-
-That builds the dedicated platform folder and runs `wavedash build push`. Wavedash returns an immutable build ID and playtest URL. Publishing remains an explicit second step:
-
-```bash
-wavedash publish <BUILD_ID> \
-  --title "Stretchicorn v0.21.0" \
-  --summary "13 trials, four difficulty modes, and an unreasonable quantity of corn." \
-  --added "Easy, Normal, Hard and Impossible modes" \
-  --adjusted "Enemy pressure and power-up cadence scale by difficulty"
-```
-
-This platform branch is therefore safe to iterate independently without spending competition bytes on hosting-specific code.
+Then `npm run wavedash:push` creates the platform build, runs the handshake regression, and uploads it.
 
 ---
 
 # 🧠 Architecture
 
-Stretchicorn is intentionally small enough that the readable source can be understood as a complete game rather than a framework.
-
 ```text
 stretchicorn/
-├── index.html
+├── index.html              readable browser + direct Wavedash upload shell
 ├── src/
-│   ├── 00-core.js       world state, stages, spawning, geometry, audio core
-│   ├── 01-combat.js     damage, Snap, Parry, Graze, Lucky 13
-│   ├── 02-update.js     fixed-step movement, spring physics, AI, difficulty, Husk Shift
-│   ├── 03-render.js     Canvas renderer, HUD, corn/unicorn art, warnings
-│   ├── 04-ui-input.js   title/menu/settings, difficulty launch, rebinding, game loop
-│   └── style.css
+│   ├── 00-core.js          world state, stages, difficulty, geometry, audio
+│   ├── 01-combat.js        damage, Snap, Parry, Graze, Lucky 13
+│   ├── 02-update.js        fixed-step movement, spring physics, AI, difficulty
+│   ├── 03-render.js        Canvas renderer, HUD, warnings
+│   └── 04-ui-input.js      menus, difficulty launch, input, game loop
 ├── scripts/
 │   ├── build.mjs
 │   ├── build-wavedash.mjs
+│   ├── test-wavedash.mjs
 │   ├── package.py
-│   ├── check-size.mjs
 │   ├── test.mjs
 │   └── release-smoke.mjs
-├── docs/
-│   └── difficulty-modes.md
-├── wavedash.example.toml
-├── wavedash-dist/       generated, ignored platform build
-└── dist/
-    └── stretchicorn-desktop-v0.21.0.zip
+├── dist/                    js13k artifact
+└── wavedash-dist/           generated platform upload folder
 ```
 
-```mermaid
-flowchart LR
-    I[Keyboard input] --> U[Fixed 60 Hz update]
-    D[Difficulty scalar] --> E[Enemy density + attack cadence]
-    D --> P[Pickup cadence]
-    U --> S[Body + spring state]
-    U --> E
-    U --> H[Husk Shift state]
-    S --> C[Combat: Snap / Graze / Parry]
-    E --> C
-    H --> C
-    U --> R[Canvas renderer]
-    C --> R
-    H --> R
-    M[Procedural music sequencer] --> A[Web Audio]
-    M --> B[Beat envelope]
-    B --> R
-```
-
-### Fixed-step simulation
-
-`requestAnimationFrame` drives presentation, while gameplay advances through a fixed **60 Hz accumulator**. Spring behavior, enemy patterns and collisions therefore do not depend directly on display refresh rate.
-
-### Difficulty as one pressure scalar
-
-The four modes share the same mechanics and AI. A compact scalar changes stage population, hostile attack cadence, reinforcement ceilings and inverse friendly pickup cadence. This avoids four divergent campaigns and keeps Normal mechanically identical to the original balance.
-
-### Precise aim + one-dimensional spring
-
-A freely simulated 2-D head looked stretchy but could drift away from the player's intended attack angle. The current controller makes the angle authoritative and lets only the body-head distance behave elastically.
-
-### Shared systems do multiple jobs
-
-The 13KB constraint rewards mechanics that multiply:
-
-- Rainbow Snap = attack + movement + dodge + collection
-- enemy kernel = hazard + Graze resource + Parry ammunition
-- Husk block = warning + hazard + cover + route constraint
-- kernel pop = music voice + game SFX
-- beat clock = soundtrack timing + visual-reactivity timing
-- difficulty scalar = population + attack pressure + reinforcement cap + resource cadence
+The competition and Wavedash paths are intentionally separate. Platform-specific code never consumes competition bytes.
 
 ---
 
 # 📦 13KB engineering
 
-The current four-mode competition candidate is:
-
-```text
-13,294 / 13,312 bytes
-18 bytes free
-```
-
-The runtime contains no external images, fonts, music files, frameworks or game engine. The hero art, control diagram, Wavedash wrapper and documentation are repository/platform assets only.
-
-The repository keeps readable source while the release builder compacts it into a single HTML file, packages that exact file, and tests the artifact that will actually be submitted.
+The four-mode competition candidate remains **13,294 / 13,312 bytes**, leaving **18 bytes free**. The Wavedash wrappers are not part of that ZIP.
 
 ---
 
 # 🧪 Validation
 
-The regression and smoke-test layers cover the systems most likely to regress:
+The regression suite covers all four launch modes, the full 52 stage/mode population matrix, pickup cadence, attack-pressure scaling, preserved telegraphs, high-refresh input, focus pause, HUSKSHIFT, Cobtopus, safe spawns, Impossible stress runs and the exact 13KB artifact.
 
-- all four title-screen difficulty launches,
-- Space / Enter preserving Normal as the default,
-- retry preserving the chosen difficulty,
-- the complete 13-trial × 4-mode population matrix,
-- inverse power-up cadence across Easy, Normal, Hard and Impossible,
-- enemy attack cadence scaling without shortening Charger telegraphs,
-- Architect and boss reinforcement scaling,
-- 30-second Impossible stress simulations for late-game pressure,
-- all 13 stages spawning safely,
-- spring and head states remaining finite,
-- Enter-based rebinding and duplicate-key swapping,
-- reserved menu/pause keys remaining protected,
-- held-key repeat not auto-firing Snap attacks,
-- a Space tap surviving render-only frames at a simulated 120 Hz refresh rate,
-- high-refresh displays skipping redundant Canvas paints,
-- persisted OFF audio allocating no silent oscillator nodes,
-- losing window focus clearing input and pausing an active run,
-- edge spawns maintaining a safety radius around the vulnerable ♥ body,
-- horn attacks keeping their snapshotted direction,
-- Husk Shift warnings remaining non-solid for two seconds,
-- hardening damaging and ejecting the ♥ body,
-- Husk Architect remaining immune to environmental wall damage,
-- Charger-only wall-smash damage,
-- Cobtopus receiving genuine no-cover intervals,
-- the exact competition ZIP remaining below 13,312 bytes.
+The Wavedash branch adds a platform regression that checks:
 
----
-
-# 🔧 Current candidate: v0.21.0 DIFFICULTY MODES RC
-
-This candidate layers four difficulty modes on top of the v0.21.0 PERFORMANCE LOCK without changing the core controller or Normal balance.
-
-### Easy
-
-Easy lowers starting swarm density and hostile attack cadence while increasing the availability of friendly pickups. It is meant to give first-time players enough mental space to understand the unusual two-handed controller, spring loading and Snap timing.
-
-### Normal
-
-Normal is exactly the original v0.21.0 pressure profile. It remains the Space / Enter default and acts as the baseline for every scaling rule.
-
-### Hard
-
-Hard raises both initial enemy density and ongoing attack pressure while making rescue resources less common. The goal is to turn familiar stages into tighter routing problems without changing telegraph timing or player feel.
-
-### Impossible
-
-Impossible pushes the same systems to their highest supported density. Late stages become genuine survival-routing tests, including two Husk Architects in Trial 9 and a 34-enemy opening population in Trial 11.
-
-### Playtest gate
-
-Before this candidate replaces the current main release, manually play all four modes. Pay particular attention to whether Easy improves onboarding, whether Normal feels unchanged, whether Hard stays readable, and whether Impossible Trial 9 / 11 / 13 feels brutally fair rather than visually saturated.
-
-<details>
-<summary><strong>Recent release history</strong></summary>
-
-### v0.21.0 · DIFFICULTY MODES RC
-- Adds Easy, Normal, Hard and Impossible full-campaign modes.
-- Scales starting population, hostile attack cadence, reinforcement ceilings and inverse pickup cadence.
-- Keeps movement, spring physics, damage, enemy speed and warning durations consistent across modes.
-- Exact four-mode candidate ZIP: **13,294 / 13,312 bytes (18 bytes free)**.
-
-### v0.21.0 · PERFORMANCE LOCK
-- Avoids redundant Canvas redraws between fixed 60 Hz simulation ticks on high-refresh displays.
-- Restores persisted OFF audio as numeric zero, auto-pauses on blur and protects edge spawns around the ♥ body.
-- Uses a direct wall-collision loop and resets title transforms after screen shake.
-
-### v0.20.8 · RELEASE LOCK
-- Latched attack input until the 60 Hz simulation consumes it, fixing short Space taps on high-refresh displays.
-- Restricted wall-smash HP damage to Cob Chargers only.
-- Preserved the 3:2 canvas ratio on short viewports.
-
-### v0.20.6 · HUSKSHIFT FIX
-- Fixed the Canvas API rename bug in the competition build.
-- Hardened identifier golfing and exact-artifact validation.
-
-### v0.20.5 · HUSKSHIFT
-- Replaced Cob Crusher with the Husk Architect.
-- Added telegraphed dynamic blocks and open-arena boss windows.
-
-### v0.20.4 · POP DROP
-- Replaced dense bass synthesis with pitched kernel-pop hooks.
-- Added arcade-EDM, trap-switch and high-BPM sequence variation.
-- Fixed browser audio unlocking.
-
-See [`CHANGELOG.md`](CHANGELOG.md) for the longer development history.
-
-</details>
+- the root direct-upload shell calls `updateLoadProgressZeroToOne(1)` and `Wavedash.init()` after the runtime scripts,
+- the generated `wavedash-dist/index.html` contains the same handshake,
+- the js13k `dist/index.html` remains free of Wavedash platform code.
 
 ---
 
@@ -638,4 +355,4 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the longer development history.
 
 Designed and built for **js13kGames 2026** around the theme **Unicorns & Rainbows**.
 
-No external runtime assets. Just JavaScript, Canvas, Web Audio, one stretchy unicorn, four increasingly unreasonable difficulty settings, and a corn problem that got considerably out of hand. 🌈🦄🌽
+No external runtime assets. Just JavaScript, Canvas, Web Audio, one stretchy unicorn, and a corn problem that got considerably out of hand. 🌈🦄🌽
