@@ -312,16 +312,17 @@ Gameplay advances through a fixed **60 Hz accumulator**. Rendering occurs only a
 The v0.21.1 candidate archive is:
 
 ```text
-13,308 / 13,312 bytes
-4 bytes free
+13,270 / 13,312 bytes
+42 bytes free
 ```
 
-The Impossible Encore needed far more behavior than the previous 18-byte reserve could hold, so the release also reclaims bytes without removing gameplay:
+The Impossible Encore needed far more behavior than the previous reserve could hold, so the release also reclaims bytes without removing gameplay:
 
 - dead player-head velocity state was removed,
 - the competition-only HTML shell was shortened,
 - the responsive Canvas CSS was compacted,
 - the build aliases `Math` once and reuses the shorter identifier,
+- several high-frequency internal identifiers now use verified one-character release aliases,
 - the new encore function participates in the safe identifier-golfing pass.
 
 The readable source remains understandable. Only the generated competition artifact receives those byte-level transformations.
@@ -350,7 +351,7 @@ The exact built artifact is regression-tested for:
 - generated Canvas API safety,
 - exact ZIP size below **13,312 bytes**.
 
-The deterministic v0.21.1 ZIP is **13,308 bytes**, leaving only **4 bytes** in the byte vault.
+The deterministic v0.21.1 ZIP is **13,270 bytes**, leaving **42 bytes** in the byte vault.
 
 ---
 
