@@ -65,4 +65,4 @@ Hard and lower difficulties still finish immediately when Trial 13 Cobtopus is d
 
 The exact artifact regression suite checks all four launch scalars, Normal shortcut and retry behavior, Hard-vs-Impossible HP separation, pickup scarcity, hostile movement and projectile scaling, accelerated Husk Shift timing, safe spawns, fixed-step input behavior, and the complete Impossible boss-rush state transition. A bounded stress simulation also runs the encore with an invulnerable player to guard against runaway entity/projectile growth.
 
-Current v0.21.1 candidate archive: **13,308 / 13,312 bytes (4 bytes free)**.
+Current v0.21.1 candidate archive: **13,270 / 13,312 bytes (42 bytes free)**.
