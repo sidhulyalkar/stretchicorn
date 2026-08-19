@@ -12,7 +12,7 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 [**Download the current v0.21.0 competition ZIP**](dist/stretchicorn-desktop-v0.21.0.zip)
 
-**13 hearts · 13 trials · way too much corn**
+**13 hearts · 13 trials · 4 difficulty modes · way too much corn**
 
 </div>
 
@@ -39,14 +39,46 @@ The result is part action game, part elastic slingshot, part bullet-dodging geom
 
 ## The game in 30 seconds
 
-1. **Move the ♥ body with WASD.** This is the part enemies can hurt.
-2. **Aim the head with the Arrow Keys.** The horn rotates smoothly through continuous angles.
-3. **Pull the body away from the horn.** That loads the rainbow spring.
-4. **Watch the unicorn light up.** Glow + boing means Rainbow Snap is ready.
-5. **Press Space.** Launch through enemies, projectiles and pickups.
-6. **Turn, recharge and chain another Snap.** Good routes become Double Rainbows, Parries, Grazes and score.
+1. **Choose a difficulty.** Press `1` Easy, `2` Normal, `3` Hard, or `4` Impossible. Space / Enter starts Normal.
+2. **Move the ♥ body with WASD.** This is the part enemies can hurt.
+3. **Aim the head with the Arrow Keys.** The horn rotates smoothly through continuous angles.
+4. **Pull the body away from the horn.** That loads the rainbow spring.
+5. **Watch the unicorn light up.** Glow + boing means Rainbow Snap is ready.
+6. **Press Space.** Launch through enemies, projectiles and pickups.
+7. **Turn, recharge and chain another Snap.** Good routes become Double Rainbows, Parries, Grazes and score.
 
 The strongest plays make one movement solve several problems at once: dodge a projectile, hit a cob, sweep through a power-up and set up the next attack before the rainbow finishes recoiling.
+
+---
+
+# 🌈 Four difficulty modes
+
+Stretchicorn now supports four complete campaign modes. Difficulty changes **pressure and resource economy**, not the feel of the unicorn.
+
+| Mode | Launch key | Enemy density | Attack pressure | Friendly pickups | Intended feel |
+|---|---:|---:|---:|---:|---|
+| **Easy** | `1` | ~0.7× | ~0.7× | more frequent | learn the two-handed controls |
+| **Normal** | `2` | 1.0× | 1.0× | original cadence | the original balanced campaign |
+| **Hard** | `3` | ~1.3× | ~1.3× | less frequent | denser routing and faster decisions |
+| **Impossible** | `4` | ~1.6× | ~1.6× | substantially scarcer | maximum corn pressure |
+
+**Normal is the exact gameplay baseline.** Player movement speed, spring physics, damage rules, enemy movement speed and telegraph durations remain unchanged across modes. Harder modes increase how many threats you must solve and how often attacks arrive, without making warnings unfairly shorter.
+
+Difficulty also scales boss reinforcement ceilings so late fights continue escalating instead of hitting the Normal population cap too early.
+
+A few representative starting populations:
+
+| Trial | Easy | Normal | Hard | Impossible |
+|---|---:|---:|---:|---:|
+| 1 · Pastel Patch | 3 | 5 | 6 | 8 |
+| 5 · Maize Monarch | 3 | 4 | 5 | 6 |
+| 9 · Husk Architect | 1 | 1 | 1 | **2 Architects** |
+| 11 · Kernel Gauntlet | 14 | 21 | 28 | **34** |
+| 13 · Cobtopus | 8 | 11 | 14 | **16** |
+
+If you die and retry, the selected difficulty is preserved. Returning to the title screen is how you pick a new mode.
+
+See [`docs/difficulty-modes.md`](docs/difficulty-modes.md) for the complete 52-stage/mode population matrix and scaling rules.
 
 ---
 
@@ -60,6 +92,8 @@ The strongest plays make one movement solve several problems at once: dodge a pr
 
 | Input | Action |
 |---|---|
+| **1 / 2 / 3 / 4** | Start Easy / Normal / Hard / Impossible from title |
+| **Space / Enter** | Start Normal from title |
 | **W A S D** | Move the vulnerable ♥ body |
 | **Arrow Keys** | Smoothly steer the safe head / horn |
 | **Space** | Horn strike / Rainbow Snap |
@@ -195,7 +229,7 @@ Power-ups are tiny magical cobs that can be collected by the body **or anywhere 
 | **Prism Cob** | Easier spring charging |
 | **Gold Cob** | Temporary 2× score |
 
-Rainbow Snap temporarily increases collection reach, so efficient routes can attack and collect at the same time.
+Rainbow Snap temporarily increases collection reach, so efficient routes can attack and collect at the same time. Difficulty changes **how often** friendly pickups arrive, not what they do.
 
 ---
 
@@ -229,7 +263,7 @@ Enemies are ejected from forming blocks **without taking environmental damage**,
 
 ### Trial 9: The Husk Architect
 
-The Husk Architect is a 16-HP armored miniboss designed to teach the dynamic-cover rhythm before the finale. It uses compact projectile fans while terrain exists, then becomes faster and fires wider spreads during open-arena windows.
+The Husk Architect is a 16-HP armored miniboss designed to teach the dynamic-cover rhythm before the finale. It uses compact projectile fans while terrain exists, then becomes faster and fires wider spreads during open-arena windows. Impossible mode raises the spatial load further by beginning with two Architects.
 
 ### Trial 13: The Cobtopus
 
@@ -263,7 +297,7 @@ Trial 9     → learn Husk Shift
 Trial 13    → solve Husk Shift while fighting Cobtopus
 ```
 
-You begin with **13 hearts** so a first run has enough room to learn the unusual controls before the campaign starts demanding precision.
+You begin with **13 hearts** in every mode. The challenge comes from pressure, resource cadence and routing complexity rather than arbitrarily shrinking the player's health pool.
 
 ---
 
@@ -323,7 +357,7 @@ A recurring design rule is:
 1. Download [`dist/stretchicorn-desktop-v0.21.0.zip`](dist/stretchicorn-desktop-v0.21.0.zip).
 2. Unzip it.
 3. Open the included `index.html` in a modern desktop browser.
-4. Press a key to begin. That user gesture also unlocks Web Audio.
+4. Choose a difficulty with `1` through `4`, or press Space / Enter for Normal.
 
 The competition artifact is a self-contained single HTML file and works offline.
 
@@ -368,9 +402,9 @@ stretchicorn/
 ├── src/
 │   ├── 00-core.js       world state, stages, spawning, geometry, audio core
 │   ├── 01-combat.js     damage, Snap, Parry, Graze, Lucky 13
-│   ├── 02-update.js     fixed-step movement, spring physics, AI, Husk Shift
+│   ├── 02-update.js     fixed-step movement, spring physics, AI, difficulty, Husk Shift
 │   ├── 03-render.js     Canvas renderer, HUD, corn/unicorn art, warnings
-│   ├── 04-ui-input.js   title/menu/settings, rebinding, input, game loop
+│   ├── 04-ui-input.js   title/menu/settings, difficulty launch, rebinding, game loop
 │   └── style.css
 ├── scripts/
 │   ├── build.mjs
@@ -378,6 +412,8 @@ stretchicorn/
 │   ├── check-size.mjs
 │   ├── test.mjs
 │   └── release-smoke.mjs
+├── docs/
+│   └── difficulty-modes.md
 └── dist/
     └── stretchicorn-desktop-v0.21.0.zip
 ```
@@ -385,8 +421,10 @@ stretchicorn/
 ```mermaid
 flowchart LR
     I[Keyboard input] --> U[Fixed 60 Hz update]
+    D[Difficulty scalar] --> E[Enemy density + attack cadence]
+    D --> P[Pickup cadence]
     U --> S[Body + spring state]
-    U --> E[Enemy / boss AI]
+    U --> E
     U --> H[Husk Shift state]
     S --> C[Combat: Snap / Graze / Parry]
     E --> C
@@ -403,6 +441,10 @@ flowchart LR
 
 `requestAnimationFrame` drives presentation, while gameplay advances through a fixed **60 Hz accumulator**. Spring behavior, enemy patterns and collisions therefore do not depend directly on display refresh rate.
 
+### Difficulty as one pressure scalar
+
+The four modes share the same mechanics and AI. A compact scalar changes stage population, hostile attack cadence, reinforcement ceilings and inverse friendly pickup cadence. This avoids four divergent campaigns and keeps Normal mechanically identical to the original balance.
+
 ### Precise aim + one-dimensional spring
 
 A freely simulated 2-D head looked stretchy but could drift away from the player's intended attack angle. The current controller makes the angle authoritative and lets only the body-head distance behave elastically.
@@ -416,16 +458,17 @@ The 13KB constraint rewards mechanics that multiply:
 - Husk block = warning + hazard + cover + route constraint
 - kernel pop = music voice + game SFX
 - beat clock = soundtrack timing + visual-reactivity timing
+- difficulty scalar = population + attack pressure + reinforcement cap + resource cadence
 
 ---
 
 # 📦 13KB engineering
 
-The current competition archive is:
+The current four-mode competition candidate is:
 
 ```text
-13,293 / 13,312 bytes
-19 bytes free
+13,294 / 13,312 bytes
+18 bytes free
 ```
 
 The runtime contains no external images, fonts, music files, frameworks or game engine. The hero art and control diagram in this README are repository documentation only.
@@ -438,81 +481,76 @@ The repository keeps readable source while the release builder compacts it into 
 
 The regression and smoke-test layers cover the systems most likely to regress:
 
-- all 13 stages spawn safely,
-- spring and head states remain finite,
-- Enter-based rebinding works,
-- duplicate key assignments swap correctly,
-- reserved menu/pause keys cannot be rebound over gameplay actions,
-- held-key repeat cannot auto-fire Snap attacks,
-- a Space tap survives render-only frames at a simulated 120 Hz refresh rate and is consumed once by the next fixed update,
-- high-refresh displays skip redundant Canvas paints between 60 Hz simulation ticks,
-- persisted OFF audio settings reload as numeric zero and allocate no silent oscillator nodes,
-- losing window focus clears input and automatically pauses an active run,
-- edge spawns maintain a safety radius around the vulnerable ♥ body,
-- returning to the title resets the Canvas transform so screen shake cannot leak into menu placement,
-- Music and SFX settings remain independent,
-- Web Audio wakes from user input,
-- horn attacks keep their snapshotted direction,
-- Husk Shift warnings remain non-solid for two seconds,
-- hardening damages and ejects the ♥ body,
-- Husk Architect cannot kill itself on walls,
-- only Cob Chargers receive wall-smash damage; bosses and other enemies remain immune to environmental HP loss,
-- Cobtopus receives genuine no-cover intervals,
-- generated Canvas API calls remain valid,
-- the exact competition ZIP stays below 13,312 bytes.
+- all four title-screen difficulty launches,
+- Space / Enter preserving Normal as the default,
+- retry preserving the chosen difficulty,
+- the complete 13-trial × 4-mode population matrix,
+- inverse power-up cadence across Easy, Normal, Hard and Impossible,
+- enemy attack cadence scaling without shortening Charger telegraphs,
+- Architect and boss reinforcement scaling,
+- 30-second Impossible stress simulations for late-game pressure,
+- all 13 stages spawning safely,
+- spring and head states remaining finite,
+- Enter-based rebinding and duplicate-key swapping,
+- reserved menu/pause keys remaining protected,
+- held-key repeat not auto-firing Snap attacks,
+- a Space tap surviving render-only frames at a simulated 120 Hz refresh rate,
+- high-refresh displays skipping redundant Canvas paints,
+- persisted OFF audio allocating no silent oscillator nodes,
+- losing window focus clearing input and pausing an active run,
+- edge spawns maintaining a safety radius around the vulnerable ♥ body,
+- horn attacks keeping their snapshotted direction,
+- Husk Shift warnings remaining non-solid for two seconds,
+- hardening damaging and ejecting the ♥ body,
+- Husk Architect remaining immune to environmental wall damage,
+- Charger-only wall-smash damage,
+- Cobtopus receiving genuine no-cover intervals,
+- the exact competition ZIP remaining below 13,312 bytes.
 
 ---
 
-# 🔧 Current release: v0.21.0 PERFORMANCE LOCK
+# 🔧 Current candidate: v0.21.0 DIFFICULTY MODES RC
 
-v0.21.0 is a deliberately narrow performance and robustness pass. It keeps the complete HUSKSHIFT game intact while removing work that does not improve what the player sees or feels.
+This candidate layers four difficulty modes on top of the v0.21.0 PERFORMANCE LOCK without changing the core controller or Normal balance.
 
-### One simulation tick, one useful paint
+### Easy
 
-Stretchicorn already simulates at a fixed **60 Hz**, but older builds still repainted the entire procedural Canvas on every `requestAnimationFrame`. On 120/144/240 Hz displays that meant redrawing the same simulation state two to four times before anything in the world had changed.
+Easy lowers starting swarm density and hostile attack cadence while increasing the availability of friendly pickups. It is meant to give first-time players enough mental space to understand the unusual two-handed controller, spring loading and Snap timing.
 
-v0.21.0 keeps RAF as the browser clock but only redraws after at least one 60 Hz simulation step has completed. The game still responds and animates at the same gameplay cadence, while high-refresh displays avoid most duplicate Canvas work. Because screen-shake decay lives in the draw path, it now also advances at a stable 60 Hz cadence rather than disappearing faster on faster monitors.
+### Normal
 
-### Focus, audio and spawn safety
+Normal is exactly the original v0.21.0 pressure profile. It remains the Space / Enter default and acts as the baseline for every scaling rule.
 
-Losing browser focus now clears held input, clears a pending attack and automatically pauses an active run. Persisted Music/SFX values are restored as numbers, so a saved **OFF** setting remains genuinely off after reload and skips silent Web Audio node allocation.
+### Hard
 
-Edge-spawned enemies now keep a safety radius around the vulnerable ♥ body. If a chosen edge point is too close, the spawn is mirrored to the opposite side instead of materializing on top of the player.
+Hard raises both initial enemy density and ongoing attack pressure while making rescue resources less common. The goal is to turn familiar stages into tighter routing problems without changing telegraph timing or player feel.
 
-### Tiny hot-path cleanup
+### Impossible
 
-Wall collision lookup now uses a direct early-return loop instead of an `Array.find()` callback. The redundant nested Charger type check was removed, and returning to the title explicitly resets the Canvas transform so a strong final frame of screen shake cannot offset the menu.
+Impossible pushes the same systems to their highest supported density. Late stages become genuine survival-routing tests, including two Husk Architects in Trial 9 and a 34-enemy opening population in Trial 11.
 
-### Exact-artifact validation
+### Playtest gate
 
-The release tests now cover the 60 Hz paint gate, simulated 120 Hz Space-tap retention, numeric persisted mute, blur auto-pause, safe edge spawning, existing HUSKSHIFT/Cobtopus behavior, audio/mixer settings, horn-angle locking and all 13 trial spawns.
-
-The exact deterministic Zopfli competition artifact is **13,293 / 13,312 bytes**, leaving **19 bytes free**.
-
-### Feature freeze
-
-No enemies, power-ups, boss phases, music layers or scoring systems were added. v0.21.0 is the version where the byte-scalpel stops cutting unless a real bug appears.
+Before this candidate replaces the current main release, manually play all four modes. Pay particular attention to whether Easy improves onboarding, whether Normal feels unchanged, whether Hard stays readable, and whether Impossible Trial 9 / 11 / 13 feels brutally fair rather than visually saturated.
 
 <details>
 <summary><strong>Recent release history</strong></summary>
+
+### v0.21.0 · DIFFICULTY MODES RC
+- Adds Easy, Normal, Hard and Impossible full-campaign modes.
+- Scales starting population, hostile attack cadence, reinforcement ceilings and inverse pickup cadence.
+- Keeps movement, spring physics, damage, enemy speed and warning durations consistent across modes.
+- Exact four-mode candidate ZIP: **13,294 / 13,312 bytes (18 bytes free)**.
 
 ### v0.21.0 · PERFORMANCE LOCK
 - Avoids redundant Canvas redraws between fixed 60 Hz simulation ticks on high-refresh displays.
 - Restores persisted OFF audio as numeric zero, auto-pauses on blur and protects edge spawns around the ♥ body.
 - Uses a direct wall-collision loop and resets title transforms after screen shake.
-- Final ZIP: **13,293 / 13,312 bytes (19 bytes free)**.
 
 ### v0.20.8 · RELEASE LOCK
 - Latched attack input until the 60 Hz simulation consumes it, fixing short Space taps on high-refresh displays.
 - Restricted wall-smash HP damage to Cob Chargers only.
 - Preserved the 3:2 canvas ratio on short viewports.
-- Hardened exact-artifact tests and added a simulated 120 Hz input-retention check.
-- Final ZIP: **13,274 / 13,312 bytes (38 bytes free)**.
-
-### v0.20.7 · FINAL HARDENING
-- Prevented key-repeat auto-attacks.
-- Protected reserved menu/pause keys during rebinding.
-- Removed dead code and increased the submission margin to 28 bytes.
 
 ### v0.20.6 · HUSKSHIFT FIX
 - Fixed the Canvas API rename bug in the competition build.
@@ -537,4 +575,4 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the longer development history.
 
 Designed and built for **js13kGames 2026** around the theme **Unicorns & Rainbows**.
 
-No external runtime assets. Just JavaScript, Canvas, Web Audio, one stretchy unicorn, and a corn problem that got considerably out of hand. 🌈🦄🌽
+No external runtime assets. Just JavaScript, Canvas, Web Audio, one stretchy unicorn, four increasingly unreasonable difficulty settings, and a corn problem that got considerably out of hand. 🌈🦄🌽
