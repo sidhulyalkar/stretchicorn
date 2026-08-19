@@ -6,13 +6,13 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-**A tiny desktop action game where you play as an enchanted unicorn gifted the power to rainbow-stretch and fight off an army of angry corn across 13 chaotic trials!**
+**A tiny desktop action game where you rainbow-stretch an enchanted unicorn through 13 increasingly chaotic trials against an aggressively unreasonable corn army.**
 
 Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
-[**Download the current v0.21.0 competition ZIP**](dist/stretchicorn-desktop-v0.21.0.zip)
+[**Download v0.21.1 IMPOSSIBLE ENCORE**](dist/stretchicorn-desktop-v0.21.1.zip)
 
-**13 hearts · 13 trials · 4 difficulty modes · way too much corn**
+**13 hearts · 13 trials · 4 difficulty modes · one secret boss-rush finale**
 
 </div>
 
@@ -20,74 +20,102 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 ## What is Stretchicorn?
 
-Stretchicorn is a fast arcade-action game built around one strange control idea: **the unicorn is controlled from both ends**.
-
-You move the vulnerable body with one hand, steer the safe head and horn with the other, then pull the two apart to charge the rainbow stretched between them.
+Stretchicorn is an arcade-action game built around one unusual control idea: **you control the unicorn from both ends**.
 
 ```text
 PULL ←     ♥ BODY ═══════ 🌈 RAINBOW ═══════ 🦄 HEAD / HORN     → AIM
            vulnerable         safe                 safe
 ```
 
-Only the **♥ body** takes damage. The head and rainbow can safely reach into danger to attack, collect power-ups, parry kernels and prepare the next launch.
+- **WASD** moves the vulnerable ♥ body.
+- **Arrow Keys** steer the safe head and horn.
+- Pull the body away from the horn to load the rainbow spring.
+- When the unicorn lights up, press **Space** to convert that tension into a **Rainbow Snap**.
 
-When the unicorn lights up, press **Space** and turn that tension into a **Rainbow Snap**.
+Only the ♥ body takes damage. The head and rainbow can safely reach into danger to attack, collect power-ups, Graze kernels, Parry projectiles and set up the next launch.
 
-The result is part action game, part elastic slingshot, part bullet-dodging geometry puzzle, and part argument with a deeply unreasonable amount of corn.
-
----
-
-## The game in 30 seconds
-
-1. **Choose a difficulty.** Press `1` Easy, `2` Normal, `3` Hard, or `4` Impossible. Space / Enter starts Normal.
-2. **Move the ♥ body with WASD.** This is the part enemies can hurt.
-3. **Aim the head with the Arrow Keys.** The horn rotates smoothly through continuous angles.
-4. **Pull the body away from the horn.** That loads the rainbow spring.
-5. **Watch the unicorn light up.** Glow + boing means Rainbow Snap is ready.
-6. **Press Space.** Launch through enemies, projectiles and pickups.
-7. **Turn, recharge and chain another Snap.** Good routes become Double Rainbows, Parries, Grazes and score.
-
-The strongest plays make one movement solve several problems at once: dodge a projectile, hit a cob, sweep through a power-up and set up the next attack before the rainbow finishes recoiling.
+The strongest plays make one movement solve several problems at once: dodge a kernel, lance through a cob, sweep up a power-up and land already positioned for another Snap.
 
 ---
 
 # 🌈 Four difficulty modes
 
-Stretchicorn supports four complete campaign modes. Difficulty changes **pressure and resource economy**, not the feel of the unicorn.
+v0.21.1 substantially rebuilds the top of the difficulty ladder.
 
-| Mode | Launch key | Enemy density | Attack pressure | Friendly pickups | Intended feel |
-|---|---:|---:|---:|---:|---|
-| **Easy** | `1` | ~0.7× | ~0.7× | more frequent | learn the two-handed controls |
-| **Normal** | `2` | 1.0× | 1.0× | original cadence | the original balanced campaign |
-| **Hard** | `3` | ~1.3× | ~1.3× | less frequent | denser routing and faster decisions |
-| **Impossible** | `4` | ~1.6× | ~1.6× | substantially scarcer | maximum corn pressure |
+| Key | Mode | Pressure | What changes |
+|---|---|---:|---|
+| `1` | **Easy** | `0.7×` | fewer enemies, slower attack pressure, more forgiving pickups |
+| `2` | **Normal** | `1.0×` | the original balanced Stretchicorn campaign |
+| `3` | **Hard** | `1.6×` | the former Impossible mode, now correctly labeled as a serious challenge |
+| `4` | **Impossible** | `2.4×` | extreme density plus HP, movement, projectile, terrain and resource scaling |
 
-**Normal is the exact gameplay baseline.** Player movement speed, spring physics, damage rules, enemy movement speed and telegraph durations remain unchanged across modes. Harder modes increase how many threats you must solve and how often attacks arrive, without making warnings unfairly shorter.
+Pressing **Space / Enter** on the title screen always starts Normal. A Game Over retry preserves the selected difficulty.
 
-Difficulty also scales boss reinforcement ceilings so late fights continue escalating instead of hitting the Normal population cap too early.
+### Hard
 
-A few representative starting populations:
+Hard is the old top difficulty intact: approximately **1.6× stage density / attack pressure**, higher reinforcement ceilings and scarcer power-ups. It keeps enemy HP, hostile movement speed and Husk Shift timing at their normal values, so it remains demanding without becoming a different ruleset.
+
+### Impossible
+
+Impossible is now designed as a genuinely different survival problem rather than simply “a little more corn.” It combines:
+
+- **2.4× pressure scalar** for initial stage populations and enemy attack clocks,
+- **1.5× enemy HP**,
+- **1.25× enemy movement speed**,
+- **1.25× hostile projectile speed**,
+- **1.25× Husk Shift cycle speed**,
+- substantially **scarcer friendly power-ups**,
+- higher boss reinforcement ceilings.
+
+The unicorn itself stays responsive. Player movement, spring feel and damage-per-hit are not nerfed. Impossible makes the *world* more dangerous instead of making the controls unpleasant.
+
+Representative starting populations:
 
 | Trial | Easy | Normal | Hard | Impossible |
 |---|---:|---:|---:|---:|
-| 1 · Pastel Patch | 3 | 5 | 6 | 8 |
-| 5 · Maize Monarch | 3 | 4 | 5 | 6 |
-| 9 · Husk Architect | 1 | 1 | 1 | **2 Architects** |
-| 11 · Kernel Gauntlet | 14 | 21 | 28 | **34** |
-| 13 · Cobtopus | 8 | 11 | 14 | **16** |
+| 1 · Pastel Patch | 3 | 5 | 8 | **12** |
+| 5 · Maize Monarch | 3 | 4 | 6 | **8** |
+| 9 · Husk Architect | 1 | 1 | 2 | **2** |
+| 11 · Kernel Gauntlet | 14 | 21 | 34 | **50** |
+| 13 · Cobtopus | 8 | 11 | 16 | **22** |
 
-If you die and retry, the selected difficulty is preserved. Returning to the title screen is how you pick a new mode.
+The complete scaling matrix lives in [`docs/difficulty-modes.md`](docs/difficulty-modes.md).
 
-See [`docs/difficulty-modes.md`](docs/difficulty-modes.md) for the complete 52-stage/mode population matrix and scaling rules.
+---
+
+# 👑 Impossible Encore
+
+Beating Trial 13 on Impossible is **not the ending anymore**.
+
+When the first Cobtopus falls, the arena clears, Husk Shift begins a fresh warning cycle, and the three signature bosses deploy together:
+
+```text
+         MAIZE MONARCH        COBTOPUS
+              🌽                 🐙🌽
+
+                    ♥🌈🦄
+
+              HUSK ARCHITECT
+                   🌽▦
+```
+
+You must survive:
+
+- **Cobtopus** radial and curved projectile pressure,
+- **Maize Monarch** phased aimed fans and reinforcements,
+- **Husk Architect** projectile fans plus shifting arena geometry,
+- all at the **same time**.
+
+The normal victory state is locked until every encore boss is defeated. Clearing the trio unlocks the special **IMPOSSIBLE!** ending.
+
+Hard, Normal and Easy still end normally after the Trial 13 Cobtopus.
 
 ---
 
 # 🎮 Controls
 
 <div align="center">
-
-<img src="docs/stretchicorn-controls.svg" alt="Stretchicorn control diagram: WASD moves the vulnerable body, arrow keys aim the safe head, Space attacks and Rainbow Snaps" width="900">
-
+<img src="docs/stretchicorn-controls.svg" alt="Stretchicorn controls: WASD body movement, arrows head aim, Space attack" width="900">
 </div>
 
 | Input | Action |
@@ -98,122 +126,90 @@ See [`docs/difficulty-modes.md`](docs/difficulty-modes.md) for the complete 52-s
 | **Space** | Horn strike / Rainbow Snap |
 | **P** | Pause / resume |
 | **M** | Return to menu |
-| **C** | Controls page |
-| **R** | Rules page |
-| **S** | Settings page |
+| **C** | Controls / rebinding |
+| **R** | Rules |
+| **S** | Music + SFX settings |
 
-### Custom controls
-
-The Controls page supports persistent rebinding for all nine gameplay actions. Duplicate assignments swap rather than coexist. `M` and `P` remain reserved for menu/pause. Bindings persist through `localStorage`.
-
-### Audio settings
-
-Music and gameplay sounds are independently adjustable and persistent from OFF through 100%.
+Controls are persistently rebindable. Duplicate assignments swap cleanly, while `M` and `P` remain reserved so custom bindings cannot strand the player inside a run.
 
 ---
 
 # 🌈 Core mechanics
 
-## Rainbow Spring
+### Rainbow Spring
 
-The player is represented by two important points:
-
-```text
-A = vulnerable ♥ body
-P = safe head / horn
-```
-
-The head is reconstructed from body position, aim direction and one scalar spring length:
+The head angle belongs to the Arrow Keys. The body-to-head distance behaves like a compact one-dimensional spring. Moving the body opposite the horn direction generates charge:
 
 ```text
-P = A + aimVector × springLength
+charge contribution = dot(movementDirection, -aimDirection)
 ```
 
-This keeps the character elastic **without sacrificing aiming precision**. Arrow input owns the angle, the spring owns the distance, and WASD movement loads the spring.
-
-### Pull to charge
-
-Spring charge comes from movement opposite the horn direction. Pull straight backward and charge quickly. Move sideways and the contribution falls. Move toward the horn and the spring does not load.
+This preserves precise aim while still letting the unicorn stretch, recoil and launch.
 
 ### Rainbow Snap
 
-A charged Space attack is attack, dash, traversal, dodge, pickup routing and combo setup in one verb.
+A charged Space attack is simultaneously:
 
-### Double Rainbow
+- an attack,
+- a dash,
+- a dodge,
+- traversal,
+- pickup routing,
+- combo setup.
 
-Recharge and Snap again during the short follow-up window for extra reach, damage, particles and safety.
+Recharge quickly and Snap again for a **Double Rainbow**, increasing reach, damage and safety.
 
 ### Popcorn Graze
 
-Skim a hostile kernel without touching the ♥ body to gain **+13 score and spring energy**.
+Skim a hostile kernel without touching the ♥ body:
+
+```text
+far      → safe
+near     → GRAZE +13 + spring
+contact  → damage
+```
 
 ### Kernel Parry
 
-Hit an incoming kernel with the horn to reflect it back into the corn army. Reflected kernels damage enemies and restore spring energy.
+Strike an incoming kernel with the horn to reflect it back into the corn army. Reflected kernels damage enemies, grant score and refill spring energy.
 
 ### Lucky 13
 
-Every 13 defeated enemies triggers a Lucky 13 burst with health, shield, spring energy, score and rainbow spectacle.
+Every 13 kills triggers a burst of health, shield, spring energy and score. It is both a comeback mechanic and an incentive to stay aggressive when the arena gets crowded.
 
 ---
 
-# 🌽 The corn army
+# 🌽 Enemy roster
 
-The campaign mixes a compact roster of enemies with different tactical roles rather than simply scaling health upward.
-
-| Enemy | What it asks from you |
+| Enemy | Tactical role |
 |---|---|
-| **Kernel Kamikaze** | Keep moving and protect the ♥ body |
-| **Cob Charger** | Read the telegraph and redirect the charge |
-| **Pop-Gunner** | Graze, Parry or route around ranged pressure |
-| **Prism Popper** | Handle curved multi-shot patterns |
-| **Husk Bruiser** | Commit to damage against armor |
-| **Husk Ram** | Use geometry and punish recovery |
-| **Maize Monarch** | Adapt through a four-phase mid-game boss |
-| **Husk Architect** | Read dynamic terrain while fighting |
-| **Cobtopus** | Combine everything in the final trial |
+| **Kernel Kamikaze** | body-pressure pursuit |
+| **Cob Charger** | telegraphed wall-crash attack |
+| **Pop-Gunner** | ranged kernel pressure |
+| **Prism Popper** | curved multi-shot patterns |
+| **Husk Bruiser** | armored commitment check |
+| **Husk Ram** | geometry + recovery punishment |
+| **Maize Monarch** | four-phase aimed-fan boss |
+| **Husk Architect** | dynamic-cover boss |
+| **Cobtopus** | radial final boss with adds and Husk Shift |
+
+Only Cob Chargers receive environmental wall-smash damage. Bosses cannot accidentally lose the fight to the arena.
 
 ---
 
-# 🌽 Power-ups
+# 🧱 Husk Shift
 
-Power-ups can be collected by the body **or anywhere along the stretched rainbow**.
-
-| Pickup | Effect |
-|---|---|
-| **♥ Heart Kernel** | Restore one heart |
-| **Husk Shield** | Absorb the next hit |
-| **Butter Boost** | Temporary movement speed |
-| **Prism Cob** | Easier spring charging |
-| **Gold Cob** | Temporary 2× score |
-
-Rainbow Snap temporarily increases collection reach, so efficient routes can attack and collect at the same time.
-
----
-
-# 🧱 Husk Shift: dynamic arena geometry
-
-Later trials introduce blocks that **warn, materialize, harden, protect, disappear and return somewhere else**.
+Trials 9 and 13 introduce dynamic blocks that change meaning over time:
 
 ```text
-WARNING / MATERIALIZING   2.0 s
-          ↓
-SOLID COVER               2.35 s
-          ↓
-OPEN ARENA
-          ↓
-new layout + repeat
+WARNING  → get out
+SOLID    → use it as cover
+OPEN     → survive without it
 ```
 
-If the body is still inside when the block hardens, the player loses a life and is knocked out of the new geometry. Once solid, that same block becomes useful cover against hostile kernels. Then it disappears again.
+The warning footprint freezes in place instead of chasing the player. When it hardens, anything still inside is ejected. Enemies are moved out safely rather than taking free environmental HP loss.
 
-### Trial 9: The Husk Architect
-
-The Husk Architect is an armored miniboss designed to teach the dynamic-cover rhythm before the finale.
-
-### Trial 13: The Cobtopus
-
-Cobtopus combines radial projectile patterns, multiple health phases, adds and three-block Husk Shift formations.
+Impossible accelerates this entire cycle by 25%, which means the player has less downtime between geometry decisions while also handling denser projectile fields.
 
 ---
 
@@ -233,28 +229,32 @@ Cobtopus combines radial projectile patterns, multiple health phases, adds and t
 12. **Double Cornbow**
 13. **The Cobtopus**
 
-You begin with **13 hearts** so a first run has enough room to learn the unusual controls before the campaign starts demanding precision.
+The campaign layers the control language rather than introducing thirteen disconnected gimmicks. Early trials teach body/head separation and Snap timing. Midgame adds Graze, Parry, armor and geometry. Late trials ask the player to combine those verbs under sustained pressure.
 
 ---
 
-# 🎵 POP DROP: procedural gaming EDM
+# 🎵 POP DROP
 
-Stretchicorn ships with **no audio files**. The soundtrack is synthesized at runtime with Web Audio oscillators and a tiny sequencer. Pitched kernel pops are shared between the soundtrack and gameplay so Parries, Grazes, enemy deaths and pickups become musical accents.
+Stretchicorn contains **no audio files**. Music and SFX are synthesized at runtime using Web Audio oscillators.
+
+The procedural soundtrack moves through arcade-EDM, trap-flavored switches and high-speed peaks while gameplay sounds use the same pitched kernel-pop family. Parries, Grazes and enemy deaths therefore feel like little percussive additions to the soundtrack rather than unrelated effects pasted on top.
+
+Music and SFX have independent persistent volume controls, including genuine zero-allocation `OFF` states.
 
 ---
 
-# 🚀 Play and install
+# 🚀 Play / build
 
-## Competition build
+### Competition build
 
-1. Download [`dist/stretchicorn-desktop-v0.21.0.zip`](dist/stretchicorn-desktop-v0.21.0.zip).
+1. Download [`dist/stretchicorn-desktop-v0.21.1.zip`](dist/stretchicorn-desktop-v0.21.1.zip).
 2. Unzip it.
 3. Open `index.html` in a modern desktop browser.
 4. Choose a difficulty with `1` through `4`, or press Space / Enter for Normal.
 
-The competition artifact is a self-contained single HTML file and works offline.
+The competition artifact is one self-contained HTML file and works offline.
 
-## Run the readable source locally
+### Readable source
 
 ```bash
 git clone https://github.com/sidhulyalkar/stretchicorn.git
@@ -262,40 +262,54 @@ cd stretchicorn
 python3 -m http.server 8080
 ```
 
+### Verify the js13k release
+
+```bash
+python3 -m pip install zopfli
+npm run verify
+```
+
+Useful individual commands:
+
+```bash
+npm run build
+npm test
+npm run smoke
+npm run package
+npm run check:size
+```
+
 ---
 
 # 🌊 Wavedash build
 
-The Wavedash integration lives only on the `platform/wavedash-v0.21.0` branch and stays **outside the 13KB competition artifact**.
+The Wavedash integration stays deliberately **outside the 13KB competition artifact**. There are two supported Wavedash paths.
 
 ### Direct dashboard upload
 
-If you download this branch as a ZIP and upload the project directly through the Wavedash dashboard, use the repository-root `index.html` as the entry point. That shell now initializes the injected Wavedash SDK **after all five Stretchicorn runtime scripts have loaded**, reports 100% load progress, and calls `Wavedash.init()` so the Wavedash loading overlay is released.
+The repository-root `index.html` loads the readable Stretchicorn source and then calls:
 
-This direct-upload handshake fixes the failure mode where a source-branch upload could sit forever at **0%** because the old root `index.html` never called the Wavedash SDK.
-
-### CLI platform build
-
-For a cleaner upload-only directory, the CLI path remains isolated:
-
-```bash
-npm run wavedash:build
-npm run wavedash:test
-npm run wavedash:dev
-npm run wavedash:push
+```js
+Wavedash.updateLoadProgressZeroToOne(1)
+Wavedash.init({debug:false})
 ```
 
-`wavedash:build` creates `wavedash-dist/index.html` from the compact game and appends the same Wavedash load/init handshake. `wavedash:test` verifies both upload paths and also asserts that `dist/index.html` contains **no Wavedash code**, protecting the js13k artifact.
+That handshake runs only after all five Stretchicorn runtime scripts have loaded, preventing the Wavedash playtest screen from remaining stuck at 0%.
 
-First-time setup:
+For a manual dashboard upload, download this Wavedash branch and upload the branch contents with the root `index.html` as the entrypoint.
+
+### CLI / isolated platform build
+
+Install and authenticate the Wavedash CLI, then initialize the project once:
 
 ```bash
 curl -fsSL https://wavedash.com/cli/install.sh | sh
+wavedash --version
 wavedash auth login
 wavedash init
 ```
 
-Keep the generated `game_id` and configure:
+Keep the generated real `game_id`, and point the generated `wavedash.toml` at the isolated platform folder:
 
 ```toml
 game_id = "YOUR_REAL_GAME_ID"
@@ -303,7 +317,27 @@ upload_dir = "./wavedash-dist"
 entrypoint = "index.html"
 ```
 
-Then `npm run wavedash:push` creates the platform build, runs the handshake regression, and uploads it.
+[`wavedash.example.toml`](wavedash.example.toml) contains the expected layout.
+
+The platform workflow is regression-gated:
+
+```bash
+npm run wavedash:test   # builds + validates both Wavedash entrypoints
+npm run wavedash:dev    # validates, then opens the Wavedash sandbox
+npm run wavedash:push   # validates, then uploads an immutable build
+```
+
+`npm run wavedash:build` first generates the normal competition HTML, then writes a separate `wavedash-dist/index.html` with the Wavedash readiness hook appended. The js13k `dist/index.html` is explicitly tested to ensure it contains **no** Wavedash platform code.
+
+A release can then be published with the build ID returned by Wavedash:
+
+```bash
+wavedash publish <BUILD_ID> \
+  --title "Stretchicorn v0.21.1" \
+  --summary "Four modes, 13 trials, and an Impossible three-boss encore." \
+  --added "Impossible Encore: Cobtopus + Maize Monarch + Husk Architect" \
+  --adjusted "Hard preserves the old Impossible; Impossible now scales HP, motion, projectiles, terrain cadence and resources"
+```
 
 ---
 
@@ -311,43 +345,92 @@ Then `npm run wavedash:push` creates the platform build, runs the handshake regr
 
 ```text
 stretchicorn/
-├── index.html              readable browser + direct Wavedash upload shell
+├── index.html
 ├── src/
-│   ├── 00-core.js          world state, stages, difficulty, geometry, audio
-│   ├── 01-combat.js        damage, Snap, Parry, Graze, Lucky 13
-│   ├── 02-update.js        fixed-step movement, spring physics, AI, difficulty
-│   ├── 03-render.js        Canvas renderer, HUD, warnings
-│   └── 04-ui-input.js      menus, difficulty launch, input, game loop
+│   ├── 00-core.js       state, spawning, geometry, difficulty, audio
+│   ├── 01-combat.js     Snap, Parry, Graze, scoring, boss-rush transition
+│   ├── 02-update.js     fixed 60 Hz simulation, AI, Impossible scaling
+│   ├── 03-render.js     Canvas art, HUD, boss identities, warnings
+│   ├── 04-ui-input.js   menus, difficulty launch, controls, victory flow
+│   └── style.css
 ├── scripts/
 │   ├── build.mjs
 │   ├── build-wavedash.mjs
 │   ├── test-wavedash.mjs
 │   ├── package.py
+│   ├── check-size.mjs
 │   ├── test.mjs
 │   └── release-smoke.mjs
-├── dist/                    js13k artifact
-└── wavedash-dist/           generated platform upload folder
+├── wavedash.example.toml
+└── dist/
+    └── stretchicorn-desktop-v0.21.1.zip
 ```
 
-The competition and Wavedash paths are intentionally separate. Platform-specific code never consumes competition bytes.
+Gameplay advances through a fixed **60 Hz accumulator**. Rendering occurs only after a useful simulation step, avoiding redundant full Canvas paints on 120 / 144 / 240 Hz displays while preserving the game's intended update cadence.
 
 ---
 
 # 📦 13KB engineering
 
-The four-mode competition candidate remains **13,294 / 13,312 bytes**, leaving **18 bytes free**. The Wavedash wrappers are not part of that ZIP.
+The v0.21.1 candidate archive is:
+
+```text
+13,270 / 13,312 bytes
+42 bytes free
+```
+
+The Impossible Encore needed much more behavior than the previous byte reserve could hold, so the release also reclaims space without removing gameplay:
+
+- dead player-head velocity state was removed,
+- the competition-only HTML shell was shortened,
+- responsive Canvas CSS was compacted,
+- the build aliases `Math` once and reuses the shorter identifier,
+- several high-frequency internal identifiers use verified one-character release aliases,
+- the new Encore function participates in the safe identifier-golfing pass.
+
+The readable source remains understandable. Only the generated competition artifact receives those byte-level transformations. Wavedash's SDK handshake lives outside the competition bundle.
 
 ---
 
 # 🧪 Validation
 
-The regression suite covers all four launch modes, the full 52 stage/mode population matrix, pickup cadence, attack-pressure scaling, preserved telegraphs, high-refresh input, focus pause, HUSKSHIFT, Cobtopus, safe spawns, Impossible stress runs and the exact 13KB artifact.
+The exact built artifact is regression-tested for:
 
-The Wavedash branch adds a platform regression that checks:
+- Easy / Normal / Hard / Impossible launch values and Trial 1 density,
+- Space / Enter Normal shortcut and retry preservation,
+- Hard preserving the former Impossible HP behavior,
+- Impossible 1.5× HP scaling,
+- Impossible hostile movement and projectile acceleration,
+- Impossible pickup scarcity and faster Husk Shift cycle,
+- the Cobtopus → three-boss Encore transition,
+- no premature victory while another Encore boss remains,
+- the final special Impossible victory state,
+- Hard finishing normally without the Encore,
+- 120 Hz attack-input retention and render gating,
+- blur auto-pause,
+- Husk Shift warning / harden behavior,
+- safe player spawning across all 13 Normal trials,
+- bounded entity / projectile populations during an Impossible Encore stress simulation,
+- Wavedash initialization for both root direct-upload and generated platform builds,
+- zero Wavedash contamination of the js13k artifact,
+- exact ZIP size below **13,312 bytes**.
 
-- the root direct-upload shell calls `updateLoadProgressZeroToOne(1)` and `Wavedash.init()` after the runtime scripts,
-- the generated `wavedash-dist/index.html` contains the same handshake,
-- the js13k `dist/index.html` remains free of Wavedash platform code.
+The deterministic v0.21.1 ZIP is **13,270 bytes**, leaving **42 bytes** in the byte vault.
+
+---
+
+# 🔧 v0.21.1 · IMPOSSIBLE ENCORE
+
+This release rebuilds the top of the ladder. The former Impossible has been promoted to **Hard**, while Impossible now attacks several difficulty dimensions simultaneously and hides one final fight behind the Cobtopus.
+
+```text
+Easy        learn the strange controller
+Normal      play the authored baseline
+Hard        master the original campaign under heavy pressure
+Impossible  survive an intentionally vicious ruleset, then prove it again
+```
+
+No new player verb was added. The difficulty comes from recombining systems learned across the campaign at much greater intensity.
 
 ---
 
@@ -355,4 +438,4 @@ The Wavedash branch adds a platform regression that checks:
 
 Designed and built for **js13kGames 2026** around the theme **Unicorns & Rainbows**.
 
-No external runtime assets. Just JavaScript, Canvas, Web Audio, one stretchy unicorn, and a corn problem that got considerably out of hand. 🌈🦄🌽
+No external runtime assets. Just JavaScript, Canvas, Web Audio, one elastic unicorn, and a corn problem that has now developed a second final boss fight. 🌈🦄🌽
