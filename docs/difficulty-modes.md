@@ -1,62 +1,23 @@
-# v0.21.1 Impossible Encore
+# v0.21.1 Impossible Anti-Chain Encore
 
-Stretchicorn keeps four launch modes, but v0.21.1 now treats Impossible as an expert ruleset rather than a larger swarm. Playtesting showed that simply adding enemies can backfire: strong players turn extra bodies into easier chains, more Lucky 13 triggers, and near-continuous Rainbow movement.
+Impossible is now an expert ruleset, not simply a larger swarm. Playtesting showed that adding more enemies can make strong players safer by creating easier chains, more Lucky 13 triggers, and more targets for perpetual Rainbow movement.
 
-| Key | Mode | Pressure scalar | Enemy population | Resources | Extra rules |
-|---|---|---:|---|---|---|
-| `1` | Easy | `0.7` | reduced | friendlier pickup cadence | onboarding |
-| `2` | Normal | `1.0` | original baseline | original baseline | canonical campaign |
-| `3` | Hard | `1.6` | high | scarcer pickups | preserves the former top-end swarm |
-| `4` | Impossible | `2.4` hostile clock | **capped at Hard density** | much scarcer pickups | piercing volleys, anti-chain economy, +50% HP, +25% hostile motion/projectiles, +25% Husk Shift cadence, boss-rush encore |
+| Key | Mode | Pressure | Population | Expert rules |
+|---|---|---:|---|---|
+| `1` | Easy | `0.7` | reduced | onboarding |
+| `2` | Normal | `1.0` | baseline | canonical campaign |
+| `3` | Hard | `1.6` | high | high-density campaign |
+| `4` | Impossible | `2.4` hostile clock | **capped at Hard density** | piercing volleys, no Lucky 13 healing, +50% HP, +25% hostile movement/projectiles, +25% Husk Shift cadence, scarce pickups, boss-rush encore |
 
-**Space / Enter** always starts Normal. Game Over retry preserves the chosen mode. Returning to the title lets the player choose again.
+Space / Enter still starts Normal. Game Over retry preserves the selected mode.
 
-## Scaling philosophy
+## Design principle
 
-Easy, Normal and Hard retain the same readable control contract: player movement, rainbow spring physics, damage taken per hit and warning presentation are unchanged.
+Impossible should challenge mastery instead of feeding it. The unicorn keeps the responsive movement, full combo scoring, normal Rainbow Snap, and normal Double Rainbow timing. The difficulty comes from threats that cannot all be converted into offense.
 
-Impossible is designed to attack the dominant advanced strategy instead of feeding it. Enemy population and boss reinforcement ceilings are capped at the Hard multiplier (`1.6×`), while the hostile simulation keeps the `2.4×` attack clock and its other expert modifiers:
+Starting populations and reinforcement ceilings therefore stop at the Hard `1.6×` multiplier. Impossible keeps the `2.4×` attack clock and adds durability, speed, terrain pressure, resource scarcity, and must-dodge projectiles.
 
-- every spawned enemy receives **1.5× HP**,
-- hostile enemies move **1.25× faster**,
-- hostile projectiles travel **1.25× faster**,
-- Husk Shift cycles progress **1.25× faster**,
-- friendly pickup opportunities are substantially less frequent,
-- combo multiplier is capped at **2.5×** instead of 4×,
-- Impossible combo windows decay after roughly **1.2 s**, or **1.8 s** for sling kills, instead of 2.5 / 3.5 s,
-- Double Rainbow's long invulnerability window is reduced from **0.55 s to 0.18 s**.
-
-The point is not to make the unicorn sluggish. The controls remain responsive. Impossible makes old mastery loops less self-sustaining and asks the player to make cleaner spatial decisions.
-
-## Cyan piercing kernels
-
-From Trial 3 onward, every third ranged volley on Impossible can become a **cyan piercing volley**.
-
-These larger kernels are deliberately outside the normal counter economy:
-
-- the horn **cannot parry** them,
-- grazing them grants **no +13 score and no spring charge**,
-- Rainbow Snap, Double Rainbow and sling/dash invulnerability **do not negate the hit**,
-- a Husk Shield can still absorb one, preserving a scarce defensive resource,
-- they are larger and rendered cyan so the player can read them as a distinct threat.
-
-They must therefore be dodged with positioning rather than converted into offense. This is the main answer to perpetual dash-and-chain play: the player can still move aggressively, but no longer has a universal counter state.
-
-## Lucky 13 on Impossible
-
-Lucky 13 remains part of the game's identity, but it no longer becomes a renewable life engine in Impossible.
-
-On Easy / Normal / Hard, every 13 kills still grants the familiar heart + shield + spring reward. On Impossible it grants only:
-
-- spring charge / Snap readiness,
-- `+130` score,
-- the Lucky 13 visual celebration.
-
-It does **not** restore a heart or grant a shield. The player can celebrate the streak without turning a dense encounter into extra health.
-
-## Representative starting populations
-
-Impossible now deliberately matches Hard population so additional targets cannot make chaining easier. The challenge comes from attack cadence, durability, piercing patterns, resource scarcity and the encore.
+Representative starting populations:
 
 | Trial | Easy | Normal | Hard | Impossible |
 |---|---:|---:|---:|---:|
@@ -66,31 +27,72 @@ Impossible now deliberately matches Hard population so additional targets cannot
 | 11 · Kernel Gauntlet | 14 | 21 | 34 | **34** |
 | 13 · Cobtopus | 8 | 11 | 16 | **16** |
 
-The full 13-trial starting populations are:
+## Cyan piercing kernels
 
-```text
-Easy       3  5  6  7  3   7   8   9  1  11  14  14   8
-Normal     5  7  9 11  4  11  12  15  1  17  21  20  11
-Hard       8 12 15 17  6  18  20  23  2  27  34  32  16
-Impossible 8 12 15 17  6  18  20  23  2  27  34  32  16
-```
+From the first ranged encounters onward, every third ranged volley on Impossible can become a larger cyan piercing volley.
+
+Piercing kernels deliberately sit outside the normal counter economy:
+
+- the horn cannot parry them,
+- grazing them gives no +13 score and no spring charge,
+- Rainbow Snap, Double Rainbow, and sling/dash invulnerability do not negate the hit,
+- a Husk Shield can still absorb one,
+- their larger cyan presentation distinguishes them from ordinary gold kernels.
+
+The Rules screen now states: **“Graze/parry gold. Cyan must be dodged.”**
+
+This is the main anti-dash check. Aggressive movement remains powerful, but invulnerability is no longer a universal answer.
+
+## Lucky 13 on Impossible
+
+Lucky 13 remains a core identity mechanic, but it is no longer a renewable life engine on Impossible.
+
+On Easy, Normal, and Hard, every 13 kills still grants the familiar heart + shield + spring reward. On Impossible it grants:
+
+- spring charge / Snap readiness,
+- `+130` score,
+- the Lucky 13 celebration.
+
+It does **not** restore a heart or grant a shield. High-level chaining remains valuable for score and offense without manufacturing survivability.
+
+## Existing Impossible pressure retained
+
+Impossible still keeps:
+
+- `2.4×` enemy attack/cooldown pressure,
+- `1.5×` enemy HP,
+- `1.25×` hostile movement speed,
+- `1.25×` hostile projectile speed,
+- `1.25×` Husk Shift progression,
+- substantially scarcer pickups,
+- the three-boss encore.
 
 ## Impossible Encore
 
-Defeating Cobtopus on Impossible is still a false summit.
+Defeating Trial 13 Cobtopus on Impossible is a false summit. The arena clears and deploys the three signature bosses together:
 
-The arena clears, Husk Shift starts a fresh warning cycle, and Stretchicorn must fight the three signature bosses **at the same time**:
+- Cobtopus,
+- Maize Monarch,
+- Husk Architect.
 
-- **The Cobtopus** keeps its radial / curved projectile identity and can emit piercing volleys.
-- **The Maize Monarch** returns with its phased aimed-fan behavior and can emit piercing volleys.
-- **The Husk Architect** adds dynamic terrain and projectile fans, including piercing cycles.
-
-The normal victory sequence is locked until all three encore bosses are defeated. Clearing the trio unlocks the special **IMPOSSIBLE!** ending.
-
-Hard and lower difficulties still finish immediately when Trial 13 Cobtopus is defeated.
+Victory remains locked until all three are defeated, which unlocks the special **IMPOSSIBLE!** ending. Hard and lower still finish immediately after Trial 13 Cobtopus.
 
 ## Verification
 
-The regression suite now covers all four launch scalars, the Hard-density cap on Impossible, retry behavior, Hard-vs-Impossible HP separation, pickup scarcity, hostile movement/projectile scaling, accelerated Husk Shift timing, Lucky 13's no-heal/no-shield expert rule, piercing-volley creation, zero graze charge from piercing kernels, piercing damage through dash invulnerability, safe spawns, fixed-step input behavior, the complete three-boss transition and a bounded Impossible encore stress run.
+The production VM regression suite covers:
 
-The source candidate has changed since the previous 13,270-byte archive. The release ZIP must be rebuilt and size-verified before replacing the competition artifact.
+- all four launch modes and retry behavior,
+- the Hard-density cap on Impossible,
+- Hard-vs-Impossible HP separation,
+- pickup scarcity and hostile speed scaling,
+- accelerated Husk Shift timing,
+- Lucky 13 with no Impossible heart/shield sustain,
+- real piercing-volley generation,
+- zero graze charge from piercing kernels,
+- piercing damage through dash/Rainbow invulnerability,
+- safe stage spawns,
+- input and blur/pause invariants,
+- the full three-boss transition,
+- a bounded 600-frame Impossible encore stress run.
+
+The exact production build passes the suite and packages to **13,285 bytes / 13,312 bytes**, leaving **27 bytes** of competition headroom.
