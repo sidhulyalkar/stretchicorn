@@ -1,4 +1,4 @@
-# v0.21.1 Impossible Anti-Chain Encore
+# v0.21.1 Impossible Anti-Chain + Splitcorn Encore
 
 Impossible is now an expert ruleset, not simply a larger swarm. Playtesting showed that adding more enemies can make strong players safer by creating easier chains, more Lucky 13 triggers, and more targets for perpetual Rainbow movement.
 
@@ -26,6 +26,31 @@ Representative starting populations:
 | 9 · Husk Architect | 1 | 1 | 2 | **2** |
 | 11 · Kernel Gauntlet | 14 | 21 | 34 | **34** |
 | 13 · Cobtopus | 8 | 11 | 16 | **16** |
+
+## Splitcorn death hierarchy
+
+Every difficulty now gets a second-stage enemy-death mechanic. Tough regular corn does not simply disappear when defeated: it breaks into **two easier descendants**.
+
+The hierarchy is deliberately one-generation only:
+
+- **Cob Charger → 2 Kernel Kamikazes**
+- **Pop-Gunner → 2 Kernel Kamikazes**
+- **Prism Popper → 2 Pop-Gunners**
+- **Husk Bruiser → 2 Pop-Gunners**
+
+Split-born children are marked terminal and **never split again**. This creates a readable kill → burst → cleanup rhythm without exponential enemy growth. Major campaign bosses also do not use the regular split table.
+
+This makes high-value targets more tactically interesting: deleting an elite creates immediate local pressure, so a Snap that kills the parent must also account for where its two descendants will occupy the arena. Initial stage population is unchanged; the extra pressure is earned dynamically through combat.
+
+### Impossible encore duplication
+
+The final three-boss encore has its own one-time split rule. On Impossible, the first lethal hit against each original encore boss destroys that original and creates **two full-strength copies of the same boss**:
+
+- Maize Monarch → 2 Maize Monarchs, preserving Monarch aimed-fan behavior,
+- Cobtopus → 2 Cobtopuses, preserving radial/curved pressure,
+- Husk Architect → 2 Husk Architects, preserving projectile and terrain pressure.
+
+Those six descendants are terminal: they cannot duplicate again. The encounter therefore has a controlled false-death escalation from **3 originals to up to 6 terminal boss copies**, rather than an unbounded boss recursion. Victory remains locked until every terminal copy is gone.
 
 ## Cyan piercing kernels
 
@@ -92,7 +117,10 @@ The production VM regression suite covers:
 - piercing damage through dash/Rainbow invulnerability,
 - safe stage spawns,
 - input and blur/pause invariants,
-- the full three-boss transition,
+- one-generation regular elite split mapping and no-recursion behavior,
+- one-time duplication of each Impossible encore boss into two same-identity copies,
+- terminal boss copies that cannot duplicate again,
+- the full three-boss transition and six-copy cleanup,
 - a bounded 600-frame Impossible encore stress run.
 
-The exact production build passes the suite and packages to **13,285 bytes / 13,312 bytes**, leaving **27 bytes** of competition headroom.
+The exact production build passes the suite and packages to **13,293 bytes / 13,312 bytes**, leaving **19 bytes** of competition headroom.
