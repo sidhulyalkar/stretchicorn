@@ -12,14 +12,16 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: python -m pip install zopfli
-      - run: npm run verify
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: stretchicorn-13k-candidate
-          path: dist/stretchicorn-desktop-v0.21.1.zip
+      - name: Fetch candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git init repo
+          cd repo
+          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          git fetch --depth=1 origin ${GITHUB_SHA}
+          git checkout FETCH_HEAD
+      - name: Install deterministic compressor
+        run: python3 -m pip install --user zopfli
+      - name: Verify tests, smoke and 13KB package
+        run: cd repo && npm run verify
