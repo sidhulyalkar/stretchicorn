@@ -392,6 +392,66 @@ npm run verify      # full release verification pipeline
 
 ---
 
+# 🌊 Wavedash build
+
+The Wavedash integration is intentionally kept **outside the 13KB competition artifact**. `npm run wavedash:build` first creates the normal Stretchicorn build, then writes a platform build to `wavedash-dist/index.html` with the Wavedash loader handshake appended.
+
+The platform wrapper reports 100% load progress and calls `Wavedash.init()` after Stretchicorn's single-file runtime has loaded. The original `dist/index.html` and competition ZIP remain untouched.
+
+### First-time Wavedash setup
+
+Install the Wavedash CLI, authenticate, then initialize the project from the repo root:
+
+```bash
+curl -fsSL https://wavedash.com/cli/install.sh | sh
+wavedash --version
+wavedash auth login
+wavedash init
+```
+
+When `wavedash init` creates `wavedash.toml`, keep the generated `game_id` and make sure the build fields point at the platform output:
+
+```toml
+game_id = "YOUR_REAL_GAME_ID"
+upload_dir = "./wavedash-dist"
+entrypoint = "index.html"
+```
+
+[`wavedash.example.toml`](wavedash.example.toml) contains the same layout as a reference.
+
+### Build and test inside the Wavedash sandbox
+
+```bash
+npm run wavedash:build
+wavedash dev
+```
+
+or use the convenience command:
+
+```bash
+npm run wavedash:dev
+```
+
+### Upload a playtest build
+
+```bash
+npm run wavedash:push
+```
+
+That builds the dedicated platform folder and runs `wavedash build push`. Wavedash returns an immutable build ID and playtest URL. Publishing remains an explicit second step:
+
+```bash
+wavedash publish <BUILD_ID> \
+  --title "Stretchicorn v0.21.0" \
+  --summary "13 trials, four difficulty modes, and an unreasonable quantity of corn." \
+  --added "Easy, Normal, Hard and Impossible modes" \
+  --adjusted "Enemy pressure and power-up cadence scale by difficulty"
+```
+
+This platform branch is therefore safe to iterate independently without spending competition bytes on hosting-specific code.
+
+---
+
 # 🧠 Architecture
 
 Stretchicorn is intentionally small enough that the readable source can be understood as a complete game rather than a framework.
@@ -408,12 +468,15 @@ stretchicorn/
 │   └── style.css
 ├── scripts/
 │   ├── build.mjs
+│   ├── build-wavedash.mjs
 │   ├── package.py
 │   ├── check-size.mjs
 │   ├── test.mjs
 │   └── release-smoke.mjs
 ├── docs/
 │   └── difficulty-modes.md
+├── wavedash.example.toml
+├── wavedash-dist/       generated, ignored platform build
 └── dist/
     └── stretchicorn-desktop-v0.21.0.zip
 ```
@@ -471,7 +534,7 @@ The current four-mode competition candidate is:
 18 bytes free
 ```
 
-The runtime contains no external images, fonts, music files, frameworks or game engine. The hero art and control diagram in this README are repository documentation only.
+The runtime contains no external images, fonts, music files, frameworks or game engine. The hero art, control diagram, Wavedash wrapper and documentation are repository/platform assets only.
 
 The repository keeps readable source while the release builder compacts it into a single HTML file, packages that exact file, and tests the artifact that will actually be submitted.
 
