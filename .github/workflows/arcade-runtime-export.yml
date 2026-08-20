@@ -1,0 +1,31 @@
+name: Arcade Runtime Export
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Build single-file runtime
+        run: npm run build
+      - name: Verify browser runtime
+        run: |
+          test -s dist/index.html
+          grep -q '<canvas id=c' dist/index.html
+      - name: Upload arcade runtime
+        uses: actions/upload-artifact@v7
+        with:
+          name: stretchicorn-arcade-runtime
+          path: dist/index.html
+          if-no-files-found: error
+          retention-days: 1
