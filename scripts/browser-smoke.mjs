@@ -2,6 +2,7 @@ import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 
 const engine = process.env.BROWSER || process.argv[2] || 'chromium';
+const artifact = process.env.BROWSER_HTML || 'dist/index.html';
 let playwright;
 try {
   playwright = await import('playwright');
@@ -12,7 +13,7 @@ try {
 const launcher = playwright[engine];
 if (!launcher || typeof launcher.launch !== 'function') throw new Error(`Unsupported browser engine: ${engine}`);
 
-const html = await readFile('dist/index.html');
+const html = await readFile(artifact);
 const server = createServer((req, res) => {
   if (req.url === '/' || req.url === '/index.html') {
     res.writeHead(200, {'content-type':'text/html; charset=utf-8','cache-control':'no-store'});
@@ -79,7 +80,7 @@ try {
   if (external.length) throw new Error(`external requests attempted: ${[...new Set(external)].join(', ')}`);
   if (pageErrors.length) throw new Error(`page errors: ${pageErrors.join(' | ')}`);
   if (consoleErrors.length) throw new Error(`console errors: ${consoleErrors.join(' | ')}`);
-  console.log(`PASS: ${engine} loaded exact dist, rendered canvas, accepted gameplay/pause/menu input, and attempted no external requests`);
+  console.log(`PASS: ${engine} loaded ${artifact}, rendered canvas, accepted gameplay/pause/menu input, and attempted no external requests`);
   await context.close();
 } finally {
   if (browser) await browser.close();

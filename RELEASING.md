@@ -50,16 +50,17 @@ After any gameplay or source change intended for release, commit the regenerated
 
 ## Real-browser smoke tests
 
-The deterministic release checks are complemented by real Chromium and Firefox smoke tests in GitHub Actions. The browser harness loads the exact `dist/index.html`, verifies the 960×640 Canvas is visible, starts a run from keyboard input, exercises pause/menu controls, fails on page or console errors, and blocks/fails any external request attempt.
+The deterministic release checks are complemented by real Chromium and Firefox smoke tests in GitHub Actions. CI first extracts the committed `dist/stretchicorn-js13k.zip`, then serves that exact root-level `index.html`. The browser harness verifies the 960×640 Canvas is visible, starts a run from keyboard input, exercises pause/menu controls, fails on page or console errors, and blocks/fails any external request attempt.
 
-To run the same browser harness locally:
+To run the same exact-ZIP browser harness locally:
 
 ```bash
 npm install --no-save --package-lock=false playwright@1.55.0
 npx playwright install chromium firefox
-npm run build
-BROWSER=chromium npm run browser:smoke
-BROWSER=firefox npm run browser:smoke
+rm -rf .tmp-js13k && mkdir .tmp-js13k
+python3 -m zipfile -e dist/stretchicorn-js13k.zip .tmp-js13k
+BROWSER=chromium BROWSER_HTML=.tmp-js13k/index.html npm run browser:smoke
+BROWSER=firefox BROWSER_HTML=.tmp-js13k/index.html npm run browser:smoke
 ```
 
 Playwright is intentionally a CI/developer harness only. It is never bundled into the competition ZIP.
@@ -79,10 +80,10 @@ Old versioned ZIPs may remain in `dist/` as historical release snapshots. `stret
 
 ## CI invariants
 
-`Verify js13k competition release` has two layers:
+`Verify js13k competition release` has two layers and can also be launched manually with `workflow_dispatch`:
 
 - **Competition integrity** rebuilds the canonical package and validates gameplay, offline behavior, archive structure, deterministic bytes, content parity, and size.
-- **Browser smoke** runs the built artifact independently in Chromium and Firefox.
+- **Browser smoke** extracts the exact stable submission ZIP and runs it independently in Chromium and Firefox.
 
 The integrity job then checks `git status` for `dist/`. If rebuilding changes a tracked artifact or creates a missing versioned/stable ZIP, CI fails with:
 
