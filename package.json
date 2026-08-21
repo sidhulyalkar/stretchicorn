@@ -8,6 +8,7 @@
     "check:size": "node scripts/check-size.mjs",
     "test": "npm run build && node scripts/test.mjs",
     "smoke": "npm run build && node scripts/release-smoke.mjs",
-    "verify": "npm test && node scripts/release-smoke.mjs && python3 scripts/package.py && npm run check:size"
+    "verify": "npm test && node scripts/release-smoke.mjs && python3 scripts/package.py && npm run check:size",
+    "release:competition": "npm run verify"
   }
 }
