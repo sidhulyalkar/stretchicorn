@@ -1,27 +1,37 @@
 name: Verify 13KB build
+
 on:
   push:
     branches:
+      - main
       - release/v0.21.0-performance-lock
       - platform/wavedash-v0.21.0
   pull_request:
     branches:
       - main
       - release/v0.21.0-performance-lock
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-13k-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch candidate
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          git init repo
-          cd repo
-          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          git fetch --depth=1 origin ${GITHUB_SHA}
-          git checkout FETCH_HEAD
+      - name: Check out candidate
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
       - name: Install deterministic compressor
         run: python3 -m pip install --user zopfli
-      - name: Verify tests, smoke and 13KB package
-        run: cd repo && npm run verify
+
+      - name: Verify tests, smoke, package, and 13KB limit
+        run: npm run verify
