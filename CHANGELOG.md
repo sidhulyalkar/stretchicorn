@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.21.1 — SPLITCORN IMPOSSIBLE ENCORE
+
+- Reworked Impossible around expert anti-chain pressure instead of raw population inflation. Starting populations and reinforcement ceilings now stop at the Hard `1.6×` density while Impossible keeps a `2.4×` hostile attack clock.
+- Added +50% enemy HP, +25% hostile movement/projectile speed, +25% Husk Shift cadence, and substantially scarcer pickups on Impossible.
+- Added cyan piercing volleys that cannot be parried or grazed and can damage through Rainbow Snap / dash invulnerability, forcing true dodge decisions.
+- Changed Impossible Lucky 13 so it still grants spring readiness and `+130` score but no longer restores a heart or grants a shield.
+- Added a one-generation Splitcorn hierarchy across all difficulties: Cob Charger and Pop-Gunner split into two Kernel Kamikazes; Prism Popper and Husk Bruiser split into two Pop-Gunners.
+- Marked all split-born regular enemies terminal so the mechanic cannot recurse into exponential swarm growth.
+- Added the Impossible three-boss Encore after Trial 13, combining Cobtopus, Maize Monarch, and Husk Architect simultaneously.
+- Added one false death for each original Encore boss. Each duplicates into two full-strength same-identity terminal copies, bounding the finale at six descendants and locking victory until cleanup is complete.
+- Added Easy / Normal / Hard / Impossible title-screen selection while preserving Space / Enter as the Normal shortcut and selected-difficulty retry behavior.
+- Expanded production-VM regression coverage for difficulty mapping, anti-chain rules, piercing shots, Lucky 13 behavior, Splitcorn mappings, terminal-copy cleanup, true Impossible victory, safe spawns, 120 Hz input retention, focus pause, Husk Shift, and bounded Encore populations.
+- Added a dedicated 13KB GitHub Actions verification workflow and aligned release documentation with the final Hard-density Impossible population cap.
+- Final competition ZIP: **13,293 / 13,312 bytes (19 bytes free)**.
+
 ## v0.21.0 — PERFORMANCE LOCK
 
 - Gated Canvas rendering to fixed 60 Hz simulation ticks, eliminating redundant full-scene redraws on 120/144/240 Hz displays without changing gameplay cadence.
@@ -91,7 +106,6 @@
 - Preserved precise horn-angle snapshots, faster continuous aiming, directional pull indicator, corn-themed power-ups, custom Enter-based rebinding, and the variable set-style procedural soundtrack from v0.20.0.
 - Added a release smoke test that exercises the exact built HTML through title, play, controls, combat, all 13 stages, and procedural audio scheduling.
 
-
 ## v0.20.0 — SETFLOW
 
 - Reworked procedural music into two-bar BUILD / DROP / BREAK / DROP 2 sections with frequent BPM movement.
@@ -110,7 +124,6 @@
 - Re-themed power-ups as magical corn pickups: Heart Kernel, Husk Shield, Butter Boost, Prism Cob, and Gold Cob.
 - Fixed Enter-based control rebinding and added duplicate-binding swap semantics.
 - Added stronger binding/music regression coverage and a whitespace-safe competition minifier.
-
 
 ## v0.18.0 — BASSBOW
 

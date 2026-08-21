@@ -6,13 +6,13 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-**A tiny desktop action game where you play as an enchanted unicorn gifted the power to rainbow-stretch and fight off an army of angry corn across 13 chaotic trials!**
+A 13KB desktop arcade-action game where you control an enchanted unicorn from both ends, stretch a rainbow spring, and fight an increasingly unreasonable corn army across 13 trials.
 
 Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
-[**Download the current v0.21.0 competition ZIP**](dist/stretchicorn-desktop-v0.21.0.zip)
+[**Download the v0.21.1 competition build**](dist/stretchicorn-desktop-v0.21.1.zip)
 
-**13 hearts · 13 trials · way too much corn**
+**13 hearts · 13 trials · 4 difficulty modes · one secret Impossible finale**
 
 </div>
 
@@ -20,204 +20,150 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 ## What is Stretchicorn?
 
-Stretchicorn is a fast arcade-action game built around one strange control idea: **the unicorn is controlled from both ends**.
-
-You move the vulnerable body with one hand, steer the safe head and horn with the other, then pull the two apart to charge the rainbow stretched between them.
+Stretchicorn is built around one unusual controller:
 
 ```text
 PULL ←     ♥ BODY ═══════ 🌈 RAINBOW ═══════ 🦄 HEAD / HORN     → AIM
            vulnerable         safe                 safe
 ```
 
-Only the **♥ body** takes damage. The head and rainbow can safely reach into danger to attack, collect power-ups, parry kernels and prepare the next launch.
+- **WASD** moves the vulnerable heart-body.
+- **Arrow Keys** steer the safe head and horn.
+- Pull the body away from the horn to load the rainbow spring.
+- When the unicorn lights up, press **Space** to launch a **Rainbow Snap**.
 
-When the unicorn lights up, press **Space** and turn that tension into a **Rainbow Snap**.
+Only the body takes damage. The head and rainbow can safely reach into danger to attack, collect power-ups, Graze ordinary kernels, Parry projectiles, and set up another launch.
 
-The result is part action game, part elastic slingshot, part bullet-dodging geometry puzzle, and part argument with a deeply unreasonable amount of corn.
-
----
-
-## The game in 30 seconds
-
-1. **Move the ♥ body with WASD.** This is the part enemies can hurt.
-2. **Aim the head with the Arrow Keys.** The horn rotates smoothly through continuous angles.
-3. **Pull the body away from the horn.** That loads the rainbow spring.
-4. **Watch the unicorn light up.** Glow + boing means Rainbow Snap is ready.
-5. **Press Space.** Launch through enemies, projectiles and pickups.
-6. **Turn, recharge and chain another Snap.** Good routes become Double Rainbows, Parries, Grazes and score.
-
-The strongest plays make one movement solve several problems at once: dodge a projectile, hit a cob, sweep through a power-up and set up the next attack before the rainbow finishes recoiling.
+Strong play turns one movement into several jobs at once: dodge, attack, collect, reposition, recharge, then chain the next Snap.
 
 ---
 
-# 🎮 Controls
+## 🎮 Controls
 
 <div align="center">
-
-<img src="docs/stretchicorn-controls.svg" alt="Stretchicorn control diagram: WASD moves the vulnerable body, arrow keys aim the safe head, Space attacks and Rainbow Snaps" width="900">
-
+<img src="docs/stretchicorn-controls.svg" alt="Stretchicorn controls: WASD body movement, arrows head aim, Space attack" width="900">
 </div>
 
 | Input | Action |
 |---|---|
-| **W A S D** | Move the vulnerable ♥ body |
-| **Arrow Keys** | Smoothly steer the safe head / horn |
+| **1 / 2 / 3 / 4** | Start Easy / Normal / Hard / Impossible |
+| **W A S D** | Move the vulnerable body |
+| **Arrow Keys** | Steer the safe head / horn |
 | **Space** | Horn strike / Rainbow Snap |
 | **P** | Pause / resume |
 | **M** | Return to menu |
-| **C** | Controls page |
-| **R** | Rules page |
-| **S** | Settings page |
+| **C** | Controls / rebinding |
+| **R** | Rules |
+| **S** | Music + SFX settings |
 
-### Custom controls
-
-The Controls page supports persistent rebinding for all nine gameplay actions.
-
-```text
-↑ / ↓         select action
-ENTER         begin rebinding
-press a key   assign it
-D             restore defaults
-M / ESC       back
-```
-
-Duplicate assignments swap rather than coexist. `M` and `P` remain reserved for menu/pause so a custom binding cannot accidentally break those global controls. Bindings persist through `localStorage`.
-
-### Audio settings
-
-Music and gameplay sounds are independently adjustable and persistent:
-
-```text
-Music        OFF / 25 / 50 / 75 / 100%
-Game Sounds  OFF / 25 / 50 / 75 / 100%
-```
+Space or Enter from the title screen starts **Normal**. Game Over retries preserve the selected difficulty. Controls are persistently rebindable, while `M` and `P` remain reserved so custom bindings cannot strand the player in a run.
 
 ---
 
-# 🌈 Core mechanics
+## 🌈 Difficulty ladder
 
-## Rainbow Spring
+v0.21.1 rebuilds the top of the difficulty curve around a specific playtest finding: **more enemies can actually make the game easier for expert players** because dense rooms provide more chain targets, more Lucky 13 triggers, and more opportunities to remain permanently aggressive.
 
-The player is represented by two important points:
+Impossible therefore stops scaling population beyond Hard density and instead attacks the systems that expert players were exploiting.
 
-```text
-A = vulnerable ♥ body
-P = safe head / horn
-```
+| Key | Mode | Pressure scalar | Population | Purpose |
+|---|---|---:|---|---|
+| `1` | **Easy** | `0.7×` | reduced | learn the controller |
+| `2` | **Normal** | `1.0×` | baseline | authored campaign |
+| `3` | **Hard** | `1.6×` | high | old top difficulty |
+| `4` | **Impossible** | `2.4×` attack clock | **capped at Hard density** | expert anti-chain ruleset |
 
-The head is reconstructed from body position, aim direction and one scalar spring length:
+Representative starting populations:
 
-```text
-P = A + aimVector × springLength
-```
+| Trial | Easy | Normal | Hard | Impossible |
+|---|---:|---:|---:|---:|
+| 1 · Pastel Patch | 3 | 5 | 8 | **8** |
+| 5 · Maize Monarch | 3 | 4 | 6 | **6** |
+| 9 · Husk Architect | 1 | 1 | 2 | **2** |
+| 11 · Kernel Gauntlet | 14 | 21 | 34 | **34** |
+| 13 · Cobtopus | 8 | 11 | 16 | **16** |
 
-This keeps the character elastic **without sacrificing aiming precision**. Arrow input owns the angle, the spring owns the distance, and WASD movement loads the spring.
+### Impossible anti-chain rules
 
-### Pull to charge
+Impossible keeps the unicorn responsive and preserves normal combo scoring, Rainbow Snap, and Double Rainbow timing. The world gets harsher instead:
 
-Spring charge comes from movement opposite the horn direction:
+- **2.4× hostile attack/cooldown pressure**
+- **1.5× enemy HP**
+- **1.25× hostile movement speed**
+- **1.25× hostile projectile speed**
+- **1.25× Husk Shift cadence**
+- substantially **scarcer pickups**
+- **cyan piercing volleys** that cannot be parried or grazed and can hit through Rainbow/dash invulnerability
+- **Lucky 13 no longer restores a heart or grants a shield** on Impossible
+
+Lucky 13 still grants spring readiness, `+130` score, and its celebration, so chaining remains valuable without becoming a renewable survival engine.
+
+The complete balance matrix and design rationale live in [`docs/difficulty-modes.md`](docs/difficulty-modes.md).
+
+---
+
+## 🌽 Splitcorn
+
+v0.21.1 also adds a one-generation death hierarchy across every difficulty. Tough regular corn creates a brief cleanup phase instead of simply disappearing:
+
+- **Cob Charger → 2 Kernel Kamikazes**
+- **Pop-Gunner → 2 Kernel Kamikazes**
+- **Prism Popper → 2 Pop-Gunners**
+- **Husk Bruiser → 2 Pop-Gunners**
+
+Split-born children are terminal and never split again. This creates a kill → burst → cleanup rhythm without exponential swarm growth.
+
+The mechanic changes target priority: deleting an elite is still rewarding, but the player must account for the immediate local pressure created by its descendants.
+
+---
+
+## 👑 Impossible Encore
+
+Trial 13 is a false summit on Impossible.
+
+Defeating the original Cobtopus clears the arena and deploys three signature bosses together:
+
+- **Cobtopus** with radial and curved projectile pressure
+- **Maize Monarch** with phased aimed fans and reinforcements
+- **Husk Architect** with projectile fans and shifting arena geometry
+
+Each original encore boss gets one false death:
+
+- **Maize Monarch → 2 Maize Monarchs**
+- **Cobtopus → 2 Cobtopuses**
+- **Husk Architect → 2 Husk Architects**
+
+The six possible descendants are terminal. The finale can therefore escalate from three originals to at most six copies without unbounded recursion. Victory remains locked until every terminal boss is gone, which unlocks the special **IMPOSSIBLE!** ending.
+
+Easy, Normal, and Hard still end normally after the Trial 13 Cobtopus.
+
+---
+
+## 🌈 Core mechanics
+
+### Rainbow Spring
+
+The Arrow Keys own the head angle while body-to-head distance behaves like a compact spring. Moving the body opposite the horn direction generates charge:
 
 ```text
 charge contribution = dot(movementDirection, -aimDirection)
 ```
 
-Pull straight backward and charge quickly. Move sideways and the contribution falls. Move toward the horn and the spring does not load.
+### Rainbow Snap
 
-A rear arrow shows the correct pull direction directly in the arena.
+A charged Space attack is simultaneously an attack, dash, dodge, traversal tool, pickup route, and combo setup. Recharge quickly and Snap again for a **Double Rainbow** with more reach, damage, and safety.
 
-### Snap-ready feedback
+### Popcorn Graze
 
-When the threshold is reached, the whole unicorn glows, the rainbow brightens, particles appear and a procedural **boing** sounds. The character itself becomes the readiness meter so the player does not need to stare at a HUD while dodging kernels.
+Skim an ordinary hostile kernel without touching the body to gain **+13 score and spring energy**. Cyan piercing kernels deliberately do not participate in this economy.
 
-## Rainbow Snap
+### Kernel Parry
 
-A charged Space attack combines several jobs into one verb:
+Hit an ordinary incoming kernel with the horn to reflect it into the corn army. Reflected kernels damage enemies, grant score, and restore spring energy. Cyan piercing kernels must be dodged instead.
 
-- horn attack,
-- dash,
-- traversal,
-- evasive movement,
-- brief safety window,
-- pickup routing,
-- combo setup.
+### Husk Shift
 
-## Double Rainbow
-
-Recharge and Snap again during the short follow-up window for extra reach, damage, particles and safety.
-
-## Popcorn Graze
-
-Skim a hostile kernel without touching the ♥ body to gain **+13 score and spring energy**.
-
-```text
-far      → safe
-near     → GRAZE +13 + spring
-contact  → damage
-```
-
-## Kernel Parry
-
-Hit an incoming kernel with the horn to reflect it back into the corn army. Reflected kernels damage enemies, restore spring energy and briefly create breathing room.
-
-## Lucky 13
-
-Every 13 defeated enemies triggers a Lucky 13 burst with health, shield, spring energy, score and rainbow spectacle.
-
----
-
-# 🌽 The corn army
-
-The campaign mixes a compact roster of enemies with different tactical roles rather than simply scaling health upward.
-
-| Enemy | What it asks from you |
-|---|---|
-| **Kernel Kamikaze** | Keep moving and protect the ♥ body |
-| **Cob Charger** | Read the telegraph and redirect the charge |
-| **Pop-Gunner** | Graze, Parry or route around ranged pressure |
-| **Prism Popper** | Handle curved multi-shot patterns |
-| **Husk Bruiser** | Commit to damage against armor |
-| **Husk Ram** | Use geometry and punish recovery |
-| **Maize Monarch** | Adapt through a four-phase mid-game boss |
-| **Husk Architect** | Read dynamic terrain while fighting |
-| **Cobtopus** | Combine everything in the final trial |
-
----
-
-# 🌽 Power-ups
-
-Power-ups are tiny magical cobs that can be collected by the body **or anywhere along the stretched rainbow**.
-
-| Pickup | Effect |
-|---|---|
-| **♥ Heart Kernel** | Restore one heart |
-| **Husk Shield** | Absorb the next hit |
-| **Butter Boost** | Temporary movement speed |
-| **Prism Cob** | Easier spring charging |
-| **Gold Cob** | Temporary 2× score |
-
-Rainbow Snap temporarily increases collection reach, so efficient routes can attack and collect at the same time.
-
----
-
-# 🧱 Husk Shift: dynamic arena geometry
-
-Later trials introduce blocks that **warn, materialize, harden, protect, disappear and return somewhere else**.
-
-```text
-WARNING / MATERIALIZING   2.0 s
-          ↓
-SOLID COVER               2.35 s
-          ↓
-OPEN ARENA
-          ↓
-new layout + repeat
-```
-
-One warning footprint freezes around the current ♥ body location. It does not chase the player. It gives two seconds to react.
-
-If the body is still inside when the block hardens, the player loses a life and is knocked out of the new geometry. Once solid, that same block becomes useful cover against hostile kernels. Then it disappears again.
-
-The same object therefore changes meaning over time:
+Trials 9 and 13 use dynamic blocks that cycle through warning, solid cover, and open arena states:
 
 ```text
 WARNING  → get out
@@ -225,19 +171,11 @@ SOLID    → exploit the cover
 OPEN     → survive without it
 ```
 
-Enemies are ejected from forming blocks **without taking environmental damage**, so the arena cannot solve the boss fight for you.
-
-### Trial 9: The Husk Architect
-
-The Husk Architect is a 16-HP armored miniboss designed to teach the dynamic-cover rhythm before the finale. It uses compact projectile fans while terrain exists, then becomes faster and fires wider spreads during open-arena windows.
-
-### Trial 13: The Cobtopus
-
-Cobtopus combines radial projectile patterns, multiple health phases, adds and three-block Husk Shift formations. Phase changes clear the current terrain so the player repeatedly has to survive without dependable cover.
+Enemies are ejected from forming blocks without taking free environmental damage, so the arena cannot solve boss fights for the player.
 
 ---
 
-# 🏁 The 13 trials
+## 🏁 The 13 trials
 
 1. **Pastel Patch**
 2. **Kernel Panic**
@@ -253,81 +191,32 @@ Cobtopus combines radial projectile patterns, multiple health phases, adds and t
 12. **Double Cornbow**
 13. **The Cobtopus**
 
-The campaign deliberately layers the control language:
-
-```text
-early game  → body/head separation + spring
-mid game    → Graze / Parry / armor / mixed projectiles
-late game   → mixed enemy roles + dynamic geometry
-Trial 9     → learn Husk Shift
-Trial 13    → solve Husk Shift while fighting Cobtopus
-```
-
-You begin with **13 hearts** so a first run has enough room to learn the unusual controls before the campaign starts demanding precision.
+The campaign layers one control language instead of introducing thirteen disconnected gimmicks. Early stages teach body/head separation and Snap timing. Midgame adds Graze, Parry, armor, and terrain. Late stages ask the player to combine all of those verbs under sustained pressure.
 
 ---
 
-# 🎵 POP DROP: procedural gaming EDM
+## 🎵 POP DROP
 
-Stretchicorn ships with **no audio files**. The soundtrack is synthesized at runtime with Web Audio oscillators and a tiny sequencer.
+Stretchicorn contains **no audio files**. Music and SFX are synthesized at runtime with Web Audio oscillators.
 
-The central audio idea is:
+The procedural soundtrack moves through arcade-EDM, trap-flavored switches, and high-speed peaks. Parries, Grazes, enemy deaths, and pickups reuse the same pitched kernel-pop family, so strong play becomes part of the percussion.
 
-> **If kernels are already popping constantly, make the pop part of the instrument.**
-
-The same pitched kernel-pop family appears in the soundtrack and in Parries, Grazes, enemy deaths and pickups, so good play naturally adds little accents to the music.
-
-The sequence moves through arcade-EDM energy, trap-flavored switches and a high-speed peak:
-
-```text
-168 → 174 BPM   build
-178 BPM         pop drop
-150 BPM         half-time trap switch
-162 BPM         sparse break
-184 BPM         high-speed peak
-176 BPM         drop variation
-154 BPM         trap fill
-repeat on a new root
-```
-
-A shared beat envelope also drives subtle rainbow sparks and streaks in the background. Every keyboard interaction wakes/resumes the `AudioContext`, avoiding common browser autoplay suspension problems.
+Music and SFX have independent persistent volume controls, including genuine zero-allocation `OFF` states.
 
 ---
 
-# ✨ Visual and UX design
+## 🚀 Play and build
 
-Everything in the competition build is procedural Canvas 2D.
+### Competition artifact
 
-The visual language is intentionally readable during chaos:
-
-- bright white unicorn against a dark arena,
-- rainbow body doubles as character and state feedback,
-- distinct corn silhouettes for enemy recognition,
-- exact horn trajectory reticle,
-- pull-direction arrow,
-- whole-unicorn Snap-ready glow,
-- warning footprints exactly where future blocks will harden,
-- concise trial cards between encounters,
-- separate Controls, Rules and Settings pages instead of a crowded title screen.
-
-A recurring design rule is:
-
-> **Put important information as close as possible to the thing it describes.**
-
----
-
-# 🚀 Play and install
-
-## Fastest way: use the competition build
-
-1. Download [`dist/stretchicorn-desktop-v0.21.0.zip`](dist/stretchicorn-desktop-v0.21.0.zip).
+1. Download [`dist/stretchicorn-desktop-v0.21.1.zip`](dist/stretchicorn-desktop-v0.21.1.zip).
 2. Unzip it.
-3. Open the included `index.html` in a modern desktop browser.
-4. Press a key to begin. That user gesture also unlocks Web Audio.
+3. Open `index.html` in a modern desktop browser.
+4. Choose a difficulty with `1` through `4`, or press Space / Enter for Normal.
 
-The competition artifact is a self-contained single HTML file and works offline.
+The archive contains one self-contained HTML file and works offline.
 
-## Run the readable source locally
+### Readable source
 
 ```bash
 git clone https://github.com/sidhulyalkar/stretchicorn.git
@@ -335,42 +224,37 @@ cd stretchicorn
 python3 -m http.server 8080
 ```
 
-Then open `http://localhost:8080`.
-
-## Build and verify
-
-Requires Node.js and Python 3. The release packer uses Python `zopfli` when available; install it for the same high-compression path used by the competition artifact:
+### Verify the release
 
 ```bash
 python3 -m pip install zopfli
 npm run verify
 ```
 
-Individual commands:
+Useful commands:
 
 ```bash
-npm run build       # build dist/index.html
-npm test            # regression tests against the built game
-npm run smoke       # exact-artifact release smoke test
-npm run package     # build + package + 13KB size check
-npm run verify      # full release verification pipeline
+npm run build       # generate dist/index.html
+npm test            # production-VM regression suite
+npm run smoke       # exact-artifact smoke test
+npm run package     # deterministic ZIP
+npm run check:size  # enforce the 13,312-byte limit
+npm run verify      # all release gates
 ```
 
 ---
 
-# 🧠 Architecture
-
-Stretchicorn is intentionally small enough that the readable source can be understood as a complete game rather than a framework.
+## 🧠 Architecture
 
 ```text
 stretchicorn/
 ├── index.html
 ├── src/
-│   ├── 00-core.js       world state, stages, spawning, geometry, audio core
-│   ├── 01-combat.js     damage, Snap, Parry, Graze, Lucky 13
-│   ├── 02-update.js     fixed-step movement, spring physics, AI, Husk Shift
-│   ├── 03-render.js     Canvas renderer, HUD, corn/unicorn art, warnings
-│   ├── 04-ui-input.js   title/menu/settings, rebinding, input, game loop
+│   ├── 00-core.js       state, spawning, geometry, difficulty, audio
+│   ├── 01-combat.js     Snap, Parry, Graze, scoring, Splitcorn, finale
+│   ├── 02-update.js     fixed 60 Hz simulation, AI, Impossible pressure
+│   ├── 03-render.js     Canvas art, HUD, boss identities, warnings
+│   ├── 04-ui-input.js   menus, difficulty launch, controls, victory flow
 │   └── style.css
 ├── scripts/
 │   ├── build.mjs
@@ -379,157 +263,49 @@ stretchicorn/
 │   ├── test.mjs
 │   └── release-smoke.mjs
 └── dist/
-    └── stretchicorn-desktop-v0.21.0.zip
+    └── stretchicorn-desktop-v0.21.1.zip
 ```
 
-```mermaid
-flowchart LR
-    I[Keyboard input] --> U[Fixed 60 Hz update]
-    U --> S[Body + spring state]
-    U --> E[Enemy / boss AI]
-    U --> H[Husk Shift state]
-    S --> C[Combat: Snap / Graze / Parry]
-    E --> C
-    H --> C
-    U --> R[Canvas renderer]
-    C --> R
-    H --> R
-    M[Procedural music sequencer] --> A[Web Audio]
-    M --> B[Beat envelope]
-    B --> R
-```
-
-### Fixed-step simulation
-
-`requestAnimationFrame` drives presentation, while gameplay advances through a fixed **60 Hz accumulator**. Spring behavior, enemy patterns and collisions therefore do not depend directly on display refresh rate.
-
-### Precise aim + one-dimensional spring
-
-A freely simulated 2-D head looked stretchy but could drift away from the player's intended attack angle. The current controller makes the angle authoritative and lets only the body-head distance behave elastically.
-
-### Shared systems do multiple jobs
-
-The 13KB constraint rewards mechanics that multiply:
-
-- Rainbow Snap = attack + movement + dodge + collection
-- enemy kernel = hazard + Graze resource + Parry ammunition
-- Husk block = warning + hazard + cover + route constraint
-- kernel pop = music voice + game SFX
-- beat clock = soundtrack timing + visual-reactivity timing
+Gameplay advances through a fixed **60 Hz accumulator**. Rendering occurs only after a useful simulation step, avoiding redundant full Canvas paints on 120 / 144 / 240 Hz displays while preserving gameplay cadence.
 
 ---
 
-# 📦 13KB engineering
+## 📦 13KB engineering
 
-The current competition archive is:
+The current deterministic v0.21.1 competition archive is:
 
 ```text
 13,293 / 13,312 bytes
 19 bytes free
 ```
 
-The runtime contains no external images, fonts, music files, frameworks or game engine. The hero art and control diagram in this README are repository documentation only.
+The runtime contains no external images, fonts, music files, framework, or game engine. Repository artwork and diagrams are documentation only.
 
-The repository keeps readable source while the release builder compacts it into a single HTML file, packages that exact file, and tests the artifact that will actually be submitted.
-
----
-
-# 🧪 Validation
-
-The regression and smoke-test layers cover the systems most likely to regress:
-
-- all 13 stages spawn safely,
-- spring and head states remain finite,
-- Enter-based rebinding works,
-- duplicate key assignments swap correctly,
-- reserved menu/pause keys cannot be rebound over gameplay actions,
-- held-key repeat cannot auto-fire Snap attacks,
-- a Space tap survives render-only frames at a simulated 120 Hz refresh rate and is consumed once by the next fixed update,
-- high-refresh displays skip redundant Canvas paints between 60 Hz simulation ticks,
-- persisted OFF audio settings reload as numeric zero and allocate no silent oscillator nodes,
-- losing window focus clears input and automatically pauses an active run,
-- edge spawns maintain a safety radius around the vulnerable ♥ body,
-- returning to the title resets the Canvas transform so screen shake cannot leak into menu placement,
-- Music and SFX settings remain independent,
-- Web Audio wakes from user input,
-- horn attacks keep their snapshotted direction,
-- Husk Shift warnings remain non-solid for two seconds,
-- hardening damages and ejects the ♥ body,
-- Husk Architect cannot kill itself on walls,
-- only Cob Chargers receive wall-smash damage; bosses and other enemies remain immune to environmental HP loss,
-- Cobtopus receives genuine no-cover intervals,
-- generated Canvas API calls remain valid,
-- the exact competition ZIP stays below 13,312 bytes.
+The readable source stays understandable while the release builder performs a tightly controlled minification and identifier-golfing pass on the generated competition artifact. The build also aliases `Math` and strips nonessential shell bytes to preserve room for gameplay.
 
 ---
 
-# 🔧 Current release: v0.21.0 PERFORMANCE LOCK
+## 🧪 Release validation
 
-v0.21.0 is a deliberately narrow performance and robustness pass. It keeps the complete HUSKSHIFT game intact while removing work that does not improve what the player sees or feels.
+The exact generated artifact is regression-tested for:
 
-### One simulation tick, one useful paint
-
-Stretchicorn already simulates at a fixed **60 Hz**, but older builds still repainted the entire procedural Canvas on every `requestAnimationFrame`. On 120/144/240 Hz displays that meant redrawing the same simulation state two to four times before anything in the world had changed.
-
-v0.21.0 keeps RAF as the browser clock but only redraws after at least one 60 Hz simulation step has completed. The game still responds and animates at the same gameplay cadence, while high-refresh displays avoid most duplicate Canvas work. Because screen-shake decay lives in the draw path, it now also advances at a stable 60 Hz cadence rather than disappearing faster on faster monitors.
-
-### Focus, audio and spawn safety
-
-Losing browser focus now clears held input, clears a pending attack and automatically pauses an active run. Persisted Music/SFX values are restored as numbers, so a saved **OFF** setting remains genuinely off after reload and skips silent Web Audio node allocation.
-
-Edge-spawned enemies now keep a safety radius around the vulnerable ♥ body. If a chosen edge point is too close, the spawn is mirrored to the opposite side instead of materializing on top of the player.
-
-### Tiny hot-path cleanup
-
-Wall collision lookup now uses a direct early-return loop instead of an `Array.find()` callback. The redundant nested Charger type check was removed, and returning to the title explicitly resets the Canvas transform so a strong final frame of screen shake cannot offset the menu.
-
-### Exact-artifact validation
-
-The release tests now cover the 60 Hz paint gate, simulated 120 Hz Space-tap retention, numeric persisted mute, blur auto-pause, safe edge spawning, existing HUSKSHIFT/Cobtopus behavior, audio/mixer settings, horn-angle locking and all 13 trial spawns.
-
-The exact deterministic Zopfli competition artifact is **13,293 / 13,312 bytes**, leaving **19 bytes free**.
-
-### Feature freeze
-
-No enemies, power-ups, boss phases, music layers or scoring systems were added. v0.21.0 is the version where the byte-scalpel stops cutting unless a real bug appears.
-
-<details>
-<summary><strong>Recent release history</strong></summary>
-
-### v0.21.0 · PERFORMANCE LOCK
-- Avoids redundant Canvas redraws between fixed 60 Hz simulation ticks on high-refresh displays.
-- Restores persisted OFF audio as numeric zero, auto-pauses on blur and protects edge spawns around the ♥ body.
-- Uses a direct wall-collision loop and resets title transforms after screen shake.
-- Final ZIP: **13,293 / 13,312 bytes (19 bytes free)**.
-
-### v0.20.8 · RELEASE LOCK
-- Latched attack input until the 60 Hz simulation consumes it, fixing short Space taps on high-refresh displays.
-- Restricted wall-smash HP damage to Cob Chargers only.
-- Preserved the 3:2 canvas ratio on short viewports.
-- Hardened exact-artifact tests and added a simulated 120 Hz input-retention check.
-- Final ZIP: **13,274 / 13,312 bytes (38 bytes free)**.
-
-### v0.20.7 · FINAL HARDENING
-- Prevented key-repeat auto-attacks.
-- Protected reserved menu/pause keys during rebinding.
-- Removed dead code and increased the submission margin to 28 bytes.
-
-### v0.20.6 · HUSKSHIFT FIX
-- Fixed the Canvas API rename bug in the competition build.
-- Hardened identifier golfing and exact-artifact validation.
-
-### v0.20.5 · HUSKSHIFT
-- Replaced Cob Crusher with the Husk Architect.
-- Added telegraphed dynamic blocks and open-arena boss windows.
-
-### v0.20.4 · POP DROP
-- Replaced dense bass synthesis with pitched kernel-pop hooks.
-- Added arcade-EDM, trap-switch and high-BPM sequence variation.
-- Fixed browser audio unlocking.
-
-See [`CHANGELOG.md`](CHANGELOG.md) for the longer development history.
-
-</details>
+- all four difficulty launch values and retry preservation
+- Hard-density population cap on Impossible
+- Hard vs Impossible HP separation
+- Impossible hostile movement/projectile speed and attack-clock scaling
+- pickup scarcity and accelerated Husk Shift
+- Impossible Lucky 13 with no heart/shield sustain
+- cyan piercing-volley generation, no Graze reward, and damage through dash/Rainbow invulnerability
+- one-generation Splitcorn mappings and no recursive child splitting
+- one-time duplication of all three Impossible encore bosses
+- terminal boss-copy cleanup and the true Impossible ending
+- Hard receiving no boss-rush duplication
+- 120 Hz input retention and 60 Hz render gating
+- focus-loss auto-pause
+- safe stage spawns
+- bounded enemy/projectile populations during an Impossible encore stress run
+- generated Canvas API safety
+- deterministic ZIP integrity and the exact **13,312-byte** competition limit
 
 ---
 
@@ -537,4 +313,4 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the longer development history.
 
 Designed and built for **js13kGames 2026** around the theme **Unicorns & Rainbows**.
 
-No external runtime assets. Just JavaScript, Canvas, Web Audio, one stretchy unicorn, and a corn problem that got considerably out of hand. 🌈🦄🌽
+No external runtime assets. Just JavaScript, Canvas, Web Audio, one elastic unicorn, and a corn problem that learned how to split itself. 🌈🦄🌽

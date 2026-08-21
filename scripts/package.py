@@ -3,7 +3,7 @@ from zipfile import ZipFile, ZIP_DEFLATED, ZipInfo
 import struct, zlib
 
 p=Path('dist/index.html')
-out=Path('dist/stretchicorn-desktop-v0.21.0.zip')
+out=Path('dist/stretchicorn-desktop-v0.21.1.zip')
 data=p.read_bytes(); name=b'index.html'
 
 # Zopfli is optional: when present we build a deterministic standards-compliant
@@ -12,7 +12,7 @@ try:
     from zopfli.zlib import compress
     raw=compress(data,numiterations=30)[2:-4]
     crc=zlib.crc32(data)&0xffffffff
-    tm=0; dt=(1<<5)|1  # 1980-01-01, deterministic ZIP timestamp
+    tm=0; dt=(1<<5)|1
     local=struct.pack('<IHHHHHIIIHH',0x04034b50,20,0,8,tm,dt,crc,len(raw),len(data),len(name),0)+name+raw
     central=struct.pack('<IHHHHHHIIIHHHHHII',0x02014b50,20,20,0,8,tm,dt,crc,len(raw),len(data),len(name),0,0,0,0,0,0)+name
     end=struct.pack('<IHHHHIIH',0x06054b50,0,0,1,1,len(central),len(local),0)
