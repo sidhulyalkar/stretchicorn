@@ -31,7 +31,7 @@ jobs:
           node-version: '22'
 
       - name: Install deterministic compressor
-        run: python3 -m pip install --user zopfli
+        run: python3 -m pip install --user zopfli==0.4.3
 
       - name: Verify tests, smoke, package, and 13KB limit
         run: npm run verify
