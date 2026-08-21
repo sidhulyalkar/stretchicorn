@@ -35,3 +35,13 @@ jobs:
 
       - name: Verify tests, smoke, package, and 13KB limit
         run: npm run verify
+
+      - name: Require committed competition artifact to match source
+        shell: bash
+        run: |
+          dirty="$(git status --porcelain --untracked-files=all -- dist)"
+          if [[ -n "$dirty" ]]; then
+            echo "Competition artifact is stale. Run: npm run release:competition"
+            echo "$dirty"
+            exit 1
+          fi
