@@ -1,6 +1,7 @@
-name: Verify 13KB build
+name: Verify js13k competition release
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -18,9 +19,14 @@ concurrency:
   group: verify-13k-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  CI: 'true'
+
 jobs:
-  verify:
+  competition-integrity:
+    name: Competition integrity
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check out candidate
         uses: actions/checkout@v5
@@ -30,13 +36,18 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
       - name: Install deterministic compressor
-        run: python3 -m pip install --user zopfli==0.4.3
+        run: python -m pip install --disable-pip-version-check zopfli==0.4.3
 
-      - name: Verify tests, smoke, package, and 13KB limit
-        run: npm run verify
+      - name: Rebuild and verify competition release
+        run: npm run release:competition
 
-      - name: Require committed competition artifact to match source
+      - name: Require committed competition artifacts to match source
         shell: bash
         run: |
           dirty="$(git status --porcelain --untracked-files=all -- dist)"
@@ -45,3 +56,49 @@ jobs:
             echo "$dirty"
             exit 1
           fi
+
+      - name: Print release fingerprints
+        run: sha256sum dist/stretchicorn-js13k.zip dist/stretchicorn-desktop-v*.zip
+
+  browser-smoke:
+    name: Browser smoke (${{ matrix.browser }})
+    needs: competition-integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Extract exact submitted ZIP
+        shell: bash
+        run: |
+          rm -rf .tmp-js13k
+          mkdir .tmp-js13k
+          python -m zipfile -e dist/stretchicorn-js13k.zip .tmp-js13k
+          test -f .tmp-js13k/index.html
+
+      - name: Install pinned Playwright harness
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.55.0
+
+      - name: Install ${{ matrix.browser }}
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Run real-browser offline smoke
+        env:
+          BROWSER: ${{ matrix.browser }}
+          BROWSER_HTML: .tmp-js13k/index.html
+        run: npm run browser:smoke
