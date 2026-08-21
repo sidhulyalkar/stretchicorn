@@ -1,0 +1,39 @@
+name: Verify Wavedash layer
+
+on:
+  push:
+    branches:
+      - platform/wavedash-v0.21.0
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'package.json'
+      - 'scripts/build-wavedash.mjs'
+      - 'scripts/test-wavedash.mjs'
+      - 'wavedash.example.toml'
+      - 'WAVEDASH.md'
+      - '.github/workflows/verify-wavedash.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-wavedash-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-wavedash:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Verify isolated Wavedash build
+        run: npm run wavedash:test
