@@ -1,3 +1,5 @@
 node_modules/
 .DS_Store
 dist/stretchicorn-cornstorm-build.zip
+wavedash-dist/
+wavedash.toml

@@ -9,6 +9,9 @@
     "test": "npm run build && node scripts/test.mjs",
     "smoke": "npm run build && node scripts/release-smoke.mjs",
     "verify": "npm test && node scripts/release-smoke.mjs && python3 scripts/package.py && npm run check:size",
-    "release:competition": "npm run verify"
+    "wavedash:build": "npm run build && node scripts/build-wavedash.mjs",
+    "wavedash:test": "npm run wavedash:build && node scripts/test-wavedash.mjs",
+    "wavedash:dev": "npm run wavedash:test && wavedash dev",
+    "wavedash:push": "npm run wavedash:test && wavedash build push"
   }
 }
