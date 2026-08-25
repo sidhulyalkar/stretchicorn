@@ -1,0 +1,35 @@
+name: Apply impact test support
+
+on:
+  push:
+    branches:
+      - feat/v0.22-rainbow-theatre
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-impact-test-support
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: feat/v0.22-rainbow-theatre
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - run: node scripts/apply-impact-test-support.mjs
+      - name: Commit test support
+        shell: bash
+        run: |
+          if [[ -n "$(git status --porcelain -- scripts/test.mjs scripts/release-smoke.mjs scripts/browser-smoke.mjs)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add scripts/test.mjs scripts/release-smoke.mjs scripts/browser-smoke.mjs
+            git commit -m "Exercise Heavy Drop render paths in release tests"
+            git push origin HEAD:feat/v0.22-rainbow-theatre
+          fi
