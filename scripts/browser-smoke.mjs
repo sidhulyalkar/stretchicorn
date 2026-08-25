@@ -72,10 +72,12 @@ try {
   if (menuFrame === playFrame) throw new Error('difficulty input did not visibly transition from menu to gameplay');
 
   if (process.env.IMPACT) {
-    await page.evaluate(() => window.eval('combo=4;hearts=3;queen=3;wave=13;stageT=0;draw()'));
+    // IMPACT targets the golfed readable build. These aliases are the stable semantic
+    // names defined by scripts/build.mjs and mirrored by release-smoke.mjs.
+    await page.evaluate(() => window.eval('_a=4;J=3;_c=3;L=13;_q=0;$y()'));
     await page.waitForTimeout(80);
     const overloadFrame = await canvas.evaluate(node => node.toDataURL());
-    await page.evaluate(() => window.eval('mode=5;winT=1;draw()'));
+    await page.evaluate(() => window.eval('mode=5;_K=1;$y()'));
     await page.waitForTimeout(80);
     const releaseFrame = await canvas.evaluate(node => node.toDataURL());
     if (overloadFrame === playFrame || releaseFrame === overloadFrame) throw new Error('impact render paths did not visibly change the canvas');
