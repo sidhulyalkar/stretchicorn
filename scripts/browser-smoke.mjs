@@ -71,6 +71,16 @@ try {
   const playFrame = await canvas.evaluate(node => node.toDataURL());
   if (menuFrame === playFrame) throw new Error('difficulty input did not visibly transition from menu to gameplay');
 
+  if (process.env.IMPACT) {
+    await page.evaluate(() => window.eval('combo=4;hearts=3;queen=3;wave=13;stageT=0;draw()'));
+    await page.waitForTimeout(80);
+    const overloadFrame = await canvas.evaluate(node => node.toDataURL());
+    await page.evaluate(() => window.eval('mode=5;winT=1;draw()'));
+    await page.waitForTimeout(80);
+    const releaseFrame = await canvas.evaluate(node => node.toDataURL());
+    if (overloadFrame === playFrame || releaseFrame === overloadFrame) throw new Error('impact render paths did not visibly change the canvas');
+  }
+
   await page.keyboard.press('p');
   await page.waitForTimeout(50);
   await page.keyboard.press('p');
