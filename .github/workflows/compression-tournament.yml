@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - feat/v0.22-rainbow-theatre
+  pull_request:
+    branches:
+      - chore/js13k-production-hardening
+      - main
   workflow_dispatch:
 
 permissions:
