@@ -1,3 +1,4 @@
+# One-shot artifact freezer for the already-qualified impact build.
 name: Freeze v0.22 Heavy Drop artifact
 
 on:
