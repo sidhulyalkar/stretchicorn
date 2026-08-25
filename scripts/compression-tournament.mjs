@@ -47,7 +47,10 @@ run('npx',['--yes','roadroller@2.1.0','-q','-O1','-D',`${root}/terser.js`,'-o',`
 wrap('30-terser-roadroller-o1',`${root}/terser-roadroller.js`);
 run('npx',['--yes','roadroller@2.1.0','-q','-O2','-D',`${root}/base.js`,'-o',`${root}/roadroller-o2.js`]);
 wrap('40-roadroller-o2',`${root}/roadroller-o2.js`);
-run('npx',['--yes','roadroller@2.1.0','-q','-O2','-D',`${root}/terser.js`,'-o',`${root}/terser-roadroller-o2.js`]);
+// Leave the winning Terser → Roadroller O2 search verbose once so CI records the
+// optimizer's exact fixed parameters. Production packaging will pin those parameters
+// and never run the stochastic optimizer.
+run('npx',['--yes','roadroller@2.1.0','-O2','-D',`${root}/terser.js`,'-o',`${root}/terser-roadroller-o2.js`]);
 wrap('50-terser-roadroller-o2',`${root}/terser-roadroller-o2.js`);
 
 // Whole-document mode lets Roadroller model the shell/CSS together with JavaScript.
