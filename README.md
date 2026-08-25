@@ -18,73 +18,52 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 ---
 
-## The premise
+## The living scar
 
 Stretchicorn begins **dead**.
 
-Some catastrophe tore the unicorn in two and drained almost all color from the world. The two halves lie separated in a dim, hostile cornfield until one thin ribbon of rainbow light finds them. It cannot restore the body that was lost, so it becomes the missing body itself: an elastic living bridge that stitches the unicorn back into motion.
-
-That makes the central mechanic the story:
+A catastrophe tore the unicorn into two pieces and drained nearly all color from the world. One surviving ribbon of rainbow finds the separated halves. It cannot rebuild the missing body, so it becomes the body instead, stitching Stretchicorn back into motion as an elastic bridge of living light.
 
 ```text
 PULL ←     ♥ BODY ═══════ 🌈 LIVING SCAR ═══════ 🦄 HEAD / HORN     → AIM
            vulnerable          life-force                 safe
 ```
 
-The rainbow is simultaneously:
+The rainbow is the resurrection, scar, spring, weapon, movement system, and the last source of full-spectrum color. Stretchicorn is not carrying a magical weapon. **Stretchicorn is being held alive by one.**
 
-- the force that resurrected Stretchicorn,
-- the scar holding its two halves together,
-- the spring used for movement,
-- the weapon used to fight,
-- and the last source of full-spectrum color in the world.
+The wider catastrophe remains deliberately mysterious. The story is communicated mainly through play, scenery, sound, boss architecture, and transitions rather than exposition.
 
-Stretchicorn is not carrying a magical weapon. **Stretchicorn is being held alive by one.**
-
-The game deliberately leaves the larger catastrophe mysterious. Did the corn destroy the old world, or merely survive whatever did? Why do the strongest corn creatures resist returning color? Is the rainbow a remnant of Stretchicorn's old magic or something that chose the unicorn after death?
-
-The story is told primarily through play, color, animation, music, bosses, and short transition tableaux rather than exposition. The full visual/narrative direction is documented in [`docs/rainbow-theatre-v0.22.md`](docs/rainbow-theatre-v0.22.md).
+See [`docs/rainbow-theatre-v0.22.md`](docs/rainbow-theatre-v0.22.md) for the full visual/narrative direction.
 
 ---
 
-## 🎮 The unusual controller
-
-- **WASD** moves the vulnerable ♥ body.
-- **Arrow Keys** steer the safe head and horn.
-- Pull the body away from the horn to stretch and charge the rainbow.
-- When the unicorn lights up, press **Space** to launch a **Rainbow Snap**.
-
-Only the body takes damage. The head and rainbow can safely reach into danger to attack, collect power-ups, Graze ordinary kernels, Parry projectiles, and prepare another launch.
-
-Strong play turns one movement into several jobs at once: dodge, attack, collect, reposition, recharge, then chain the next Snap.
-
-### Controls
+## 🎮 Controls
 
 | Input | Action |
 |---|---|
-| **1 / 2 / 3 / 4** | Start Easy / Normal / Hard / Impossible |
-| **W A S D** | Move the vulnerable body |
+| **1 / 2 / 3 / 4** | Easy / Normal / Hard / Impossible |
+| **W A S D** | Move the vulnerable heart-body |
 | **Arrow Keys** | Steer the safe head / horn |
 | **Space** | Horn strike / Rainbow Snap |
-| **P** | Pause / resume |
-| **M** | Return to menu |
-| **C** | Controls / rebinding |
+| **P** | Pause |
+| **M** | Menu |
+| **C** | Rebind controls |
 | **R** | Rules |
-| **S** | Music + SFX settings |
+| **S** | Music + SFX |
 
-Space or Enter from the title screen starts Normal. Game Over retries preserve the selected difficulty. Controls are persistently rebindable, while `M` and `P` remain reserved.
+Pull the body away from the horn to charge the living scar. A charged **Rainbow Snap** is attack, dash, dodge, traversal, pickup route, and combo setup at once.
+
+Only the ♥ body takes damage. The head and rainbow can safely reach into danger to attack, Graze ordinary kernels, Parry projectiles, and collect powerups.
 
 ---
 
-# 🌈 v0.22 — RAINBOW THEATRE
+# 🌈 v0.22 - RAINBOW THEATRE
 
-v0.22 is a presentation, clarity, and atmosphere release built around one goal: make the game feel like **procedural psychedelic storybook arcade art** without diluting the two-ended elastic-unicorn combat.
+The release goal is simple: make Stretchicorn feel like **procedural psychedelic storybook arcade art** while preserving the strange two-ended combat that makes it Stretchicorn.
 
-## 1. Playable resurrection tutorial
+## Resurrection as tutorial
 
-Trial 1 no longer throws instructions at the player on a timer.
-
-The unicorn's rainbow fades into existence as if re-stitching the two halves together. The tutorial advances only when the player performs the corresponding action:
+Trial 1 teaches through required actions rather than a timed rules dump:
 
 1. **WASD · MOVE THE HEART**
 2. **ARROWS · AIM THE HORN**
@@ -92,351 +71,305 @@ The unicorn's rainbow fades into existence as if re-stitching the two halves tog
 4. **SPACE · RAINBOW SNAP**
 5. **COLOR RETURNS.**
 
-The first corn remains dormant until the player's first Snap, making the tutorial playable rather than punitive. The heart and horn receive contextual visual focus instead of forcing the player to study a rules page before moving.
+The first corn remains dormant until the player's first Snap. The rainbow fades into existence during the opening, so learning the controls simultaneously tells the resurrection story.
 
-## 2. Thirteen procedural storybook chapters
+## Skill physically restores the world
 
-Every trial now has its own restrained dark palette and symbolic procedural backdrop. No image assets are stored in the runtime.
+The scene has a restoration intensity built from campaign progress, combo, Lucky 13, and victory state.
 
-The chapter motifs are drawn from Canvas primitives:
+At weak play the world remains muted and hostile. As performance rises:
 
-| Trial | Visual motif |
+- procedural motifs brighten,
+- spectral particles multiply,
+- flowers and stars gain color,
+- horizon rainbows become visible,
+- hostile silhouettes align into cleaner crystalline geometry,
+- stage clears hold the newly restored world for a short breathing beat.
+
+**Playing well teaches the world how to be colorful again.**
+
+## Thirteen procedural chapters
+
+Every trial has its own restrained palette and symbolic Canvas-built visual language. There are no runtime image assets.
+
+| Trial | Motif |
 |---|---|
-| **Pastel Patch** | sleeping blossoms |
-| **Kernel Panic** | marching stalks |
-| **Popcorn Front** | smoke fronts |
-| **Husk Maze** | looming maze pillars |
-| **Maize Monarch** | dead crowns / false court |
-| **Butter Blitz** | fast golden streaks |
-| **Husk Armor** | layered shell forms |
-| **Prism Popcorn** | broken-spectrum diamonds |
-| **Husk Architect** | blueprint geometry |
-| **Sugar Corn** | crystalline stars |
-| **Kernel Gauntlet** | army teeth / marching silhouettes |
-| **Double Cornbow** | paired rainbow arches |
-| **Cobtopus** | curling vortex forms |
+| Pastel Patch | sleeping blossoms |
+| Kernel Panic | marching stalks |
+| Popcorn Front | smoke fronts |
+| Husk Maze | looming maze pillars |
+| Maize Monarch | dead crowns and false court |
+| Butter Blitz | horizontal golden streaks |
+| Husk Armor | layered shells |
+| Prism Popcorn | broken-spectrum diamonds |
+| Husk Architect | drafting geometry |
+| Sugar Corn | crystalline stars |
+| Kernel Gauntlet | marching army teeth |
+| Double Cornbow | paired arches |
+| Cobtopus | curling vortex forms |
 
-The world starts dark and restrained. The player's rainbow remains the strongest full-spectrum object.
-
-## 3. Skill restores color
-
-Color is now a performance system, not just decoration.
-
-At low combo the environment stays subdued. As the player performs well, spectral contamination spreads through the scene:
-
-- clean chains brighten chapter motifs,
-- Grazes and Parries create chromatic fragments,
-- stronger combos enrich stars, horizon light, particles, and flowers,
-- Lucky 13 produces a restoration burst,
-- stage clear holds the restored world on screen for a short breathing beat.
-
-The visual metaphor is literal: **playing well teaches the dead world how to be colorful again.**
-
-## 4. More alive procedural characters
-
-Without adding sprite assets:
-
-- the unicorn body squashes and stretches with charge,
-- the head subtly breathes,
-- the eyes blink,
-- the body fades in during resurrection,
-- corn breathes subtly while alive,
-- enemies squash on impact.
-
-The goal is small-motion density: inexpensive animation that makes every procedural shape feel less schematic.
-
-## 5. Boss theatre and the Impossible false ending
-
-Bosses receive stronger entrance staging rather than simply appearing as large enemies.
-
-The Impossible finale now deliberately weaponizes relief:
-
-1. Cobtopus falls.
-2. The arena clears.
-3. The victory rhythm begins to resolve.
-4. Then: **NOT YET.**
-5. Maize Monarch, Cobtopus, and Husk Architect arrive together through rainbow entrance rings.
-6. Each original boss later performs its existing one-time false death and tears into two terminal same-identity copies.
-
-The HUD names the event **IMPOSSIBLE ENCORE · THE WORLD REFUSES**.
-
-The mechanic remains bounded: three originals can become at most six terminal descendants.
-
-## 6. Performance-reactive POP DROP
-
-Stretchicorn still contains no audio files. Music and SFX are synthesized at runtime with Web Audio.
-
-v0.22 makes performance part of the arrangement:
-
-- combo slightly increases musical tempo,
-- higher combo adds a compact high-frequency percussion voice,
-- combat effects continue sharing the same kernel-pop sonic family.
-
-A stronger run therefore sounds subtly more energized instead of playing the same mix irrespective of performance.
-
-## 7. Trial mastery grades + breathing beats
-
-Every non-final trial now derives a lightweight grade from information the game already has:
-
-- **S** · no damage and strong finishing combo
-- **A** · no damage
-- **B** · 1–2 hits taken
-- **C** · 3+ hits taken
-
-The grade appears inside a short **RESTORED** tableau after the fight. This gives players a legible mastery target without bolting on an upgrade tree or another core system.
+The player's scar remains the only object allowed to carry the full rainbow spectrum continuously.
 
 ---
 
-## 🌈 Difficulty ladder
+# 👑 Boss worlds
 
-The v0.21.1 anti-chain redesign remains intact underneath Rainbow Theatre.
+The major bosses no longer feel like large enemies pasted onto the same arena. Each one imposes a different visual grammar on the world.
 
-| Key | Mode | Pressure scalar | Population | Purpose |
-|---|---|---:|---|---|
-| `1` | **Easy** | `0.7×` | reduced | learn the controller |
-| `2` | **Normal** | `1.0×` | baseline | authored campaign |
-| `3` | **Hard** | `1.6×` | high | serious mastery challenge |
-| `4` | **Impossible** | `2.4×` attack clock | **capped at Hard density** | expert anti-chain ruleset |
+## Maize Monarch - the false court
 
-Impossible keeps the unicorn responsive while making the world harsher:
+The Monarch owns imperial verticality: earthen-gold banners, throne-like pillars, crown geometry, ritual symmetry, and slow low-register musical punctuation.
 
-- 2.4× hostile attack/cooldown pressure
-- 1.5× enemy HP
-- 1.25× hostile movement speed
-- 1.25× hostile projectile speed
-- 1.25× Husk Shift cadence
-- substantially scarcer pickups
-- cyan piercing volleys that cannot be parried or grazed and can hit through Rainbow/dash invulnerability
-- Lucky 13 still grants spring readiness and score but no heart/shield sustain
+The arena should feel less like a field and more like a civilization trying to declare itself permanent after color vanished.
 
-The complete balance matrix lives in [`docs/difficulty-modes.md`](docs/difficulty-modes.md).
+## Husk Architect - the machine that remakes space
 
-### Cyan piercing readability
+The Architect owns grids, drafting lines, construction circles, measured arcs, and Husk Shift geometry. Its arena looks planned rather than grown.
 
-Piercing shots are no longer differentiated by color alone. Their Canvas shape is a sharp directional spear/comet with a trailing streak, while ordinary kernels remain round. This keeps the mandatory-dodge rule readable under fast combat and for players who do not distinguish the colors strongly.
+That supports the gameplay fantasy: this boss does not merely attack Stretchicorn. It repeatedly **redesigns the room around it**.
 
----
+## Cobtopus - the world turned organic
 
-## 🌽 Splitcorn
+Cobtopus owns curling arms, vortex trajectories, radial pressure, and a submerged organic feel. Arena marks bend toward a shared center instead of obeying a grid.
 
-The one-generation death hierarchy remains across all difficulties:
+The geometry suggests that the corruption has stopped constructing structures and started behaving like an organism.
 
-- **Cob Charger → 2 Kernel Kamikazes**
-- **Pop-Gunner → 2 Kernel Kamikazes**
-- **Prism Popper → 2 Pop-Gunners**
-- **Husk Bruiser → 2 Pop-Gunners**
+## Impossible Encore - all rules collide
 
-Split-born children are terminal and never split again, creating a kill → burst → cleanup rhythm without exponential growth.
+The Trial 13 victory is a false summit on Impossible.
+
+Cobtopus falls. Pressure disappears. The music appears ready to resolve.
+
+Then:
+
+**NOT YET.**
+
+Maize Monarch, Husk Architect, and Cobtopus arrive together. The arena deliberately combines incompatible visual grammars into broken concentric rings and fractured radial lines. The world itself appears unable to decide which boss owns it.
+
+Each original boss gets one false death and tears into two same-identity terminal copies. The system is bounded at six descendants and victory remains locked until all terminal copies are gone.
 
 ---
 
-## 👑 Impossible Encore
+# 🔊 The Heavy Drop
 
-After the normal Trial 13 Cobtopus on Impossible, three signature bosses deploy together:
+The Impossible Encore has its own procedural half-time music state rather than simply playing normal POP DROP faster.
 
-- Cobtopus
-- Maize Monarch
-- Husk Architect
+When **NOT YET** triggers:
 
-Each original gets one false death and duplicates into two same-identity terminal copies. Victory remains locked until the entire terminal group is cleared.
+- the normal arrangement cuts into a sparse half-time pattern,
+- a synthesized sawtooth bass enters,
+- a resonant low-pass filter shapes the bass,
+- a 6 Hz LFO modulates the filter cutoff into a trench-style wobble,
+- sub kicks and sparse upper percussion leave room for the bass,
+- false-death events receive their own low falling stings.
 
-Easy, Normal, and Hard still end normally after Trial 13.
+Everything is generated with Web Audio. No audio samples are stored in the submission.
 
----
+## Kick-driven camera
 
-## Core combat language
+The same `beat` envelope that represents a procedural kick also drives the Canvas translation matrix. Normal music produces a small physical pulse. The Impossible Encore multiplies that pulse so the half-time hits shove the arena itself.
 
-### Rainbow Spring
-
-Moving the body opposite the horn direction generates charge:
-
-```text
-charge contribution = dot(movementDirection, -aimDirection)
-```
-
-### Rainbow Snap
-
-A charged Space attack is simultaneously attack, dash, dodge, traversal, pickup routing, and combo setup. Recharge quickly and Snap again for **Double Rainbow**.
-
-### Popcorn Graze
-
-Skim an ordinary hostile kernel without touching the vulnerable body to gain **+13 score and spring energy**. Cyan piercing kernels do not participate in the Graze economy.
-
-### Kernel Parry
-
-Strike an ordinary incoming kernel with the horn to reflect it into the corn army. Reflected kernels damage enemies, grant score, and restore spring energy. Cyan piercing kernels must be dodged.
-
-### Husk Shift
-
-Trials 9 and 13 cycle arena blocks through:
-
-```text
-WARNING → SOLID COVER → OPEN ARENA
-```
-
-Enemies are ejected from forming blocks without taking free environmental damage, so the arena cannot solve boss fights for the player.
+There is no second cinematic clock to drift out of sync with the soundtrack.
 
 ---
 
-## 🏁 The 13 trials
+# ⚡ Chromatic Overload
 
-1. Pastel Patch
-2. Kernel Panic
-3. Popcorn Front
-4. Husk Maze
-5. The Maize Monarch
-6. Butter Blitz
-7. Husk Armor
-8. Prism Popcorn
-9. The Husk Architect
-10. Sugar Corn
-11. Kernel Gauntlet
-12. Double Cornbow
-13. The Cobtopus
+Near maximum combo, the game enters an audiovisual overdrive state.
 
-The campaign layers one movement/combat language rather than introducing thirteen unrelated gimmicks.
+The completed scene is copied into one reusable off-screen Canvas and composited back with `globalCompositeOperation = 'screen'`. Two tiny beat-responsive offset copies use opposing hue rotations to create a laser-like channel split.
+
+The effect is conditional, reuses one persistent canvas, and appears only at elite combo. The main rainbow still reads as the source of the spectrum rather than turning every object into permanent rainbow noise.
 
 ---
 
-## 🚀 Play and build
+# 💔 The scar can fail
 
-### Competition artifact
+Health now has a direct visual consequence.
 
-For the easiest stable download, use:
+At critical hearts the living scar becomes unstable:
 
-[`dist/stretchicorn-js13k.zip`](dist/stretchicorn-js13k.zip)
+- internal control points pick up high-frequency randomized displacement,
+- the spectral strands narrow,
+- alpha begins to flicker,
+- the cable looks increasingly frayed and over-tensioned.
 
-The versioned release snapshot is:
+This is presentation only. The player's movement physics remain predictable. The game communicates danger by making the thing keeping Stretchicorn alive look as if it is coming apart.
 
-[`dist/stretchicorn-desktop-v0.22.0.zip`](dist/stretchicorn-desktop-v0.22.0.zip)
+---
 
-Both contain one root-level self-contained `index.html` and are byte-identical.
+# 🌅 The final release
 
-### Readable source
+The ending pays off the resurrection premise instead of merely displaying a score card.
 
-```bash
-git clone https://github.com/sidhulyalkar/stretchicorn.git
-cd stretchicorn
-python3 -m http.server 8080
-```
+Once the world is restored, the scar no longer needs to keep fighting. During the victory tableau:
 
-### Build the exact competition release
+- its tension visually fades,
+- the rainbow breaks into spectral shards,
+- the body and head drift gently apart,
+- both halves sink toward the now-vibrant earth,
+- the world reaches its fullest restoration state.
 
-```bash
-python3 -m pip install zopfli==0.4.3
-npm run release:competition
-```
+The final line is:
 
-The release pipeline is deliberately different from the readable/Wavedash build:
+**THE LAST RAINBOW LETS GO.**
 
-```text
-readable src
-   ↓ custom safe golf
-unpacked dist/index.html
-   ├── VM regression + exact-artifact smoke
-   ├── Wavedash build consumes this form
-   ↓ Terser 5.50.0
-   ↓ fixed deterministic Roadroller 2.1.0 model
-   ↓ Zopfli 0.4.3 / 80 iterations
-js13k ZIP
-```
+The ending is intentionally bittersweet. The force that resurrected Stretchicorn succeeds by eventually making itself unnecessary.
 
-Roadroller is run twice under the fixed production model and its outputs are byte-compared before packaging. The stochastic compression tournament was used only to discover the model and is not part of normal releases.
+---
+
+## 🌽 Splitcorn and Impossible anti-chain rules
+
+The v0.21.1 combat redesign remains intact.
+
+Splitcorn is one generation only:
+
+- Cob Charger → 2 Kernel Kamikazes
+- Pop-Gunner → 2 Kernel Kamikazes
+- Prism Popper → 2 Pop-Gunners
+- Husk Bruiser → 2 Pop-Gunners
+
+Split-born children never split again.
+
+Impossible caps population at Hard density rather than becoming easier through infinite chain fodder. It adds:
+
+- 2.4x hostile attack pressure,
+- 1.5x enemy HP,
+- 1.25x hostile movement and projectile speed,
+- 1.25x Husk Shift cadence,
+- scarcer pickups,
+- cyan piercing shots that must be dodged,
+- no heart/shield sustain from Lucky 13.
+
+Piercing shots use a sharp directional comet/spear shape so their mandatory-dodge rule is readable by shape, not color alone.
+
+See [`docs/difficulty-modes.md`](docs/difficulty-modes.md).
+
+---
+
+## 🏆 Mastery grades
+
+Non-final stages generate a compact restoration grade from existing telemetry:
+
+- **S** - zero damage and strong finishing combo
+- **A** - zero damage
+- **B** - 1 to 2 hits
+- **C** - 3+ hits
+
+A short `RESTORED · grade` tableau holds the stage after combat so the player can see what changed.
 
 ---
 
 ## 📦 13KB engineering
 
-Before Rainbow Theatre, v0.21.1 was essentially full:
+v0.21.1 had reached:
 
 ```text
 13,293 / 13,312 bytes
 19 bytes free
 ```
 
-The compression reclamation phase tested the current custom golf, Terser, Roadroller, combined Terser → Roadroller, deeper Roadroller search, and whole-document packing. The winning architecture was then frozen into a deterministic production recipe.
-
-After implementing the complete Rainbow Theatre pass and all thirteen procedural chapter motifs, the exact v0.22.0 archive is:
+A compression tournament was used to discover a stronger release architecture. Production releases now use:
 
 ```text
-11,582 / 13,312 bytes
-1,730 bytes free
+readable source
+      ↓
+custom safe golf
+      ↓
+Terser 5.50.0
+      ↓
+pinned Roadroller 2.1.0 model
+      ↓
+Zopfli 0.4.3 / 80 iterations
+      ↓
+js13k ZIP
 ```
 
-Exact verified SHA-256:
+Roadroller is run twice under the fixed model and the outputs are byte-compared before packaging. The exploratory optimizer is not part of normal releases.
+
+After Rainbow Theatre, all thirteen chapter motifs, Heavy Drop audio, kick camera, living-scar damage, Chromatic Overload, boss arena languages, and the final release ending, the qualified competition artifact is:
 
 ```text
-fa43b64d6dffa54d5d220f9ed9620697b3e04fe68ee5c7765dcf22925a4e63b1
+12,420 / 13,312 bytes
+892 bytes free
 ```
 
-So v0.22 is visually and structurally richer than v0.21.1 while retaining a substantial safety/iteration reserve instead of living one accidental semicolon from disqualification.
+SHA-256:
 
-No external runtime images, fonts, music files, framework, or game engine are used.
+```text
+a5d6bde0f3e3dbf134171550e962c5fb322c9a4b20629cbaff61e941bea70271
+```
+
+Runtime still contains no external images, fonts, music files, framework, or game engine.
 
 ---
 
-## 🧪 Release validation
+## 🧪 Qualification
 
-The release pipeline validates:
+The exact submission build is checked for:
 
-- all four difficulty launch values and retry preservation
-- action/input invariants and 120 Hz input retention
-- 60 Hz simulation/render gating
-- Hard-density Impossible population cap
-- Hard vs Impossible HP separation
-- Impossible hostile movement/projectile and attack-clock scaling
-- pickup scarcity and accelerated Husk Shift
-- Impossible Lucky 13 without heart/shield sustain
-- piercing generation, no piercing Graze reward, and damage through Rainbow invulnerability
-- one-generation Splitcorn and no recursive children
-- all three Impossible boss false deaths and terminal-copy cleanup
-- true Impossible ending
-- focus-loss auto-pause
-- safe stage spawns
-- bounded enemy/projectile populations during encore stress
-- generated Canvas API safety
-- offline/no-network runtime
-- one-file root-level ZIP structure
-- deterministic package equality
-- exact 13,312-byte ceiling
-- real Chromium and Firefox interaction smoke in the hardened release pipeline
-- Wavedash isolation from the competition artifact
+- all four difficulty modes,
+- 120 Hz input retention and fixed-step simulation behavior,
+- Impossible density/HP/speed/attack-pressure invariants,
+- piercing-shot rules,
+- Splitcorn terminal children,
+- bounded 3 → 6 Impossible Encore duplication,
+- Husk Shift geometry,
+- safe spawns and bounded populations,
+- offline/no-network runtime,
+- Canvas API safety,
+- deterministic one-file root-level ZIP structure,
+- exact 13,312-byte ceiling,
+- Wavedash isolation from the competition packer,
+- real Chromium exact-submission smoke,
+- real Firefox exact-submission smoke,
+- forced Chromium max-combo + critical-scar + final-release rendering,
+- forced Firefox max-combo + critical-scar + final-release rendering.
+
+All qualification gates are green for the current Heavy Drop build.
+
+---
+
+## 🚀 Build and play
+
+Competition ZIP:
+
+[`dist/stretchicorn-js13k.zip`](dist/stretchicorn-js13k.zip)
+
+Versioned snapshot:
+
+[`dist/stretchicorn-desktop-v0.22.0.zip`](dist/stretchicorn-desktop-v0.22.0.zip)
+
+Build the exact release:
+
+```bash
+python3 -m pip install zopfli==0.4.3
+npm run release:competition
+```
+
+Useful commands:
+
+```bash
+npm run build
+npm test
+npm run smoke
+npm run browser:smoke
+npm run wavedash:test
+npm run release:competition
+```
 
 ---
 
 ## Architecture
 
 ```text
-stretchicorn/
-├── index.html                 readable/Wavedash shell
-├── src/
-│   ├── 00-core.js             state, spawning, difficulty, procedural audio
-│   ├── 01-combat.js           Snap, Parry, Graze, scoring, Splitcorn, grades
-│   ├── 02-update.js           simulation, AI, tutorial, Impossible pressure
-│   ├── 03-render.js           storybook art, chapter motifs, HUD, theatre
-│   ├── 04-ui-input.js         menus, controls, title/victory flow
-│   └── style.css
-├── scripts/
-│   ├── build.mjs              readable → compact standalone HTML
-│   ├── pack-competition.mjs   deterministic Terser + Roadroller stage
-│   ├── package.py             deterministic Zopfli ZIP
-│   ├── verify-archive.py      ZIP structure/hash verification
-│   ├── check-offline.mjs      offline/runtime audit
-│   ├── browser-smoke.mjs      Chromium/Firefox interaction smoke
-│   ├── test.mjs               source/VM regression suite
-│   └── release-smoke.mjs      exact unpacked artifact semantic smoke
-├── docs/
-│   ├── rainbow-theatre-v0.22.md
-│   └── difficulty-modes.md
-└── dist/
-    ├── stretchicorn-js13k.zip
-    └── stretchicorn-desktop-v0.22.0.zip
+src/00-core.js       state, spawning, geometry, procedural audio
+src/01-combat.js     Snap, Parry, Graze, Splitcorn, scoring
+src/02-update.js     fixed-step simulation, AI, Impossible pressure
+src/03-render.js     storybook world, scar, boss arenas, overload
+src/04-ui-input.js   menus, tutorial, controls, victory flow
 ```
 
----
+Designed and built for **js13kGames 2026** around **Unicorns & Rainbows**.
 
-## Credits
-
-Designed and built for **js13kGames 2026 · Unicorns & Rainbows**.
-
-No external runtime assets. Just JavaScript, Canvas, Web Audio, one resurrected elastic unicorn, and a corn world slowly remembering color. 🌈🦄🌽
+No external runtime assets. Just JavaScript, Canvas, Web Audio, one resurrected elastic unicorn, and a corn world learning what color feels like. 🌈🦄🌽
