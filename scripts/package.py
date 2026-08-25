@@ -18,7 +18,7 @@ name = b'index.html'
 try:
     from zopfli.zlib import compress
 
-    raw = compress(data, numiterations=30)[2:-4]
+    raw = compress(data, numiterations=80)[2:-4]
     crc = zlib.crc32(data) & 0xffffffff
     tm = 0
     dt = (1 << 5) | 1
