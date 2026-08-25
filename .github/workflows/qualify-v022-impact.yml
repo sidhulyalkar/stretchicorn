@@ -1,3 +1,4 @@
+# Branch-only release qualification for the v0.22 impact pass.
 name: Qualify v0.22 Heavy Drop
 
 on:
