@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.22.0 - RAINBOW THEATRE / HEAVY DROP
+
+- Rebuilt the js13k release pipeline around deterministic custom golf → Terser 5.50.0 → a pinned Roadroller 2.1.0 model → Zopfli 0.4.3 at 80 iterations. Roadroller is executed twice and byte-compared before packaging.
+- Added the playable resurrection opening: Stretchicorn begins torn in two, the last rainbow re-stitches the halves as a living scar, and Trial 1 advances only after the player demonstrates movement, aiming, stretch, and Rainbow Snap.
+- Added thirteen dark procedural chapter palettes and symbolic Canvas motifs, with restoration-driven interpolation from irregular hostile silhouettes toward cleaner crystalline geometry.
+- Made successful play visibly restore the world. Combo, Lucky 13, campaign progress, and stage-clear state progressively reintroduce spectral particles, flowers, stars, horizon light, and motif clarity.
+- Added subtle procedural life animation to Stretchicorn and corn, including charge squash/stretch, breathing, blinking, impact compression, and scar fade-in during resurrection.
+- Added critical-health scar fraying: randomized control-point displacement, reduced strand width, and alpha instability make the rainbow visibly look close to failing without changing deterministic movement physics.
+- Added distinct boss arena languages: Maize Monarch uses false-court crown/banner geometry, Husk Architect uses drafting grids and construction arcs, and Cobtopus uses organic curling vortex forms.
+- Reworked the Impossible `NOT YET` reveal into a dedicated half-time Heavy Drop. A sawtooth bass is routed through a resonant low-pass filter whose cutoff is modulated by a 6 Hz LFO, with sparse sub kicks and false-death stings synthesized entirely through Web Audio.
+- Connected the existing procedural kick envelope to Canvas translation so Heavy Drop beats physically jolt the arena, with a stronger multiplier during the Impossible Encore.
+- Added max-combo Chromatic Overload using one reusable off-screen Canvas, `screen` compositing, beat-responsive offsets, and opposing hue rotations for a compact channel-split effect.
+- Added mastery grades and short restored-stage tableaux so cleared arenas remain visible long enough for the player to register the color they brought back.
+- Added a bittersweet final release: after restoration the living scar fades and shatters into spectral fragments while Stretchicorn's two halves drift apart and sink toward the restored earth. Final line: `THE LAST RAINBOW LETS GO.`
+- Preserved the v0.21.1 anti-chain Impossible rules, piercing-shot dodge language, one-generation Splitcorn, bounded 3→6 Encore, fixed-step simulation, and Wavedash isolation.
+- Added source, exact-artifact, and real-browser coverage for the new impact systems. The exact submission passes Chromium and Firefox smoke tests, plus forced max-combo, critical-scar, Encore-arena, and final-release rendering in both browsers.
+- Final qualified competition ZIP: **12,420 / 13,312 bytes (892 bytes free)**.
+- Qualified SHA-256: `a5d6bde0f3e3dbf134171550e962c5fb322c9a4b20629cbaff61e941bea70271`.
+
 ## v0.21.1 — SPLITCORN IMPOSSIBLE ENCORE
 
 - Reworked Impossible around expert anti-chain pressure instead of raw population inflation. Starting populations and reinforcement ceilings now stop at the Hard `1.6×` density while Impossible keeps a `2.4×` hostile attack clock.
