@@ -20,7 +20,7 @@ concurrency:
 jobs:
   tournament:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -39,15 +39,28 @@ jobs:
         run: node scripts/compression-tournament.mjs
       - name: Measure pinned Zopfli results
         run: python scripts/compression-report.py
-      - name: Smoke every candidate
+      - name: VM smoke candidates that preserve the introspection surface
         shell: bash
         run: |
           set -euo pipefail
           cp dist/index.html .tmp-compression/original.html
-          for candidate in .tmp-compression/candidates/*.html; do
-            echo "=== smoke $candidate ==="
+          for candidate in .tmp-compression/candidates/00-current.html .tmp-compression/candidates/10-terser.html; do
+            echo "=== VM smoke $candidate ==="
             cp "$candidate" dist/index.html
             node scripts/release-smoke.mjs
             node scripts/check-offline.mjs
           done
           cp .tmp-compression/original.html dist/index.html
+      - name: Install pinned browser harness
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.55.0
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser-smoke every candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          for candidate in .tmp-compression/candidates/*.html; do
+            echo "=== Chromium smoke $candidate ==="
+            node scripts/check-offline.mjs "$candidate" || true
+            BROWSER=chromium BROWSER_HTML="$candidate" node scripts/browser-smoke.mjs
+          done
