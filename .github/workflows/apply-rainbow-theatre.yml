@@ -26,8 +26,16 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Apply asserted source transformation
-        run: node scripts/apply-rainbow-theatre.mjs
+      - name: Repair patch seam and apply asserted source transformation
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs=require('fs'),p='scripts/apply-rainbow-theatre.mjs';
+          let s=fs.readFileSync(p,'utf8');
+          s=s.replace('X.lineTo(x+6,H-40);X.lineTo(x+22,H-53);X.stroke()}','X.moveTo(x+6,H-40);X.lineTo(x+22,H-53);X.stroke()}');
+          fs.writeFileSync(p,s);
+          NODE
+          node scripts/apply-rainbow-theatre.mjs
 
       - name: Commit transformed source if needed
         shell: bash
