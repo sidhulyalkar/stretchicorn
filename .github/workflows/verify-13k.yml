@@ -7,6 +7,7 @@ on:
       - main
       - release/v0.21.0-performance-lock
       - platform/wavedash-v0.21.0
+      - feat/v0.22-rainbow-theatre
   pull_request:
     branches:
       - main
