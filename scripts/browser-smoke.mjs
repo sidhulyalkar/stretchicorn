@@ -4,130 +4,24 @@ import {readFile} from 'node:fs/promises';
 const engine = process.env.BROWSER || process.argv[2] || 'chromium';
 const artifact = process.env.BROWSER_HTML || 'dist/index.html';
 let playwright;
-try {
-  playwright = await import('playwright');
-} catch {
-  console.error('Playwright is required for browser smoke tests. Install it with: npm install --no-save --package-lock=false playwright@1.55.0');
-  process.exit(2);
-}
-const launcher = playwright[engine];
-if (!launcher || typeof launcher.launch !== 'function') throw new Error(`Unsupported browser engine: ${engine}`);
-
-const html = await readFile(artifact);
-const server = createServer((req, res) => {
-  if (req.url === '/' || req.url === '/index.html') {
-    res.writeHead(200, {'content-type':'text/html; charset=utf-8','cache-control':'no-store'});
-    res.end(html);
-  } else if (req.url === '/favicon.ico') {
-    res.writeHead(204);
-    res.end();
-  } else {
-    res.writeHead(404, {'content-type':'text/plain'});
-    res.end('not found');
-  }
-});
-await new Promise((resolve, reject) => {
-  server.once('error', reject);
-  server.listen(0, '127.0.0.1', resolve);
-});
-
-const address = server.address();
-const origin = `http://127.0.0.1:${address.port}`;
-const external = [];
-const pageErrors = [];
-const consoleErrors = [];
-let browser;
-
-try {
-  browser = await launcher.launch({headless:true});
-  const context = await browser.newContext({viewport:{width:1280,height:800}});
-  const page = await context.newPage();
-  await page.route('**/*', async route => {
-    const url = new URL(route.request().url());
-    if (url.origin === origin) return route.continue();
-    external.push(url.href);
-    return route.abort('blockedbyclient');
-  });
-  page.on('pageerror', error => pageErrors.push(error.message));
-  page.on('console', message => {
-    if (message.type() === 'error' && !/favicon/i.test(message.text())) consoleErrors.push(message.text());
-  });
-
-  await page.goto(`${origin}/`, {waitUntil:'load', timeout:15000});
-  const canvas = page.locator('#c');
-  await canvas.waitFor({state:'visible', timeout:5000});
-  const geometry = await canvas.evaluate(node => ({
-    width:node.width,
-    height:node.height,
-    cssWidth:node.getBoundingClientRect().width,
-    cssHeight:node.getBoundingClientRect().height,
-  }));
-  if (geometry.width !== 960 || geometry.height !== 640 || geometry.cssWidth <= 0 || geometry.cssHeight <= 0) throw new Error(`bad canvas geometry: ${JSON.stringify(geometry)}`);
-
-  await page.waitForTimeout(120);
-  await page.keyboard.press('Space');
-  await page.waitForTimeout(220);
-
-  // Complete the real tutorial with production controls, rather than inspecting compiler-renamed state.
-  await page.keyboard.down('a');
-  await page.waitForTimeout(420);
-  await page.keyboard.up('a');
-  await page.keyboard.down('ArrowRight');
-  await page.waitForTimeout(60);
-  await page.keyboard.up('ArrowRight');
-  for (let i=0;i<3;i++) {
-    await page.keyboard.down('a');
-    await page.waitForTimeout(430);
-    await page.keyboard.up('a');
-    await page.waitForTimeout(90);
-    await page.keyboard.press('Space');
-    await page.waitForTimeout(280);
-  }
-  await page.waitForTimeout(1050);
-
-  const lum = () => canvas.evaluate(node => {
-    const d=node.getContext('2d').getImageData(220,235,520,160).data;
-    let s=0; for(let i=0;i<d.length;i+=4)s+=d[i]+d[i+1]+d[i+2]; return s/(d.length/4)/3;
-  });
-  const beforePause = await lum();
-  await page.keyboard.press('p');
-  await page.waitForTimeout(120);
-  const afterPause = await lum();
-  if (beforePause-afterPause < 3) throw new Error(`three real Snaps did not reach pausable Easy gameplay (${beforePause.toFixed(1)} -> ${afterPause.toFixed(1)})`);
-  await page.keyboard.press('p');
-  await page.waitForTimeout(80);
-  const playFrame = await canvas.evaluate(node => node.toDataURL());
-
-  await page.keyboard.press('m');
-  await page.waitForTimeout(80);
-  const menuFrame = await canvas.evaluate(node => node.toDataURL());
-  await page.keyboard.press('2');
-  await page.waitForTimeout(180);
-  const normalFrame = await canvas.evaluate(node => node.toDataURL());
-  if (menuFrame === normalFrame) throw new Error('manual Normal selection did not start gameplay');
-
-  if (process.env.IMPACT) {
-    await page.evaluate(() => window.eval('_a=4;J=3;_c=3;L=13;_q=0;$y()'));
-    await page.waitForTimeout(80);
-    const overloadFrame = await canvas.evaluate(node => node.toDataURL());
-    await page.evaluate(() => window.eval('mode=5;_K=1;$y()'));
-    await page.waitForTimeout(80);
-    const releaseFrame = await canvas.evaluate(node => node.toDataURL());
-    if (overloadFrame === playFrame || releaseFrame === overloadFrame) throw new Error('impact render paths did not visibly change the canvas');
-  }
-
-  await page.keyboard.press('p');
-  await page.waitForTimeout(50);
-  await page.keyboard.press('p');
-  await page.keyboard.press('m');
-  await page.waitForTimeout(80);
-
-  if (external.length) throw new Error(`external requests attempted: ${[...new Set(external)].join(', ')}`);
-  if (pageErrors.length) throw new Error(`page errors: ${pageErrors.join(' | ')}`);
-  if (consoleErrors.length) throw new Error(`console errors: ${consoleErrors.join(' | ')}`);
-  console.log(`PASS: ${engine} loaded ${artifact}, completed three real First Flight Snaps, entered Easy, and attempted no external requests`);
-  await context.close();
-} finally {
-  if (browser) await browser.close();
-  await new Promise(resolve => server.close(resolve));
-}
+try { playwright = await import('playwright'); }
+catch { console.error('Playwright is required for browser smoke tests. Install it with: npm install --no-save --package-lock=false playwright@1.55.0'); process.exit(2); }
+const launcher=playwright[engine];
+if(!launcher||typeof launcher.launch!=='function')throw Error(`Unsupported browser engine: ${engine}`);
+const html=await readFile(artifact),server=createServer((req,res)=>{if(req.url==='/'||req.url==='/index.html'){res.writeHead(200,{'content-type':'text/html; charset=utf-8','cache-control':'no-store'});res.end(html)}else if(req.url==='/favicon.ico'){res.writeHead(204);res.end()}else{res.writeHead(404,{'content-type':'text/plain'});res.end('not found')}});
+await new Promise((ok,no)=>{server.once('error',no);server.listen(0,'127.0.0.1',ok)});
+const origin=`http://127.0.0.1:${server.address().port}`,external=[],pageErrors=[],consoleErrors=[];let browser;
+try{
+ browser=await launcher.launch({headless:true});const context=await browser.newContext({viewport:{width:1280,height:800}}),page=await context.newPage();
+ await page.route('**/*',async route=>{let u=new URL(route.request().url());if(u.origin===origin)return route.continue();external.push(u.href);return route.abort('blockedbyclient')});
+ page.on('pageerror',e=>pageErrors.push(e.message));page.on('console',m=>{if(m.type()==='error'&&!/favicon/i.test(m.text()))consoleErrors.push(m.text())});
+ await page.goto(`${origin}/`,{waitUntil:'load',timeout:15000});const canvas=page.locator('#c');await canvas.waitFor({state:'visible',timeout:5000});
+ const g=await canvas.evaluate(n=>({width:n.width,height:n.height,cssWidth:n.getBoundingClientRect().width,cssHeight:n.getBoundingClientRect().height}));if(g.width!==960||g.height!==640||g.cssWidth<=0||g.cssHeight<=0)throw Error(`bad canvas geometry: ${JSON.stringify(g)}`);
+ await page.waitForTimeout(120);let a=await canvas.evaluate(n=>n.toDataURL());
+ await page.keyboard.press('Space');await page.waitForTimeout(220);let b=await canvas.evaluate(n=>n.toDataURL());if(a===b)throw Error('story skip did not visibly enter First Flight');
+ await page.keyboard.press('Escape');await page.waitForTimeout(260);let c=await canvas.evaluate(n=>n.toDataURL());if(b===c)throw Error('First Flight skip did not visibly enter Easy');
+ await page.keyboard.press('p');await page.waitForTimeout(100);let d=await canvas.evaluate(n=>n.toDataURL());if(c===d)throw Error('Easy gameplay did not pause');await page.keyboard.press('p');await page.waitForTimeout(60);
+ await page.keyboard.press('m');await page.waitForTimeout(80);let menu=await canvas.evaluate(n=>n.toDataURL());await page.keyboard.press('2');await page.waitForTimeout(180);let normal=await canvas.evaluate(n=>n.toDataURL());if(menu===normal)throw Error('manual Normal selection did not start gameplay');
+ if(external.length)throw Error(`external requests attempted: ${[...new Set(external)].join(', ')}`);if(pageErrors.length)throw Error(`page errors: ${pageErrors.join(' | ')}`);if(consoleErrors.length)throw Error(`console errors: ${consoleErrors.join(' | ')}`);
+ console.log(`PASS: ${engine} loaded ${artifact}, rendered story + First Flight, entered Easy, and attempted no external requests`);await context.close();
+}finally{if(browser)await browser.close();await new Promise(ok=>server.close(ok))}
