@@ -1,0 +1,26 @@
+name: Apply v0.23 storybook reframe
+on:
+  push:
+    branches: [feat/v0.23-storybook-reframe]
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: feat/v0.23-storybook-reframe
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python scripts/apply-v023.py
+      - name: Commit transformed source
+        shell: bash
+        run: |
+          git add package.json src docs/storybook-reframe-v0.23.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Reframe v0.23 around cinematic story and authored procedural scenes"
+          git push origin HEAD:feat/v0.23-storybook-reframe
