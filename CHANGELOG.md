@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.23.0 - STORYBOOK REFRAME
+
+- Replaced the v0.22 decorative-background strategy after playtesting showed that generic stars, sparkles, tiny symbolic motifs, and low-alpha flourishes consumed visual attention without making the world feel authored.
+- Added a mandatory first-run **Living Scar** cinematic before difficulty selection. The scene shows the dead field, the unicorn separated in two, the last rainbow becoming the missing body, and visual demonstrations of WASD movement, arrow-key horn aiming, pull-to-charge, and Space-to-Snap.
+- Added explicit skip affordances without making onboarding optional by default: Space / Enter / Escape, a visible clickable Canvas Skip control, and `T` on the title screen to replay the origin/tutorial.
+- Removed the old Trial 1 tooltip gate so the player learns the unusual two-ended control model before combat rather than while enemies are already active.
+- Collapsed thirteen unrelated decorative motif systems into four coherent environmental acts: Mourning Field, Sunken Court, Husk Foundry, and Black Prism.
+- Rebuilt world rendering around large procedural silhouettes, architectural masses, foreground/midground depth, negative space, and structural restoration rather than particle wallpaper.
+- Reworked restoration so performance increasingly repairs alignment and reveals restrained color-veins in ancient geometry instead of simply adding more ambient stars and spectral confetti.
+- Rebuilt the Maize Monarch arena as a false monumental court with ritual arch/crown geometry and strengthened the boss silhouette with authority/halo details.
+- Rebuilt the Husk Architect arena around radial measurements, drafting circles, construction plans, and plated construct details that visually support Husk Shift.
+- Rebuilt the Cobtopus arena around thick organic tendrils, central void imagery, and convergent curved pressure so the corruption reads as a living system rather than another decorated room.
+- Preserved the Impossible Encore by colliding the three established visual languages rather than inventing a fourth unrelated effect set.
+- Renamed several trial chapters away from gag-like labels toward the darker world narrative while preserving encounter order and gameplay semantics.
+- Preserved Heavy Drop audio, kick-driven camera, Chromatic Overload, critical-health scar fray, mastery grades, the final scar-release ending, all v0.21.1 Impossible hardening, and Wavedash isolation.
+- Expanded VM/browser qualification for Canvas gradients and the mandatory story handoff. The exact competition ZIP and standalone `file://` HTML both pass Chromium and Firefox from story → skip → title → gameplay.
+- Final qualified competition ZIP: **12,985 / 13,312 bytes (327 bytes free)**.
+- Qualified SHA-256: `316a17876f513771d78828d21ca89ba8dcdf9c5dde3ee2e540a2c50e3ce74154`.
+
 ## v0.22.0 - RAINBOW THEATRE / HEAVY DROP
 
 - Rebuilt the js13k release pipeline around deterministic custom golf → Terser 5.50.0 → a pinned Roadroller 2.1.0 model → Zopfli 0.4.3 at 80 iterations. Roadroller is executed twice and byte-compared before packaging.
