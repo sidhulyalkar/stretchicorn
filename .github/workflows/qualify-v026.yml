@@ -1,0 +1,81 @@
+name: Qualify v0.26 Key Art Render
+on:
+  push:
+    branches: [feat/v0.26-keyart-render]
+permissions:
+  contents: write
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: feat/v0.26-keyart-render
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check zopfli==0.4.3
+      - name: Build exact competition release
+        run: npm run release:competition
+      - name: Install browser harness
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.55.0
+      - run: npx playwright install --with-deps chromium firefox
+      - name: Extract exact submission
+        run: |
+          rm -rf .tmp-js13k
+          mkdir .tmp-js13k
+          python -m zipfile -e dist/stretchicorn-js13k.zip .tmp-js13k
+      - name: Chromium exact ZIP
+        run: npm run browser:smoke
+        env:
+          BROWSER: chromium
+          BROWSER_HTML: .tmp-js13k/index.html
+      - name: Firefox exact ZIP
+        run: npm run browser:smoke
+        env:
+          BROWSER: firefox
+          BROWSER_HTML: .tmp-js13k/index.html
+      - name: Chromium standalone
+        run: npm run browser:file-smoke
+        env:
+          BROWSER: chromium
+          BROWSER_HTML: dist/stretchicorn-local.html
+      - name: Firefox standalone
+        run: npm run browser:file-smoke
+        env:
+          BROWSER: firefox
+          BROWSER_HTML: dist/stretchicorn-local.html
+      - name: Wavedash isolation
+        run: npm run wavedash:test
+      - name: Capture key-art scenes
+        run: |
+          mkdir -p visual-qa
+          cat > .tmp-capture.mjs <<'JS'
+          import {chromium} from 'playwright';
+          import {pathToFileURL} from 'node:url';
+          import {resolve} from 'node:path';
+          const b=await chromium.launch({headless:true}),p=await b.newPage({viewport:{width:960,height:640}});
+          await p.goto(pathToFileURL(resolve('dist/stretchicorn-local.html')).href);await p.waitForTimeout(200);
+          const s=async n=>{await p.waitForTimeout(150);await p.locator('#c').screenshot({path:`visual-qa/${n}.png`})};
+          await s('01-origin');await p.keyboard.press('Space');await p.waitForTimeout(120);await s('02-first-flight');await p.keyboard.press('Escape');await p.waitForTimeout(150);await s('03-meadow');
+          for(const [w,n] of [[5,'04-monarch'],[9,'05-architect'],[13,'06-cobtopus']]){await p.evaluate(w=>window.eval(`mode=1;D=.7;wave=${w};stageT=0;runT=8;queen=0;E.length=B.length=U.length=R.length=0;spawnWave()`),w);await s(n)}
+          await p.evaluate(()=>window.eval('mode=0'));await s('07-title');await b.close();
+          JS
+          node .tmp-capture.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v026-key-art-visual-qa
+          path: visual-qa/*.png
+      - name: Freeze qualified dist
+        shell: bash
+        run: |
+          git add dist
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git diff --cached --quiet || git commit -m "Freeze qualified v0.26 competition artifacts"
+          git pull --rebase origin feat/v0.26-keyart-render
+          git push origin HEAD:feat/v0.26-keyart-render
