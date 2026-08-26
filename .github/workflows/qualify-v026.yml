@@ -19,15 +19,33 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --disable-pip-version-check zopfli==0.4.3
-      - name: Update v0.26 visual contract
+      - name: Apply final key-art polish
         run: |
           node <<'JS'
-          const fs=require('fs'),p='scripts/test.mjs';let s=fs.readFileSync(p,'utf8');
-          const a=`if(!h.includes('createBiquadFilter')||!h.includes("globalCompositeOperation='screen'")||!h.includes('function bossArt')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('story/impact systems missing');`;
-          const b=`if(!h.includes('createBiquadFilter')||!h.includes('function gel')||!h.includes('function bossArt')||!h.includes('keyScene=')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('key-art/story systems missing');if(h.includes("globalCompositeOperation='screen'"))throw Error('legacy full-frame chroma still active');`;
-          if(!s.includes(a))throw Error('visual assertion seam missing');fs.writeFileSync(p,s.replace(a,b));
-          const f='src/03-keyart-v026.js';let k=fs.readFileSync(f,'utf8'),ta="['1 EASY','2 NORMAL','3 HARD','4 IMPOSSIBLE']",tb="['1  EASY','2  NORMAL','3  HARD','4  IMPOSSIBLE']";
-          if(!k.includes(ta))throw Error('title spacing seam missing');fs.writeFileSync(f,k.replace(ta,tb));
+          const fs=require('fs');
+          let p='scripts/test.mjs',s=fs.readFileSync(p,'utf8');
+          const old=`if(!h.includes('createBiquadFilter')||!h.includes("globalCompositeOperation='screen'")||!h.includes('function bossArt')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('story/impact systems missing');`;
+          const now=`if(!h.includes('createBiquadFilter')||!h.includes('function gel')||!h.includes('function bossArt')||!h.includes('keyScene=')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('key-art/story systems missing');if(h.includes("globalCompositeOperation='screen'"))throw Error('legacy full-frame chroma still active');`;
+          if(s.includes(old))s=s.replace(old,now);else if(!s.includes(now))throw Error('visual assertion seam missing');fs.writeFileSync(p,s);
+
+          p='src/03-keyart-v026.js';s=fs.readFileSync(p,'utf8');
+          const reps=[
+            ["['1 EASY','2 NORMAL','3 HARD','4 IMPOSSIBLE']","['1  EASY','2  NORMAL','3  HARD','4  IMPOSSIBLE']"],
+            ["r=e.r*(boss?1.13:1)","r=e.r*(boss?1.2:1)"],
+            ["X.globalAlpha=.08;for(let i=0;i<6;i++){ink(RC[i],6);X.beginPath();X.arc(260,330,240+i*7,3.45,6.2);X.stroke()}","X.globalAlpha=.12;for(let i=0;i<6;i++){ink(RC[i],6);X.beginPath();X.arc(440,430,350+i*7,3.3,5.9);X.stroke()}"],
+            ["function mascot(){let w=wave;demo(300,305,-.08,245,.55);wave=13;cob({x:720,y:320,type:3,hp:44,max:44,r:53,state:0,hit:0,a:0,p:0,in:0});wave=w}","function mascot(){let w=wave;demo(255,315,-.05,290,.65);wave=13;cob({x:770,y:315,type:3,hp:44,max:44,r:68,state:0,hit:0,a:0,p:0,in:0});wave=w}"],
+            ["ink('#24102b',22)","ink('#24102b',16)"],
+            ["X.shadowBlur=7;ink('#24102b',16)","X.shadowBlur=5;ink('#24102b',16)"]
+          ];
+          for(const [a,b] of reps){if(s.includes(a))s=s.replace(a,b);else if(!s.includes(b))throw Error('key-art polish seam missing: '+a)}fs.writeFileSync(p,s);
+
+          p='src/00-core.js';s=fs.readFileSync(p,'utf8');
+          const a="SC=['#090b12','#10140e','#170f0c','#08120e','#180e0b','#181108','#10140f','#110d18','#071319','#091020','#1b0c0c','#11101b','#070811']";
+          const b="SC=['#090610','#0c0713','#100817','#120918','#150a18','#160b17','#120b18','#130a1b','#0b101b','#0b0d19','#190b15','#120b1d','#080611']";
+          if(s.includes(a))s=s.replace(a,b);else if(!s.includes(b))throw Error('palette seam missing');fs.writeFileSync(p,s);
+
+          p='src/03-render.js';s=fs.readFileSync(p,'utf8');
+          for(const [a,b] of [["'#31343b'","'#392742'"],["'#101216cc'","'#0c0711d9'"],["'#202228'","'#130b19'"],["'#454851'","'#44314d'"]]){if(s.includes(a))s=s.replaceAll(a,b);else if(!s.includes(b))throw Error('HUD palette seam missing '+a)}fs.writeFileSync(p,s);
           JS
       - name: Build exact competition release
         run: npm run release:competition
@@ -83,9 +101,9 @@ jobs:
       - name: Freeze qualified source + dist
         shell: bash
         run: |
-          git add src/03-keyart-v026.js scripts/test.mjs dist
+          git add src/00-core.js src/03-render.js src/03-keyart-v026.js scripts/test.mjs dist
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git diff --cached --quiet || git commit -m "Freeze qualified v0.26 key-art release"
+          git diff --cached --quiet || git commit -m "Freeze polished v0.26 key-art release"
           git pull --rebase origin feat/v0.26-keyart-render
           git push origin HEAD:feat/v0.26-keyart-render
