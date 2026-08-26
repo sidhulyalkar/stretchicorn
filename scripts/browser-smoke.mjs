@@ -65,13 +65,10 @@ try {
   if (geometry.width !== 960 || geometry.height !== 640 || geometry.cssWidth <= 0 || geometry.cssHeight <= 0) throw new Error(`bad canvas geometry: ${JSON.stringify(geometry)}`);
 
   await page.waitForTimeout(120);
-  const introFrame = await canvas.evaluate(node => node.toDataURL());
   await page.keyboard.press('Space');
   await page.waitForTimeout(220);
-  const practiceFrame = await canvas.evaluate(node => node.toDataURL());
 
   // Complete the real tutorial with production controls, rather than inspecting compiler-renamed state.
-  // If Space failed to leave the story, these inputs cannot complete First Flight or reach Easy.
   await page.keyboard.down('a');
   await page.waitForTimeout(420);
   await page.keyboard.up('a');
@@ -80,14 +77,26 @@ try {
   await page.keyboard.up('ArrowRight');
   for (let i=0;i<3;i++) {
     await page.keyboard.down('a');
-    await page.waitForTimeout(360);
+    await page.waitForTimeout(430);
     await page.keyboard.up('a');
+    await page.waitForTimeout(90);
     await page.keyboard.press('Space');
-    await page.waitForTimeout(230);
+    await page.waitForTimeout(280);
   }
-  await page.waitForTimeout(850);
+  await page.waitForTimeout(1050);
+
+  const lum = () => canvas.evaluate(node => {
+    const d=node.getContext('2d').getImageData(220,235,520,160).data;
+    let s=0; for(let i=0;i<d.length;i+=4)s+=d[i]+d[i+1]+d[i+2]; return s/(d.length/4)/3;
+  });
+  const beforePause = await lum();
+  await page.keyboard.press('p');
+  await page.waitForTimeout(120);
+  const afterPause = await lum();
+  if (beforePause-afterPause < 3) throw new Error(`three real Snaps did not reach pausable Easy gameplay (${beforePause.toFixed(1)} -> ${afterPause.toFixed(1)})`);
+  await page.keyboard.press('p');
+  await page.waitForTimeout(80);
   const playFrame = await canvas.evaluate(node => node.toDataURL());
-  if (introFrame === playFrame || practiceFrame === playFrame) throw new Error('story / First Flight did not hand off to Easy after three real Snaps');
 
   await page.keyboard.press('m');
   await page.waitForTimeout(80);
