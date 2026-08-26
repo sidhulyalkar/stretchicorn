@@ -12,6 +12,9 @@ if n!=1: raise SystemExit('rules input seam missing')
 # Keep rebinding, but remove its old hidden D-to-default shortcut. First Flight already teaches the canonical keys.
 s,n=re.subn(r"else if\(k=='d'\)\{\['w','s','a','d','ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '\]\.forEach\(\(v,i\)=>BK\[i\]=v\);save\(\)\}","",s,count=1)
 if n!=1: raise SystemExit('hidden reset shortcut seam missing')
+# Cleaner title: the origin and First Flight already establish the premise. Let logo + mascot + Play Easy breathe.
+s=s.replace(";txt('A LIVING SCAR IN A DEAD WORLD',W/2,132,14,'#b8abbc','center')","")
+s=s.replace(";txt('START EASY • MASTER UP WHEN READY',W/2,420,12,'#8f969c','center')","")
 # Mastery grades and the difficulty ladder supersede the old persistent numeric best-score chrome.
 s=re.sub(r";txt\('Best '\+best,W/2,602,10,'#62676d','center'\)","",s)
 s=s.replace("'SPACE RETRY   •   M MENU\\nScore '+score+'   Best '+best","'SPACE RETRY   •   M MENU\\nScore '+score")
