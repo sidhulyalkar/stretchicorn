@@ -24,3 +24,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Test mandatory story and gradient renderer"
           git push origin HEAD:feat/v0.23-storybook-reframe
+# one-shot trigger
