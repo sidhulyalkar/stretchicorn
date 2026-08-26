@@ -1,12 +1,12 @@
 # Play Stretchicorn locally with one HTML file
 
-For the fastest v0.23 test, download this single generated file:
+For the fastest v0.23.1 First Flight test, download this single generated file:
 
 **[`dist/stretchicorn-local.html`](dist/stretchicorn-local.html)**
 
 Then double-click `stretchicorn-local.html` in Finder/Explorer. No local server, npm install, Wavedash, or `src/` directory is required.
 
-The file begins with the mandatory **Living Scar** origin/tutorial. Watch it through to see the complete intended first-run experience, or use the visible Skip control / Space / Enter / Escape to reach the difficulty menu immediately. Press **T** on the title screen to replay it.
+The file begins with **The Living Scar** origin, then enters **First Flight**, a safe practice field using the real production movement physics. New players move the vulnerable heart, aim the safe horn, learn to create rainbow tension, and complete three charged Rainbow Snaps before Easy begins automatically. The story and practice each retain a visible skip escape hatch for returning experts. Press **T** from the menu to replay the onboarding.
 
 ## Why the repository root `index.html` is different
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.23.1 - FIRST FLIGHT
+
+- Rebuilt first-time onboarding around an actual safe practice field using production Stretchicorn physics rather than passive control demonstrations.
+- New players now follow Living Scar story → First Flight practice → automatic Easy campaign. The difficulty menu is no longer the first gameplay decision.
+- First Flight requires moving the vulnerable heart, aiming the safe horn, pulling opposite the horn until the rainbow is charged, and completing three real charged Rainbow Snaps before normal combat begins.
+- Added a rainbow Snap target/guide and concise visual coaching around the core mental model: body pulls, horn points, rainbow snaps.
+- Added explicit story/practice skip escape hatches for returning experts while keeping onboarding the default path.
+- Changed Space / Enter on the title screen from Normal to Easy and visually recommends progressing upward only after the player has learned the mechanic.
+- Added post-clear mastery guidance from Easy → Normal → Hard → Impossible, while retaining direct numeric difficulty access for experienced players.
+- Added Easy-only early-stage strategy coaching for safe-half positioning, tension/Snap usage, and Graze/Parry recharge.
+- Expanded source, packed-artifact, Chromium, Firefox, and standalone-file smoke coverage around story → First Flight → Easy handoff and the new Easy default.
+
 ## v0.23.0 - STORYBOOK REFRAME
 
 - Replaced the v0.22 decorative-background strategy after playtesting showed that generic stars, sparkles, tiny symbolic motifs, and low-alpha flourishes consumed visual attention without making the world feel authored.

@@ -13,7 +13,7 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 [**Download the current js13k competition ZIP**](dist/stretchicorn-js13k.zip)  
 [**Download the one-file local playtest**](dist/stretchicorn-local.html)
 
-**v0.23.0 · STORYBOOK REFRAME · 12,985 / 13,312 bytes · 327 bytes free**
+**v0.23.1 · FIRST FLIGHT · story → practice → Easy → mastery ladder**
 
 </div>
 
@@ -35,6 +35,20 @@ The rainbow is resurrection, scar, spring, weapon, movement system, and the worl
 **Stretchicorn is not carrying the magic. Stretchicorn is being held alive by it.**
 
 The game deliberately leaves the catastrophe partly unexplained. The world, the bosses, and the way color returns are the evidence.
+
+---
+
+# v0.23.1 - FIRST FLIGHT
+
+The first-time experience no longer asks a new player to choose difficulty before they understand the game. Every fresh load follows one authored path:
+
+**Living Scar origin → safe First Flight practice → three successful Rainbow Snaps → Easy campaign.**
+
+First Flight uses the real movement/spring/Snap implementation with enemies, walls, pickups, and damage removed. It teaches one concept at a time: move the vulnerable heart, point the safe horn, pull in the opposite direction until the living scar glows, then release that stored tension with Space. The player must complete three charged Snaps before the campaign starts.
+
+Easy then continues teaching through concise contextual strategy prompts: keep the heart behind the horn, use the safe rainbow/horn aggressively, pull back to create charge, and begin learning Graze/Parry as faster recharge tools.
+
+The title screen now defaults to **Easy**, while Normal, Hard, and Impossible remain available for returning/expert players. Clearing each tier explicitly points toward the next pressure level so difficulty feels like a mastery ladder rather than four arbitrary buttons.
 
 ---
 

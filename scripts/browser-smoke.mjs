@@ -67,13 +67,20 @@ try {
   await page.waitForTimeout(120);
   const introFrame = await canvas.evaluate(node => node.toDataURL());
   await page.keyboard.press('Space');
-  await page.waitForTimeout(100);
-  const menuFrame = await canvas.evaluate(node => node.toDataURL());
-  if (introFrame === menuFrame) throw new Error('mandatory story did not visibly transition to the menu');
-  await page.keyboard.press('2');
+  await page.waitForTimeout(120);
+  const practiceFrame = await canvas.evaluate(node => node.toDataURL());
+  if (introFrame === practiceFrame) throw new Error('story did not visibly hand off to First Flight practice');
+  await page.keyboard.press('Escape');
   await page.waitForTimeout(180);
   const playFrame = await canvas.evaluate(node => node.toDataURL());
-  if (menuFrame === playFrame) throw new Error('difficulty input did not visibly transition from menu to gameplay');
+  if (practiceFrame === playFrame) throw new Error('First Flight did not hand off to Easy gameplay');
+  await page.keyboard.press('m');
+  await page.waitForTimeout(80);
+  const menuFrame = await canvas.evaluate(node => node.toDataURL());
+  await page.keyboard.press('2');
+  await page.waitForTimeout(180);
+  const normalFrame = await canvas.evaluate(node => node.toDataURL());
+  if (menuFrame === normalFrame) throw new Error('manual Normal selection did not start gameplay');
 
   if (process.env.IMPACT) {
     // IMPACT targets the golfed readable build. These aliases are the stable semantic
