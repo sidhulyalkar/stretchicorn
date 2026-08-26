@@ -1,0 +1,48 @@
+name: Capture v0.24 Visual QA
+on:
+  push:
+    branches: [feat/v0.24-render-quality]
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: feat/v0.24-render-quality
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Capture authored scenes
+        run: |
+          mkdir -p visual-qa
+          cat > .tmp-capture.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import { pathToFileURL } from 'node:url';
+          import { resolve } from 'node:path';
+          const b=await chromium.launch({headless:true});
+          const p=await b.newPage({viewport:{width:960,height:640}});
+          await p.goto(pathToFileURL(resolve('dist/stretchicorn-local.html')).href);
+          await p.waitForTimeout(200);
+          const shot=async n=>{await p.waitForTimeout(100);await p.locator('#c').screenshot({path:`visual-qa/${n}.png`})};
+          await shot('01-origin');
+          await p.keyboard.press('Space');await p.waitForTimeout(150);await shot('02-first-flight');
+          await p.keyboard.press('Escape');await p.waitForTimeout(180);await shot('03-mourning-field');
+          for(const [w,n] of [[5,'04-maize-monarch'],[9,'05-husk-architect'],[13,'06-cobtopus']]){
+            await p.evaluate(w=>window.eval(`mode=1;D=.7;wave=${w};stageT=0;runT=8;queen=0;E.length=B.length=U.length=R.length=0;spawnWave()`),w);
+            await p.waitForTimeout(160);await shot(n);
+          }
+          await p.evaluate(()=>window.eval('mode=1;D=2.4;wave=13;stageT=0;runT=20;queen=3;E.length=B.length=U.length=R.length=0;spawnWave();queen=3'));
+          await p.waitForTimeout(160);await shot('07-impossible-encore');
+          await b.close();
+          JS
+          node .tmp-capture.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v024-visual-qa
+          path: visual-qa/*.png
+          if-no-files-found: error
