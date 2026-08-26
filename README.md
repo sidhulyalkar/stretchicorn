@@ -13,7 +13,7 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 [**Download the current js13k competition ZIP**](dist/stretchicorn-js13k.zip)  
 [**Download the one-file local playtest**](dist/stretchicorn-local.html)
 
-**v0.25.0 · STORYBOOK MEADOW · story → First Flight → Easy → mastery**
+**v0.26.0 · KEY-ART RENDER · Living Scar → First Flight → Easy → mastery**
 
 </div>
 
@@ -63,6 +63,32 @@ After the third Snap, Easy starts automatically. Returning players can skip stor
 Easy then teaches strategy in context: keep the vulnerable heart behind the safe half, create charge by pulling back, Snap through enemies, and eventually turn Graze/Parry into faster recharge tools.
 
 ---
+
+# v0.26 Key-Art Render
+
+v0.26 makes the supplied Stretchicorn hero image the canonical visual contract for the runtime game. The target is no longer generic procedural illustration. The Canvas renderer is engineered around the same material and composition language: luminous rounded white unicorn forms, a thick candy-gloss rainbow, individually highlighted golden corn kernels, deep plum/violet environments, dark green husks, glossy purple Cobtopus limbs, warm amber-vs-violet contrast, expressive faces, strong silhouettes and selective bloom.
+
+The renderer now uses a compact `gel()` material primitive that layers a dark contact shadow, saturated body mass and a restrained white specular highlight. Stretchicorn, corn enemies and boss kernels reuse that vocabulary so separate objects feel as though they belong to the same illustrated world rather than to different Canvas demos.
+
+The title deliberately echoes the key art: Stretchicorn occupies the left, Cobtopus commands the right, and a large rainbow arc bridges the confrontation above the controls. The Living Scar origin uses the same deep-plum lighting and rounded forms so story, title and gameplay no longer switch visual dialects.
+
+### Stability over flash
+
+The v0.25 playtest exposed visible background shimmer. v0.26 removes the two biggest causes rather than masking them: per-frame random whole-scene camera offsets are suppressed in the presentation layer, and the full-frame RGB `screen` compositor is retired. Background restoration is quantized into stable visual bands, environmental sway is slow/deterministic, and the far world remains calm while player/enemy animation carries the action.
+
+### Key-art materials
+
+- Stretchicorn: soft white volume, lavender contact shading, bright specular patches, candy mane/tail, warm horn glow and expressive eye/brow marks.
+- Living Scar: thick white luminous core with six saturated rainbow bands and charge-dependent bloom.
+- Corn: rounded kernel cells with alternating gold values and small white highlights, backed by deep green husks and readable faces.
+- Cobtopus: a glossy kernel core with broad purple tentacles built from dark mass + violet highlight instead of loose decorative curves.
+- World: deep violet/plum sky values, grounded farm silhouettes, subdued rainbow atmosphere and a UI frame drawn from the same purple family.
+
+The old character/world/title renderers remain readable in source history, but `scripts/build.mjs` removes the superseded function ranges before concatenating `src/03-keyart-v026.js`. The competition ZIP therefore pays only for the final art system.
+
+Final qualified artifact: **13,054 / 13,312 bytes (258 bytes free)**.
+
+SHA-256: `c6b82201849b5d3b1ed7ca20481e2a4006ad56e7c5e07b1edadb836ab564c9ea`.
 
 # v0.25 Storybook Meadow
 
@@ -236,14 +262,14 @@ v0.25 keeps the readable v0.24 renderer in the repository for history, then load
 Final qualified v0.25 artifact:
 
 ```text
-13,286 / 13,312 bytes
-26 bytes free
+13,054 / 13,312 bytes
+258 bytes free
 ```
 
 SHA-256:
 
 ```text
-900f27ceb341cfd609f2a6f332ed476a2183f6cb238014349861ebdaf2f4983b
+c6b82201849b5d3b1ed7ca20481e2a4006ad56e7c5e07b1edadb836ab564c9ea
 ```
 
 Runtime contains no external image, font, music, framework or game-engine assets.
@@ -285,7 +311,7 @@ Competition submission:
 
 Versioned snapshot:
 
-[`dist/stretchicorn-desktop-v0.25.0.zip`](dist/stretchicorn-desktop-v0.25.0.zip)
+[`dist/stretchicorn-desktop-v0.26.0.zip`](dist/stretchicorn-desktop-v0.26.0.zip)
 
 Build the exact release:
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.26.0 - KEY-ART RENDER
+
+- Adopted the supplied Stretchicorn hero image as the canonical runtime visual bible: luminous white unicorn, glossy rainbow, rounded golden kernel cells, deep plum/violet world values, green husks, purple Cobtopus limbs, selective bloom and expressive faces.
+- Added a compact `gel()` material primitive for contact shadow + saturated body mass + white specular highlight and rebuilt Stretchicorn/corn rendering around the shared material language.
+- Rebuilt the Living Scar with a stable white luminous core and six candy-saturated spectral bands while retaining health fray and charge readability without per-frame random visual noise.
+- Rebuilt ordinary corn and bosses with individually highlighted kernels, stronger husk silhouettes, readable facial expressions and more imposing boss scale.
+- Reframed the title around the key-art composition: Stretchicorn left, enlarged Cobtopus right and a broad rainbow arc overhead. The Living Scar origin now uses the same palette/material system.
+- Unified stage palettes and HUD chrome around deep violet/plum values so gameplay, menus and key art share one visual world.
+- Removed the legacy whole-frame Chromatic Overload compositor and suppresses random whole-scene shake during rendering, directly addressing background flicker/shimmer from the v0.25 playtest. Gameplay state and combat physics remain unchanged.
+- Quantized restoration/background movement and kept environmental animation slow and deterministic so the world reads as a stable illustration while combat remains kinetic.
+- Updated build composition so superseded character/world/title renderers are omitted before the v0.26 key-art module is concatenated, avoiding duplicate competition bytes.
+- Updated regression contracts to require the key-art renderer and explicitly reject the retired full-frame chromatic compositor.
+- Exact competition ZIP, standalone file build and Wavedash isolation all pass Chromium and Firefox. First Flight still requires three real charged Rainbow Snaps before automatic Easy handoff.
+- Final qualified competition ZIP: **13,054 / 13,312 bytes (258 bytes free)**.
+- Qualified SHA-256: `c6b82201849b5d3b1ed7ca20481e2a4006ad56e7c5e07b1edadb836ab564c9ea`.
+
 ## v0.25.0 - STORYBOOK MEADOW
 
 - Rejected the diagram-heavy v0.24 arena-background direction after screenshot and human playtest feedback, while preserving the stronger dimensional character/enemy rendering introduced there.
