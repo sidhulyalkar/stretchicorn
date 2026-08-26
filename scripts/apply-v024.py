@@ -3,11 +3,10 @@ import json,re
 
 
 def subf(s,name,next_name,new):
-    p=rf"function {name}\\([^\\n]*?\\)\\{{.*?\\}}\\nfunction {next_name}\\("
-    r=new+"\nfunction "+next_name+"("
-    s,n=re.subn(p,r,s,count=1,flags=re.S)
-    if n!=1: raise SystemExit('replace failed '+name)
-    return s
+    a=s.find('function '+name+'(')
+    b=s.find('\nfunction '+next_name+'(',a)
+    if a<0 or b<0: raise SystemExit('replace failed '+name)
+    return s[:a]+new+s[b:]
 
 p=Path('package.json');j=json.loads(p.read_text());j['version']='0.24.0';p.write_text(json.dumps(j,indent=2)+'\n')
 p=Path('index.html');s=p.read_text();s=re.sub(r'<title>.*?</title>','<title>Stretchicorn v0.24.0 - LUMINOUS WORLD</title>',s);p.write_text(s)
