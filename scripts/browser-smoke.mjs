@@ -70,10 +70,26 @@ try {
   await page.waitForTimeout(120);
   const practiceFrame = await canvas.evaluate(node => node.toDataURL());
   if (introFrame === practiceFrame) throw new Error('story did not visibly hand off to First Flight practice');
-  await page.keyboard.press('Escape');
-  await page.waitForTimeout(180);
+
+  // Complete the real tutorial with production controls, rather than testing only its skip path.
+  // Aim begins to the right, so moving the heart left stretches directly away from the horn.
+  await page.keyboard.down('a');
+  await page.waitForTimeout(420);
+  await page.keyboard.up('a');
+  await page.keyboard.down('ArrowRight');
+  await page.waitForTimeout(60);
+  await page.keyboard.up('ArrowRight');
+  for (let i=0;i<3;i++) {
+    await page.keyboard.down('a');
+    await page.waitForTimeout(360);
+    await page.keyboard.up('a');
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(230);
+  }
+  await page.waitForTimeout(850);
   const playFrame = await canvas.evaluate(node => node.toDataURL());
-  if (practiceFrame === playFrame) throw new Error('First Flight did not hand off to Easy gameplay');
+  if (practiceFrame === playFrame) throw new Error('three charged First Flight Snaps did not hand off to Easy gameplay');
+
   await page.keyboard.press('m');
   await page.waitForTimeout(80);
   const menuFrame = await canvas.evaluate(node => node.toDataURL());
@@ -103,7 +119,7 @@ try {
   if (external.length) throw new Error(`external requests attempted: ${[...new Set(external)].join(', ')}`);
   if (pageErrors.length) throw new Error(`page errors: ${pageErrors.join(' | ')}`);
   if (consoleErrors.length) throw new Error(`console errors: ${consoleErrors.join(' | ')}`);
-  console.log(`PASS: ${engine} loaded ${artifact}, rendered canvas, accepted gameplay/pause/menu input, and attempted no external requests`);
+  console.log(`PASS: ${engine} loaded ${artifact}, completed three real First Flight Snaps, entered Easy, and attempted no external requests`);
   await context.close();
 } finally {
   if (browser) await browser.close();
