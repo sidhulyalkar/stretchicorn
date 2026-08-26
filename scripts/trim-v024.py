@@ -22,6 +22,8 @@ s=s.replace("WASD • THE HEART IS THE VULNERABLE HALF.","WASD • HEART IS VULN
 s=s.replace("ARROWS • THE HORN IS SAFE. AIM WHERE YOU WANT TO GO.","ARROWS • SAFE HORN AIMS.")
 s=s.replace("MOVE THE HEART AWAY FROM THE HORN UNTIL THE RAINBOW GLOWS.","PULL HEART AWAY UNTIL RAINBOW GLOWS.")
 s=s.replace("SPACE • STORED TENSION BECOMES A DASH + ATTACK.","SPACE • RELEASE TENSION TO SNAP.")
+s=s.replace("SKIP STORY","SKIP")
+s=s.replace("SKIP PRACTICE","SKIP")
 s=s.replace("↑↓ SELECT • ENTER REBIND • M BACK","↑↓ • ENTER REBIND • M BACK")
 s=s.replace("↑↓ SELECT • ←→ / ENTER • M BACK","↑↓ • ←→ / ENTER • M BACK")
 # Mastery grades and the difficulty ladder supersede the old persistent numeric best-score chrome.
