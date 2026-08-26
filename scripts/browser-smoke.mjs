@@ -67,9 +67,11 @@ try {
   await page.waitForTimeout(120);
   const introFrame = await canvas.evaluate(node => node.toDataURL());
   await page.keyboard.press('Space');
-  await page.waitForTimeout(120);
+  await page.waitForFunction(() => window.eval('mode') === 10, null, {timeout:2000});
+  await page.evaluate(() => window.eval('typeof $y=="function"?$y():draw()'));
+  await page.waitForTimeout(50);
   const practiceFrame = await canvas.evaluate(node => node.toDataURL());
-  if (introFrame === practiceFrame) throw new Error('story did not visibly hand off to First Flight practice');
+  if (introFrame === practiceFrame) throw new Error('story mode changed but First Flight did not visibly render');
 
   // Complete the real tutorial with production controls, rather than testing only its skip path.
   // Aim begins to the right, so moving the heart left stretches directly away from the horn.
@@ -99,8 +101,6 @@ try {
   if (menuFrame === normalFrame) throw new Error('manual Normal selection did not start gameplay');
 
   if (process.env.IMPACT) {
-    // IMPACT targets the golfed readable build. These aliases are the stable semantic
-    // names defined by scripts/build.mjs and mirrored by release-smoke.mjs.
     await page.evaluate(() => window.eval('_a=4;J=3;_c=3;L=13;_q=0;$y()'));
     await page.waitForTimeout(80);
     const overloadFrame = await canvas.evaluate(node => node.toDataURL());
