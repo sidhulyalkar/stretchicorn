@@ -52,7 +52,7 @@ jobs:
         run: |
           dirty="$(git status --porcelain --untracked-files=all -- dist)"
           if [[ -n "$dirty" ]]; then
-            echo "Competition artifact is stale. Run: npm run release:competition"
+            echo "Generated artifacts are stale. Run: npm run release:competition"
             echo "$dirty"
             exit 1
           fi
@@ -102,3 +102,9 @@ jobs:
           BROWSER: ${{ matrix.browser }}
           BROWSER_HTML: .tmp-js13k/index.html
         run: npm run browser:smoke
+
+      - name: Open standalone playtest directly from disk
+        env:
+          BROWSER: ${{ matrix.browser }}
+          BROWSER_HTML: dist/stretchicorn-local.html
+        run: npm run browser:file-smoke
