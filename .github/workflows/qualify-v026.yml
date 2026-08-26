@@ -1,4 +1,5 @@
 name: Qualify v0.26 Key Art Render
+# qualification trigger
 on:
   push:
     branches: [feat/v0.26-keyart-render]
