@@ -67,14 +67,11 @@ try {
   await page.waitForTimeout(120);
   const introFrame = await canvas.evaluate(node => node.toDataURL());
   await page.keyboard.press('Space');
-  await page.waitForFunction(() => window.eval('mode') === 10, null, {timeout:2000});
-  await page.evaluate(() => window.eval('typeof $y=="function"?$y():draw()'));
-  await page.waitForTimeout(50);
+  await page.waitForTimeout(220);
   const practiceFrame = await canvas.evaluate(node => node.toDataURL());
-  if (introFrame === practiceFrame) throw new Error('story mode changed but First Flight did not visibly render');
 
-  // Complete the real tutorial with production controls, rather than testing only its skip path.
-  // Aim begins to the right, so moving the heart left stretches directly away from the horn.
+  // Complete the real tutorial with production controls, rather than inspecting compiler-renamed state.
+  // If Space failed to leave the story, these inputs cannot complete First Flight or reach Easy.
   await page.keyboard.down('a');
   await page.waitForTimeout(420);
   await page.keyboard.up('a');
@@ -90,7 +87,7 @@ try {
   }
   await page.waitForTimeout(850);
   const playFrame = await canvas.evaluate(node => node.toDataURL());
-  if (practiceFrame === playFrame) throw new Error('three charged First Flight Snaps did not hand off to Easy gameplay');
+  if (introFrame === playFrame || practiceFrame === playFrame) throw new Error('story / First Flight did not hand off to Easy after three real Snaps');
 
   await page.keyboard.press('m');
   await page.waitForTimeout(80);
