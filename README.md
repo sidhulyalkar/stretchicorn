@@ -50,6 +50,10 @@ Easy then continues teaching through concise contextual strategy prompts: keep t
 
 The title screen now defaults to **Easy**, while Normal, Hard, and Impossible remain available for returning/expert players. Clearing each tier explicitly points toward the next pressure level so difficulty feels like a mastery ladder rather than four arbitrary buttons.
 
+The compact first-time mental model is:
+
+> **BODY PULLS · HORN POINTS · RAINBOW SNAPS**
+
 ---
 
 # v0.23 - STORYBOOK REFRAME
@@ -66,28 +70,32 @@ See [`docs/storybook-reframe-v0.23.md`](docs/storybook-reframe-v0.23.md).
 
 ---
 
-## Mandatory origin + tutorial
+## Living Scar origin + First Flight
 
-A new player no longer lands on a menu and then discovers the unusual controls while enemies are already active.
+A new player no longer lands on a difficulty menu and then discovers the unusual controls while enemies are already active.
 
 Every fresh load begins with a short visual prologue:
 
 1. **The Dead Field** - the world has lost its color and the unicorn lies separated in two pieces.
 2. **The Last Rainbow** - a surviving ribbon of color descends and crosses the wound.
 3. **Resurrection** - the rainbow cannot rebuild the body, so it becomes the connection between the halves.
-4. **WASD · MOVE THE HEART** - the player sees which half is vulnerable.
-5. **ARROWS · AIM THE HORN** - the independent safe head is demonstrated visually.
-6. **PULL AWAY · CHARGE THE SCAR** - distance visibly becomes tension.
-7. **SPACE · RAINBOW SNAP** - the spring contracts and the central combat verb is shown before combat begins.
 
-The sequence is mandatory as the first scene, but never imprisoning:
+The game then moves directly into **First Flight**, a safe practice field using the real production physics. The player must demonstrate:
 
-- **Space / Enter / Escape** skips it.
-- A visible **SPACE SKIP** Canvas control appears in the scene.
-- The skip control is clickable.
-- **T** on the title screen replays the story at any time.
+4. **WASD · MOVE THE HEART** - learn that the heart/body is vulnerable.
+5. **ARROWS · POINT THE HORN** - learn that the independent head/horn is safe and defines direction.
+6. **PULL AWAY · MAKE TENSION** - separate heart from horn until the living rainbow visibly charges.
+7. **SPACE · RAINBOW SNAP ×3** - convert stored tension into three real dash-attacks.
+8. **FIRST FLIGHT COMPLETE · EASY** - the first campaign begins automatically without returning to a menu.
 
-This is not a separate instruction manual. The tutorial is the resurrection scene.
+The onboarding is the default path, but returning players are never trapped:
+
+- **Space / Enter / Escape** skips the story forward into First Flight.
+- A visible **SKIP STORY** Canvas control is clickable.
+- First Flight has a visible **SKIP PRACTICE** control and Escape path that starts Easy.
+- **T** on the title screen replays the complete onboarding.
+
+The point is not to make the player memorize instructions. It is to give them enough consequence-free repetitions that the novel two-ended control scheme begins to live in their hands before combat begins.
 
 ---
 
@@ -216,7 +224,7 @@ The rainbow remains the only object allowed to carry the full spectrum continuou
 | **Space** | Horn strike / Rainbow Snap |
 | **P** | Pause |
 | **M** | Menu |
-| **T** | Replay origin/tutorial from title |
+| **T** | Replay Living Scar + First Flight from title |
 | **C** | Rebind controls |
 | **R** | Rules |
 | **S** | Music + SFX |
@@ -227,9 +235,35 @@ Only the ♥ body takes damage. The head and rainbow can safely enter danger to 
 
 ---
 
+## Easy is the first strategy lesson
+
+First Flight teaches *how* the creature works. Easy begins teaching *why* that geometry is useful.
+
+The first three Easy encounters surface one compact strategy at a time:
+
+- **HEART HURTS · HORN + RAINBOW SAFE** - keep the vulnerable half out of the dangerous line while reaching in with the safe half.
+- **PULL BACK · SNAP THROUGH CORN** - retreating the heart can be an offensive setup because separation is stored power.
+- **GRAZE OR PARRY · RECHARGE FASTER** - once movement is comfortable, danger itself becomes a resource for faster flow.
+
+Easy is therefore not a disposable low-pressure mode. It is the second half of onboarding.
+
+---
+
+## Mastery ladder
+
+The default progression is deliberately legible:
+
+**First Flight → Easy → Normal → Hard → Impossible**
+
+Space / Enter defaults to Easy on the title. Expert players can still press `1`, `2`, `3`, or `4` directly. After a clear, the victory panel points toward the next pressure tier instead of dropping the player back into an unexplained four-choice menu.
+
+The goal is to let confidence rise before complexity and punishment rise.
+
+---
+
 ## Combat systems retained from v0.22
 
-The visual rewrite does not soften the combat model.
+The visual rewrite and novice onboarding do not soften the later combat model.
 
 Impossible still uses:
 
@@ -278,17 +312,17 @@ Zopfli 0.4.3 / 80 iterations
 js13k ZIP
 ```
 
-The v0.23 story/tutorial and visual reframe qualify at:
+The fully qualified v0.23.1 First Flight artifact is:
 
 ```text
-12,985 / 13,312 bytes
-327 bytes free
+13,260 / 13,312 bytes
+52 bytes free
 ```
 
 SHA-256:
 
 ```text
-316a17876f513771d78828d21ca89ba8dcdf9c5dde3ee2e540a2c50e3ce74154
+467524f93161f18985fc335da7270d139e71ef58e82976bf40b1f5e87deeb8d4
 ```
 
 Runtime contains no external image, font, music, framework, or game-engine assets.
@@ -297,10 +331,11 @@ Runtime contains no external image, font, music, framework, or game-engine asset
 
 ## Qualification
 
-The frozen v0.23 artifact passes:
+The frozen v0.23.1 artifact passes:
 
 - gameplay/Impossible regression suite,
-- mandatory story/menu release smoke,
+- Living Scar + First Flight source/artifact assertions,
+- Easy-default and direct 1–4 difficulty mapping,
 - deterministic Terser + Roadroller packaging,
 - offline/no-network audit,
 - deterministic single-file ZIP verification,
@@ -311,7 +346,7 @@ The frozen v0.23 artifact passes:
 - standalone `file://` HTML in Firefox,
 - Wavedash isolation.
 
-The local-file browser tests explicitly verify the sequence **story → skip → difficulty menu → gameplay**.
+A second real-input browser qualification drives the packed competition ZIP with ordinary keyboard events in **both Chromium and Firefox**. It moves the heart, aims the horn, creates real tension, performs three charged Rainbow Snaps, and verifies the game automatically starts Easy. The test does not skip practice or mutate internal game state.
 
 ---
 
@@ -329,7 +364,7 @@ Competition ZIP:
 
 Versioned competition snapshot:
 
-[`dist/stretchicorn-desktop-v0.23.0.zip`](dist/stretchicorn-desktop-v0.23.0.zip)
+[`dist/stretchicorn-desktop-v0.23.1.zip`](dist/stretchicorn-desktop-v0.23.1.zip)
 
 Build the exact release:
 
@@ -359,7 +394,7 @@ src/00-core.js       state, spawning, geometry, procedural audio
 src/01-combat.js     Snap, Parry, Graze, Splitcorn, scoring
 src/02-update.js     fixed-step simulation, AI, Impossible pressure
 src/03-render.js     authored procedural world, bosses, scar, overload
-src/04-ui-input.js   origin cinematic, tutorial, menus, victory flow
+src/04-ui-input.js   Living Scar, First Flight, menus, victory flow
 ```
 
 Designed for **js13kGames 2026** around **Unicorns & Rainbows**.
