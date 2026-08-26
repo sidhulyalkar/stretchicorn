@@ -50,3 +50,7 @@ s=s.replace("ink('#fff4a5',1);for(let i=12;i<o.w;i+=24){X.beginPath();X.moveTo(o
 s=s.replace("X.globalAlpha=.2;for(let i=0;i<4;i++){X.strokeRect(115+i*220,150+(i&1)*70,135,235);X.strokeRect(128+i*220,163+(i&1)*70,109,209)}","")
 s=s.replace("X.globalAlpha=z*.45;for(let i=0;i<4;i++)X.strokeRect(90+i*220,150+(i&1)*80,130,190)","")
 p.write_text(s)
+
+# Tests assert the affordance exists, not its old longer copy.
+for f in ['scripts/test.mjs','scripts/release-smoke.mjs']:
+    p=Path(f);q=p.read_text();q=q.replace("!h.includes('SKIP STORY')","!h.includes('SKIP')").replace("!h.includes('SKIP PRACTICE')","!h.includes('SKIP')");p.write_text(q)
