@@ -16,6 +16,7 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: '22'
+      - run: npm run build
       - run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.55.0
       - run: npx playwright install --with-deps chromium
       - name: Capture pastoral campaign scenes
