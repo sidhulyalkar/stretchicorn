@@ -65,7 +65,11 @@ try {
   if (geometry.width !== 960 || geometry.height !== 640 || geometry.cssWidth <= 0 || geometry.cssHeight <= 0) throw new Error(`bad canvas geometry: ${JSON.stringify(geometry)}`);
 
   await page.waitForTimeout(120);
+  const introFrame = await canvas.evaluate(node => node.toDataURL());
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
   const menuFrame = await canvas.evaluate(node => node.toDataURL());
+  if (introFrame === menuFrame) throw new Error('mandatory story did not visibly transition to the menu');
   await page.keyboard.press('2');
   await page.waitForTimeout(180);
   const playFrame = await canvas.evaluate(node => node.toDataURL());
