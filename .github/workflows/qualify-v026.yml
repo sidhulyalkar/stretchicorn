@@ -1,5 +1,4 @@
 name: Qualify v0.26 Key Art Render
-# qualification trigger
 on:
   push:
     branches: [feat/v0.26-keyart-render]
@@ -20,6 +19,14 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --disable-pip-version-check zopfli==0.4.3
+      - name: Update v0.26 visual contract
+        run: |
+          node <<'JS'
+          const fs=require('fs'),p='scripts/test.mjs';let s=fs.readFileSync(p,'utf8');
+          const a=`if(!h.includes('createBiquadFilter')||!h.includes("globalCompositeOperation='screen'")||!h.includes('function bossArt')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('story/impact systems missing');`;
+          const b=`if(!h.includes('createBiquadFilter')||!h.includes('function gel')||!h.includes('function bossArt')||!h.includes('keyScene=')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('key-art/story systems missing');if(h.includes("globalCompositeOperation='screen'"))throw Error('legacy full-frame chroma still active');`;
+          if(!s.includes(a))throw Error('visual assertion seam missing');fs.writeFileSync(p,s.replace(a,b));
+          JS
       - name: Build exact competition release
         run: npm run release:competition
       - name: Install browser harness
@@ -71,12 +78,12 @@ jobs:
         with:
           name: v026-key-art-visual-qa
           path: visual-qa/*.png
-      - name: Freeze qualified dist
+      - name: Freeze qualified source + dist
         shell: bash
         run: |
-          git add dist
+          git add scripts/test.mjs dist
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git diff --cached --quiet || git commit -m "Freeze qualified v0.26 competition artifacts"
+          git diff --cached --quiet || git commit -m "Freeze qualified v0.26 key-art release"
           git pull --rebase origin feat/v0.26-keyart-render
           git push origin HEAD:feat/v0.26-keyart-render
