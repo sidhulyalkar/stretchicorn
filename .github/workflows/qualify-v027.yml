@@ -1,3 +1,4 @@
+# v0.27 qualification trigger
 name: Qualify v0.27 Living Color
 on:
   push:
