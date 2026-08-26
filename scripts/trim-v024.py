@@ -9,6 +9,9 @@ s=s.replace("else if(k=='r')mode=7;","")
 s=s.replace("if(mode==7)return rules();","")
 s,n=re.subn(r"if\(mode==7\)\{.*?return\}","",s,count=1,flags=re.S)
 if n!=1: raise SystemExit('rules input seam missing')
+# Keep rebinding, but remove its old hidden D-to-default shortcut. First Flight already teaches the canonical keys.
+s,n=re.subn(r"else if\(k=='d'\)\{\['w','s','a','d','ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '\]\.forEach\(\(v,i\)=>BK\[i\]=v\);save\(\)\}","",s,count=1)
+if n!=1: raise SystemExit('hidden reset shortcut seam missing')
 # Mastery grades and the difficulty ladder supersede the old persistent numeric best-score chrome.
 s=re.sub(r";txt\('Best '\+best,W/2,602,10,'#62676d','center'\)","",s)
 s=s.replace("'SPACE RETRY   •   M MENU\\nScore '+score+'   Best '+best","'SPACE RETRY   •   M MENU\\nScore '+score")
