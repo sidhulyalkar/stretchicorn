@@ -1,6 +1,7 @@
 from pathlib import Path
 import json,re
 
+# v0.25 Storybook Meadow: pastoral depth over diagrammatic decoration.
 
 def subf(s,name,next_name,new):
     a=s.find('function '+name+'(')
