@@ -1,0 +1,26 @@
+name: Patch v0.23 smoke tests
+on:
+  push:
+    branches: [feat/v0.23-storybook-reframe]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: feat/v0.23-storybook-reframe
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python scripts/patch-v023-tests.py
+      - name: Commit test updates
+        shell: bash
+        run: |
+          git add scripts/test.mjs scripts/release-smoke.mjs scripts/browser-smoke.mjs scripts/file-smoke.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Test mandatory story and gradient renderer"
+          git push origin HEAD:feat/v0.23-storybook-reframe
