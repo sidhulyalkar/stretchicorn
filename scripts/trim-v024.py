@@ -15,6 +15,13 @@ if n!=1: raise SystemExit('hidden reset shortcut seam missing')
 # Cleaner title: the origin and First Flight already establish the premise. Let logo + mascot + Play Easy breathe.
 s=s.replace(";txt('A LIVING SCAR IN A DEAD WORLD',W/2,132,14,'#b8abbc','center')","")
 s=s.replace(";txt('START EASY • MASTER UP WHEN READY',W/2,420,12,'#8f969c','center')","")
+# Faster First Flight phrasing. Each instruction should be readable during movement, not prose the player has to study.
+s=s.replace("WASD • THE HEART IS THE VULNERABLE HALF.","WASD • HEART IS VULNERABLE.")
+s=s.replace("ARROWS • THE HORN IS SAFE. AIM WHERE YOU WANT TO GO.","ARROWS • SAFE HORN AIMS.")
+s=s.replace("MOVE THE HEART AWAY FROM THE HORN UNTIL THE RAINBOW GLOWS.","PULL HEART AWAY UNTIL RAINBOW GLOWS.")
+s=s.replace("SPACE • STORED TENSION BECOMES A DASH + ATTACK.","SPACE • RELEASE TENSION TO SNAP.")
+s=s.replace("↑↓ SELECT • ENTER REBIND • M BACK","↑↓ • ENTER REBIND • M BACK")
+s=s.replace("↑↓ SELECT • ←→ / ENTER • M BACK","↑↓ • ←→ / ENTER • M BACK")
 # Mastery grades and the difficulty ladder supersede the old persistent numeric best-score chrome.
 s=re.sub(r";txt\('Best '\+best,W/2,602,10,'#62676d','center'\)","",s)
 s=s.replace("'SPACE RETRY   •   M MENU\\nScore '+score+'   Best '+best","'SPACE RETRY   •   M MENU\\nScore '+score")
