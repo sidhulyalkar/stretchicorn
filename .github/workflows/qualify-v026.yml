@@ -26,6 +26,8 @@ jobs:
           const a=`if(!h.includes('createBiquadFilter')||!h.includes("globalCompositeOperation='screen'")||!h.includes('function bossArt')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('story/impact systems missing');`;
           const b=`if(!h.includes('createBiquadFilter')||!h.includes('function gel')||!h.includes('function bossArt')||!h.includes('keyScene=')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('key-art/story systems missing');if(h.includes("globalCompositeOperation='screen'"))throw Error('legacy full-frame chroma still active');`;
           if(!s.includes(a))throw Error('visual assertion seam missing');fs.writeFileSync(p,s.replace(a,b));
+          const f='src/03-keyart-v026.js';let k=fs.readFileSync(f,'utf8'),ta="['1 EASY','2 NORMAL','3 HARD','4 IMPOSSIBLE']",tb="['1  EASY','2  NORMAL','3  HARD','4  IMPOSSIBLE']";
+          if(!k.includes(ta))throw Error('title spacing seam missing');fs.writeFileSync(f,k.replace(ta,tb));
           JS
       - name: Build exact competition release
         run: npm run release:competition
@@ -81,7 +83,7 @@ jobs:
       - name: Freeze qualified source + dist
         shell: bash
         run: |
-          git add scripts/test.mjs dist
+          git add src/03-keyart-v026.js scripts/test.mjs dist
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git diff --cached --quiet || git commit -m "Freeze qualified v0.26 key-art release"
