@@ -6,211 +6,157 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-A 13KB desktop arcade-action game about a dead unicorn revived by the last surviving rainbow and forced through a corrupted corn world to return color and order to it.
+A 13KB desktop arcade-action game about a dead unicorn revived by the last surviving rainbow and sent through a wounded meadow kingdom to return color to the world.
 
 Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 [**Download the current js13k competition ZIP**](dist/stretchicorn-js13k.zip)  
 [**Download the one-file local playtest**](dist/stretchicorn-local.html)
 
-**v0.23.1 · FIRST FLIGHT · story → practice → Easy → mastery ladder**
+**v0.25.0 · STORYBOOK MEADOW · story → First Flight → Easy → mastery**
 
 </div>
 
 ---
 
-## The living scar
+## The premise
 
 Stretchicorn begins **dead**.
 
-A catastrophe tore the unicorn into two pieces and drained almost all color from the world. One surviving ribbon of rainbow light finds the separated halves. It cannot reconstruct the missing body, so it becomes the missing body itself, stitching the creature back into motion as an elastic living scar.
+A catastrophe tore the unicorn apart and drained the world almost completely of color. One surviving ribbon of rainbow light finds the two halves. It cannot rebuild the missing body, so it becomes the missing body itself: an elastic living scar that stitches Stretchicorn back into motion.
 
 ```text
 PULL ←     ♥ BODY ═══════ 🌈 LIVING SCAR ═══════ 🦄 HEAD / HORN     → AIM
            vulnerable          life-force                 safe
 ```
 
-The rainbow is resurrection, scar, spring, weapon, movement system, and the world's last continuous source of full-spectrum color.
+The same rainbow that resurrects Stretchicorn becomes the movement system, spring, weapon, shield and the world's remaining source of full-spectrum color.
 
 **Stretchicorn is not carrying the magic. Stretchicorn is being held alive by it.**
 
-The game deliberately leaves the catastrophe partly unexplained. The world, the bosses, and the way color returns are the evidence.
+The world never gives the player a lore dump explaining the catastrophe. The landscape and the bosses are the evidence. As skill and restoration increase, the countryside slowly remembers color.
 
 ---
 
-# v0.23.1 - FIRST FLIGHT
+# First Flight
 
-The first-time experience no longer asks a new player to choose difficulty before they understand the game. Every fresh load follows one authored path:
+Stretchicorn has an unusual controller, so the game does not throw a new player directly into combat or ask them to choose a difficulty they do not understand.
 
-**Living Scar origin → safe First Flight practice → three successful Rainbow Snaps → Easy campaign.**
+Every first run follows one authored path:
 
-First Flight uses the real movement/spring/Snap implementation with enemies, walls, pickups, and damage removed. It teaches one concept at a time: move the vulnerable heart, point the safe horn, pull in the opposite direction until the living scar glows, then release that stored tension with Space. The player must complete three charged Snaps before the campaign starts.
+**Living Scar origin → safe First Flight practice → three real Rainbow Snaps → Easy campaign.**
 
-Easy then continues teaching through concise contextual strategy prompts: keep the heart behind the horn, use the safe rainbow/horn aggressively, pull back to create charge, and begin learning Graze/Parry as faster recharge tools.
+First Flight uses the same production movement, tension and Snap physics as combat, but removes enemies, damage, walls and pickups. It teaches one physical idea at a time:
 
-The title screen now defaults to **Easy**, while Normal, Hard, and Impossible remain available for returning/expert players. Clearing each tier explicitly points toward the next pressure level so difficulty feels like a mastery ladder rather than four arbitrary buttons.
+1. **WASD · move the heart.** The rear half is vulnerable.
+2. **Arrow keys · aim the horn.** The head and horn are safe.
+3. **Pull away.** Separation stores energy in the living scar.
+4. **Space · Rainbow Snap.** Stored tension becomes movement and attack.
+5. Repeat until three genuine charged Snaps have been completed.
 
-The compact first-time mental model is:
+The mental model is deliberately smaller than the key list:
 
 > **BODY PULLS · HORN POINTS · RAINBOW SNAPS**
 
----
+After the third Snap, Easy starts automatically. Returning players can skip story/practice or select a difficulty directly, and `T` replays the complete origin from the title screen.
 
-# v0.23 - STORYBOOK REFRAME
-
-v0.23 is a visual-direction reset based on playtest feedback. The previous build spent too many bytes on decorative stars, sparkles, low-alpha motifs, and symbolic background flourishes that did not make the world feel more authored.
-
-The new rule is stricter:
-
-> **Every background mark must describe a place, a threat, restoration, or a control concept. If it is only decoration, remove it.**
-
-The result is less visual confetti and much more composition, depth, architecture, negative space, and environmental storytelling.
-
-See [`docs/storybook-reframe-v0.23.md`](docs/storybook-reframe-v0.23.md).
+Easy then teaches strategy in context: keep the vulnerable heart behind the safe half, create charge by pulling back, Snap through enemies, and eventually turn Graze/Parry into faster recharge tools.
 
 ---
 
-## Living Scar origin + First Flight
+# v0.25 Storybook Meadow
 
-A new player no longer lands on a difficulty menu and then discovers the unusual controls while enemies are already active.
+v0.25 replaces the previous diagram-heavy environment direction with one continuous illustrated countryside.
 
-Every fresh load begins with a short visual prologue:
+The visual rule is now:
 
-1. **The Dead Field** - the world has lost its color and the unicorn lies separated in two pieces.
-2. **The Last Rainbow** - a surviving ribbon of color descends and crosses the wound.
-3. **Resurrection** - the rainbow cannot rebuild the body, so it becomes the connection between the halves.
+> **Filled silhouettes describe the world. Fine strokes are reserved for texture, weather and magic.**
 
-The game then moves directly into **First Flight**, a safe practice field using the real production physics. The player must demonstrate:
+Every arena shares the same visual anatomy:
 
-4. **WASD · MOVE THE HEART** - learn that the heart/body is vulnerable.
-5. **ARROWS · POINT THE HORN** - learn that the independent head/horn is safe and defines direction.
-6. **PULL AWAY · MAKE TENSION** - separate heart from horn until the living rainbow visibly charges.
-7. **SPACE · RAINBOW SNAP ×3** - convert stored tension into three real dash-attacks.
-8. **FIRST FLIGHT COMPLETE · EASY** - the first campaign begins automatically without returning to a menu.
+- rolling distant hills,
+- a faded rainbow hanging low on the horizon,
+- a dark meadow ground plane,
+- swaying grass clusters,
+- small flower heads,
+- tiny luminous glints that appear as restoration returns,
+- restrained pastoral objects rather than abstract arena diagrams.
 
-The onboarding is the default path, but returning players are never trapped:
+The result is meant to feel like one place changing as Stretchicorn travels deeper into it, not thirteen disconnected level backgrounds.
 
-- **Space / Enter / Escape** skips the story forward into First Flight.
-- A visible **SKIP STORY** Canvas control is clickable.
-- First Flight has a visible **SKIP PRACTICE** control and Escape path that starts Easy.
-- **T** on the title screen replays the complete onboarding.
+## The Withered Meadow
 
-The point is not to make the player memorize instructions. It is to give them enough consequence-free repetitions that the novel two-ended control scheme begins to live in their hands before combat begins.
+The opening trials return to the pastoral language that originally made Stretchicorn feel most distinctive.
 
----
+A broken fence crosses the foreground. A small windmill turns slowly in the distance. Bent grasses and dull flowers sit against rolling hills while the rainbow is barely visible through the dark sky. A tiny bird silhouette occasionally rewards looking away from the combat for a moment.
 
-## Four authored environmental acts
+At low restoration, the countryside is almost monochrome. As skill rises, flower heads and small points of light begin borrowing colors from Stretchicorn's rainbow.
 
-Instead of thirteen unrelated background doodles, the campaign now moves through four coherent visual regions. Individual trials still change encounters and palette, but the world has continuity.
+## The Scarecrow Court
 
-### I. Mourning Field
+The Maize Monarch does not live in a geometric throne room. It has claimed a ruined farmstead.
 
-**The Dead Field · First Stirring · Ash Front · Husk Passage**
+A dark barn, open doorway, sunflower remnants and a broad scarecrow silhouette turn the same meadow into a folk-horror court. The Monarch's authority is deliberately false: it rules agricultural wreckage as though it were a palace.
 
-The opening region is dominated by crooked dead stalks, black ground masses, distant broken curves, and the remains of an older geometry buried beneath the farmland.
+This keeps the boss absurd enough to remain a giant corn monarch while giving the scene atmosphere rather than another collection of symbols.
 
-The landscape should feel quiet before it feels dangerous. Stretchicorn is the brightest object because the world has forgotten how brightness works.
+## The Drowned Furrows
 
-As restoration rises, traces of the old curved structures align and gain restrained spectral veins rather than exploding into arbitrary particles.
+The Husk Architect appears where the old meadow irrigation system has sunk into water.
 
-### II. Sunken Court
+Shallow puddles catch thin rainbow reflections as restoration returns. Reeds lean in the wind. A heavy waterwheel is partially embedded in the wetland rather than presented as a floating diagram.
 
-**The Maize Monarch · Golden Fever · The Shell Fields · Broken Spectrum**
+The Architect's actual Husk Shift walls provide the rigid geometry. The background stays organic, so the boss's ability to impose rectangular structure feels invasive rather than visually redundant.
 
-The landscape becomes monumental. Large ruined pillars and arch fragments replace tiny motifs. The implication is that this was not always merely farmland. Something architectural existed beneath or before the corn world.
+## The Prism Thicket
 
-The Maize Monarch claims those ruins as a false court.
+Late in the campaign the meadow becomes strange without ceasing to be natural.
 
-### III. Husk Foundry
+A gnarled dark tree and heavy botanical branches replace architectural line work. Small crystal-flower shapes grow near the ground. Their color is conditional on restoration, so the magical endgame emerges out of the same countryside instead of switching to a separate neon world.
 
-**The Husk Architect · Crystal Night · The March**
-
-The world becomes imposed structure: braced frames, measured lines, repeated construction geometry, and large angular masses.
-
-This visual language supports Husk Shift directly. The Architect is not conjuring random rectangles. It is continuously revising a plan for the arena and forcing the player to live inside the revision.
-
-### IV. Black Prism
-
-**Prism War · The Cobtopus**
-
-Architecture gives way to crystalline ribs and organic roots that bend toward a shared center. The scene becomes more asymmetrical and biological as the campaign approaches Cobtopus.
-
-The final arena feels less like a room and more like the corrupted world developing a nervous system around the player.
+Cobtopus deepens that corruption with roots pulling toward a dark organic center. The Impossible Encore tears the same meadow rather than inventing a fourth abstract visual system.
 
 ---
 
-# Boss worlds
+## Restoration
 
-The signature bosses should remain identifiable even if their sprites were temporarily hidden. Their arenas now carry their identity.
+The rainbow is the only object allowed to carry the full spectrum continuously.
 
-## Maize Monarch - false authority
+The world earns color back through play. Campaign progress, combo, Lucky 13 and stage clears feed the restoration state. The response is deliberately environmental rather than confetti-heavy:
 
-The Monarch's court uses:
+- the horizon rainbow becomes more legible,
+- flowers regain spectral color,
+- puddles begin catching colored reflections,
+- small glints appear in the meadow,
+- prism growth becomes luminous,
+- restored-stage tableaux hold the healed scene for a moment before the next trial.
 
-- monumental vertical pillars,
-- a large ritual arch,
-- crown-like structural geometry,
-- restrained earthen gold,
-- symmetry and ceremonial spacing.
+The same magic operates at two scales:
 
-The boss sprite also receives a stronger halo/mantle language so it reads as a ruler rather than simply a larger cob.
-
-The environment tells the story: this creature inherited ruins and declared them a throne.
-
-## Husk Architect - imposed order
-
-The Architect owns:
-
-- radial measurements,
-- construction circles,
-- drafting lines,
-- ghost wall plans,
-- rigid plated details on the boss itself,
-- the existing Husk Shift barriers.
-
-Its threat is spatial authorship. The player and the Architect are effectively fighting over who gets to define the room.
-
-## Cobtopus - organic convergence
-
-Cobtopus replaces right angles with:
-
-- thick root-like tendrils entering from outside the frame,
-- curves bending toward the arena core,
-- a black central void,
-- organic radial pressure,
-- a darker central core in the boss silhouette.
-
-By the final trial, corruption is no longer pretending to be architecture. It has become an organism.
-
-## Impossible Encore - incompatible worlds collide
-
-On Impossible, the apparent Trial 13 ending remains a false summit.
-
-**NOT YET.**
-
-Maize Monarch, Husk Architect, and Cobtopus return together. The arena does not introduce another decorative theme. Instead, the three established systems overlap incorrectly:
-
-- Monarch ritual rings,
-- Architect measured spokes,
-- Cobtopus organic curves.
-
-The world looks as though three incompatible rules are simultaneously trying to own the same space.
+**Rainbow + dead unicorn → remembers life.**  
+**Rainbow + wounded meadow → remembers color.**
 
 ---
 
-## Restoration is structural
+# Bosses
 
-Color restoration is still connected to performance, but v0.23 reduces the previous dependence on stars and ambient sparkle.
+The three signature bosses remain mechanically distinct, but v0.25 makes their environments part of their character rather than surrounding them with abstract explanatory graphics.
 
-Restoration now primarily reveals **order**:
+### Maize Monarch
 
-- malformed lines align,
-- broken arcs become more legible,
-- structural color veins appear,
-- environmental silhouettes gain cleaner relationships,
-- stage-clear tableaux hold the repaired scene long enough to inspect it.
+A false ruler occupying a barn-and-scarecrow court. Its crown, mantle and ceremonial entrance contrast against a world that is visibly agricultural and broken.
 
-The rainbow remains the only object allowed to carry the full spectrum continuously.
+### Husk Architect
+
+A spatial adversary inside drowned farmland. The pastoral scene stays soft and wet while the Architect materializes hard rectangular barriers on top of it. The visual conflict is intentional: **the meadow grows; the Architect imposes.**
+
+### Cobtopus
+
+The corruption becomes biological. Gnarled branches, roots and a dark center pull the familiar meadow inward. By Trial 13, the threat no longer looks built. It looks grown.
+
+### Impossible Encore
+
+The false clear still triggers **NOT YET** and the half-time Heavy Drop. The world itself is torn by broad dark scars while Monarch, Architect and Cobtopus return together. The finale reuses the established countryside and damages it rather than covering it in another layer of diagrammatic effects.
 
 ---
 
@@ -218,90 +164,63 @@ The rainbow remains the only object allowed to carry the full spectrum continuou
 
 | Input | Action |
 |---|---|
-| **1 / 2 / 3 / 4** | Easy / Normal / Hard / Impossible |
 | **W A S D** | Move the vulnerable heart-body |
-| **Arrow Keys** | Steer the safe head / horn |
-| **Space** | Horn strike / Rainbow Snap |
+| **Arrow Keys** | Aim / steer the safe head and horn |
+| **Space** | Horn strike / charged Rainbow Snap |
+| **1 / 2 / 3 / 4** | Easy / Normal / Hard / Impossible |
 | **P** | Pause |
 | **M** | Menu |
 | **T** | Replay Living Scar + First Flight from title |
 | **C** | Rebind controls |
-| **R** | Rules |
 | **S** | Music + SFX |
 
-Pull the body away from the horn to charge the scar. A charged **Rainbow Snap** is attack, dash, dodge, traversal, pickup route, and combo setup at once.
+A charged Rainbow Snap is simultaneously attack, dash, dodge, traversal, pickup route and combo setup.
 
-Only the ♥ body takes damage. The head and rainbow can safely enter danger to attack, Graze ordinary kernels, Parry projectiles, and collect powerups.
-
----
-
-## Easy is the first strategy lesson
-
-First Flight teaches *how* the creature works. Easy begins teaching *why* that geometry is useful.
-
-The first three Easy encounters surface one compact strategy at a time:
-
-- **HEART HURTS · HORN + RAINBOW SAFE** - keep the vulnerable half out of the dangerous line while reaching in with the safe half.
-- **PULL BACK · SNAP THROUGH CORN** - retreating the heart can be an offensive setup because separation is stored power.
-- **GRAZE OR PARRY · RECHARGE FASTER** - once movement is comfortable, danger itself becomes a resource for faster flow.
-
-Easy is therefore not a disposable low-pressure mode. It is the second half of onboarding.
+Only the ♥ body takes damage. The head and rainbow can safely enter danger to attack, collect powerups, Graze ordinary kernels and Parry counterable shots.
 
 ---
 
-## Mastery ladder
+## Difficulty is a mastery ladder
 
-The default progression is deliberately legible:
+The intended first-player path is:
 
 **First Flight → Easy → Normal → Hard → Impossible**
 
-Space / Enter defaults to Easy on the title. Expert players can still press `1`, `2`, `3`, or `4` directly. After a clear, the victory panel points toward the next pressure tier instead of dropping the player back into an unexplained four-choice menu.
+Space / Enter defaults to Easy on the title. Experienced players can still press `1`, `2`, `3`, or `4` directly.
 
-The goal is to let confidence rise before complexity and punishment rise.
+Impossible remains an expert anti-chain mode rather than a population spam mode. It uses Hard-capped enemy density with stronger attack cadence, health, movement, projectiles, Husk Shift pressure, scarcer sustain and cyan piercing attacks that cannot be countered and must truly be dodged.
 
----
-
-## Combat systems retained from v0.22
-
-The visual rewrite and novice onboarding do not soften the later combat model.
-
-Impossible still uses:
-
-- Hard-density population caps rather than chain-friendly swarm inflation,
-- 2.4x hostile attack pressure,
-- 1.5x enemy HP,
-- 1.25x hostile movement/projectile speed,
-- 1.25x Husk Shift cadence,
-- scarcer pickups,
-- cyan piercing attacks that must be dodged,
-- no heart/shield sustain from Impossible Lucky 13,
-- one-generation terminal Splitcorn,
-- the bounded three-boss to six-terminal-copy Encore.
-
-The Heavy Drop, kick-driven camera, critical-health scar fray, Chromatic Overload, mastery grades, and final scar-release ending also remain.
+Its finale preserves the bounded three-boss → six-terminal-copy Encore rather than creating an unbounded Splitcorn swarm.
 
 ---
 
-## The final release
+## Audio and impact systems
 
-Once the world is restored, the connection that kept Stretchicorn alive is allowed to stop fighting.
+The renderer rewrite does not remove the v0.22/v0.24 combat presentation work:
 
-The living scar loses tension, fractures into colored remnants, and releases the two halves toward the restored earth.
+- procedural Web Audio soundtrack,
+- half-time Impossible Heavy Drop,
+- filtered saw wobble bass,
+- kick-driven camera response,
+- critical-health Living Scar fraying,
+- max-combo Chromatic Overload,
+- mastery grades and restored-stage tableaux,
+- bittersweet final scar release.
+
+The ending remains the inverse of the game's control language. For thirteen trials, tension and connection mean survival. Once the world is restored, the living scar can finally stop holding the two halves together.
 
 **THE LAST RAINBOW LETS GO.**
-
-The ending is intentionally the inverse of the whole control language. The campaign teaches that tension and connection mean survival. Victory is the first moment connection is allowed to end.
 
 ---
 
 ## 13KB engineering
 
-The readable source is converted into the competition build through:
+The competition build is deterministic:
 
 ```text
 readable source
       ↓
-custom safe golf
+custom safe identifier golf
       ↓
 Terser 5.50.0
       ↓
@@ -312,59 +231,61 @@ Zopfli 0.4.3 / 80 iterations
 js13k ZIP
 ```
 
-The fully qualified v0.23.1 First Flight artifact is:
+v0.25 keeps the readable v0.24 renderer in the repository for history, then loads the Storybook Meadow renderer as a small dedicated module. During production build, `scripts/build.mjs` removes the superseded `worldArt()` / `bossArt()` range before concatenating the v0.25 module, so the submitted game never pays for two world renderers.
+
+Final qualified v0.25 artifact:
 
 ```text
-13,260 / 13,312 bytes
-52 bytes free
+13,286 / 13,312 bytes
+26 bytes free
 ```
 
 SHA-256:
 
 ```text
-467524f93161f18985fc335da7270d139e71ef58e82976bf40b1f5e87deeb8d4
+900f27ceb341cfd609f2a6f332ed476a2183f6cb238014349861ebdaf2f4983b
 ```
 
-Runtime contains no external image, font, music, framework, or game-engine assets.
+Runtime contains no external image, font, music, framework or game-engine assets.
 
 ---
 
 ## Qualification
 
-The frozen v0.23.1 artifact passes:
+The exact v0.25 competition artifact passes:
 
-- gameplay/Impossible regression suite,
-- Living Scar + First Flight source/artifact assertions,
-- Easy-default and direct 1–4 difficulty mapping,
-- deterministic Terser + Roadroller packaging,
-- offline/no-network audit,
-- deterministic single-file ZIP verification,
-- 13,312-byte hard limit,
+- deterministic gameplay and Impossible regression tests,
+- Living Scar + First Flight assertions,
+- three genuine First Flight Snaps before automatic Easy handoff,
+- deterministic packed-artifact verification,
+- offline / no-network audit,
+- single-root-`index.html` ZIP validation,
+- the 13,312-byte hard limit,
 - exact submitted ZIP in Chromium,
 - exact submitted ZIP in Firefox,
 - standalone `file://` HTML in Chromium,
 - standalone `file://` HTML in Firefox,
 - Wavedash isolation.
 
-A second real-input browser qualification drives the packed competition ZIP with ordinary keyboard events in **both Chromium and Firefox**. It moves the heart, aims the horn, creates real tension, performs three charged Rainbow Snaps, and verifies the game automatically starts Easy. The test does not skip practice or mutate internal game state.
+The visual direction was also screenshot-reviewed across the origin, First Flight, Withered Meadow, Scarecrow Court / Monarch, Drowned Furrows / Architect, Prism Thicket, Cobtopus and Impossible Encore before the release artifacts were frozen.
 
 ---
 
 ## Build and play
 
-Fastest playtest:
+Fastest local playtest:
 
 [`dist/stretchicorn-local.html`](dist/stretchicorn-local.html)
 
-Download that one HTML file and double-click it. No server is required.
+Download that one file and double-click it. No server is required.
 
-Competition ZIP:
+Competition submission:
 
 [`dist/stretchicorn-js13k.zip`](dist/stretchicorn-js13k.zip)
 
-Versioned competition snapshot:
+Versioned snapshot:
 
-[`dist/stretchicorn-desktop-v0.23.1.zip`](dist/stretchicorn-desktop-v0.23.1.zip)
+[`dist/stretchicorn-desktop-v0.25.0.zip`](dist/stretchicorn-desktop-v0.25.0.zip)
 
 Build the exact release:
 
@@ -390,11 +311,12 @@ npm run release:competition
 ## Architecture
 
 ```text
-src/00-core.js       state, spawning, geometry, procedural audio
-src/01-combat.js     Snap, Parry, Graze, Splitcorn, scoring
-src/02-update.js     fixed-step simulation, AI, Impossible pressure
-src/03-render.js     authored procedural world, bosses, scar, overload
-src/04-ui-input.js   Living Scar, First Flight, menus, victory flow
+src/00-core.js         state, spawning, geometry, procedural audio
+src/01-combat.js       Snap, Parry, Graze, Splitcorn, scoring
+src/02-update.js       fixed-step simulation, AI, Impossible pressure
+src/03-render.js       character/enemy/combat rendering
+src/03-world-v025.js   Storybook Meadow world + boss scenery
+src/04-ui-input.js     Living Scar, First Flight, menus, victory flow
 ```
 
 Designed for **js13kGames 2026** around **Unicorns & Rainbows**.
