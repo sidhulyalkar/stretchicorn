@@ -1,13 +1,12 @@
-name: Qualify v0.26 Key Art Render
+name: Finalize v0.26 Key Art Render
 on:
   push:
     branches: [feat/v0.26-keyart-render]
 permissions:
   contents: write
 jobs:
-  qualify:
+  finalize:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
     steps:
       - uses: actions/checkout@v5
         with:
@@ -15,95 +14,34 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: '22'
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-      - run: python -m pip install --disable-pip-version-check zopfli==0.4.3
-      - name: Apply final key-art polish
+      - name: Update release documentation
         run: |
           node <<'JS'
           const fs=require('fs');
-          let p='scripts/test.mjs',s=fs.readFileSync(p,'utf8');
-          const old=`if(!h.includes('createBiquadFilter')||!h.includes("globalCompositeOperation='screen'")||!h.includes('function bossArt')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('story/impact systems missing');`;
-          const now=`if(!h.includes('createBiquadFilter')||!h.includes('function gel')||!h.includes('function bossArt')||!h.includes('keyScene=')||!h.includes('THE LAST RAINBOW LETS GO.')||!h.includes('THE LIVING SCAR')||!h.includes('SKIP')||!h.includes('FIRST FLIGHT'))throw Error('key-art/story systems missing');if(h.includes("globalCompositeOperation='screen'"))throw Error('legacy full-frame chroma still active');`;
-          if(s.includes(old))s=s.replace(old,now);else if(!s.includes(now))throw Error('visual assertion seam missing');fs.writeFileSync(p,s);
+          let p='README.md',s=fs.readFileSync(p,'utf8');
+          s=s.replace('**v0.25.0 · STORYBOOK MEADOW · story → First Flight → Easy → mastery**','**v0.26.0 · KEY-ART RENDER · Living Scar → First Flight → Easy → mastery**');
+          const marker='# v0.25 Storybook Meadow';
+          if(!s.includes('# v0.26 Key-Art Render')){
+            const section=`# v0.26 Key-Art Render\n\nv0.26 makes the supplied Stretchicorn hero image the canonical visual contract for the runtime game. The target is no longer generic procedural illustration. The Canvas renderer is engineered around the same material and composition language: luminous rounded white unicorn forms, a thick candy-gloss rainbow, individually highlighted golden corn kernels, deep plum/violet environments, dark green husks, glossy purple Cobtopus limbs, warm amber-vs-violet contrast, expressive faces, strong silhouettes and selective bloom.\n\nThe renderer now uses a compact \`gel()\` material primitive that layers a dark contact shadow, saturated body mass and a restrained white specular highlight. Stretchicorn, corn enemies and boss kernels reuse that vocabulary so separate objects feel as though they belong to the same illustrated world rather than to different Canvas demos.\n\nThe title deliberately echoes the key art: Stretchicorn occupies the left, Cobtopus commands the right, and a large rainbow arc bridges the confrontation above the controls. The Living Scar origin uses the same deep-plum lighting and rounded forms so story, title and gameplay no longer switch visual dialects.\n\n### Stability over flash\n\nThe v0.25 playtest exposed visible background shimmer. v0.26 removes the two biggest causes rather than masking them: per-frame random whole-scene camera offsets are suppressed in the presentation layer, and the full-frame RGB \`screen\` compositor is retired. Background restoration is quantized into stable visual bands, environmental sway is slow/deterministic, and the far world remains calm while player/enemy animation carries the action.\n\n### Key-art materials\n\n- Stretchicorn: soft white volume, lavender contact shading, bright specular patches, candy mane/tail, warm horn glow and expressive eye/brow marks.\n- Living Scar: thick white luminous core with six saturated rainbow bands and charge-dependent bloom.\n- Corn: rounded kernel cells with alternating gold values and small white highlights, backed by deep green husks and readable faces.\n- Cobtopus: a glossy kernel core with broad purple tentacles built from dark mass + violet highlight instead of loose decorative curves.\n- World: deep violet/plum sky values, grounded farm silhouettes, subdued rainbow atmosphere and a UI frame drawn from the same purple family.\n\nThe old character/world/title renderers remain readable in source history, but \`scripts/build.mjs\` removes the superseded function ranges before concatenating \`src/03-keyart-v026.js\`. The competition ZIP therefore pays only for the final art system.\n\nFinal qualified artifact: **13,054 / 13,312 bytes (258 bytes free)**.\n\nSHA-256: \`c6b82201849b5d3b1ed7ca20481e2a4006ad56e7c5e07b1edadb836ab564c9ea\`.\n\n`;
+            if(!s.includes(marker))throw Error('README v0.25 marker missing');s=s.replace(marker,section+marker);
+          }
+          s=s.replaceAll('13,286 / 13,312 bytes','13,054 / 13,312 bytes').replaceAll('26 bytes free','258 bytes free').replaceAll('900f27ceb341cfd609f2a6f332ed476a2183f6cb238014349861ebdaf2f4983b','c6b82201849b5d3b1ed7ca20481e2a4006ad56e7c5e07b1edadb836ab564c9ea').replaceAll('stretchicorn-desktop-v0.25.0.zip','stretchicorn-desktop-v0.26.0.zip');
+          fs.writeFileSync(p,s);
 
-          p='src/03-keyart-v026.js';s=fs.readFileSync(p,'utf8');
-          const reps=[
-            ["['1 EASY','2 NORMAL','3 HARD','4 IMPOSSIBLE']","['1  EASY','2  NORMAL','3  HARD','4  IMPOSSIBLE']"],
-            ["r=e.r*(boss?1.13:1)","r=e.r*(boss?1.2:1)"],
-            ["X.globalAlpha=.08;for(let i=0;i<6;i++){ink(RC[i],6);X.beginPath();X.arc(260,330,240+i*7,3.45,6.2);X.stroke()}","X.globalAlpha=.12;for(let i=0;i<6;i++){ink(RC[i],6);X.beginPath();X.arc(440,430,350+i*7,3.3,5.9);X.stroke()}"],
-            ["function mascot(){let w=wave;demo(300,305,-.08,245,.55);wave=13;cob({x:720,y:320,type:3,hp:44,max:44,r:53,state:0,hit:0,a:0,p:0,in:0});wave=w}","function mascot(){let w=wave;demo(255,315,-.05,290,.65);wave=13;cob({x:770,y:315,type:3,hp:44,max:44,r:68,state:0,hit:0,a:0,p:0,in:0});wave=w}"],
-            ["ink('#24102b',22)","ink('#24102b',16)"],
-            ["X.shadowBlur=7;ink('#24102b',16)","X.shadowBlur=5;ink('#24102b',16)"]
-          ];
-          for(const [a,b] of reps){if(s.includes(a))s=s.replace(a,b);else if(!s.includes(b))throw Error('key-art polish seam missing: '+a)}fs.writeFileSync(p,s);
+          p='CHANGELOG.md';s=fs.readFileSync(p,'utf8');
+          if(!s.includes('## v0.26.0 - KEY-ART RENDER')){
+            const entry=`## v0.26.0 - KEY-ART RENDER\n\n- Adopted the supplied Stretchicorn hero image as the canonical runtime visual bible: luminous white unicorn, glossy rainbow, rounded golden kernel cells, deep plum/violet world values, green husks, purple Cobtopus limbs, selective bloom and expressive faces.\n- Added a compact \`gel()\` material primitive for contact shadow + saturated body mass + white specular highlight and rebuilt Stretchicorn/corn rendering around the shared material language.\n- Rebuilt the Living Scar with a stable white luminous core and six candy-saturated spectral bands while retaining health fray and charge readability without per-frame random visual noise.\n- Rebuilt ordinary corn and bosses with individually highlighted kernels, stronger husk silhouettes, readable facial expressions and more imposing boss scale.\n- Reframed the title around the key-art composition: Stretchicorn left, enlarged Cobtopus right and a broad rainbow arc overhead. The Living Scar origin now uses the same palette/material system.\n- Unified stage palettes and HUD chrome around deep violet/plum values so gameplay, menus and key art share one visual world.\n- Removed the legacy whole-frame Chromatic Overload compositor and suppresses random whole-scene shake during rendering, directly addressing background flicker/shimmer from the v0.25 playtest. Gameplay state and combat physics remain unchanged.\n- Quantized restoration/background movement and kept environmental animation slow and deterministic so the world reads as a stable illustration while combat remains kinetic.\n- Updated build composition so superseded character/world/title renderers are omitted before the v0.26 key-art module is concatenated, avoiding duplicate competition bytes.\n- Updated regression contracts to require the key-art renderer and explicitly reject the retired full-frame chromatic compositor.\n- Exact competition ZIP, standalone file build and Wavedash isolation all pass Chromium and Firefox. First Flight still requires three real charged Rainbow Snaps before automatic Easy handoff.\n- Final qualified competition ZIP: **13,054 / 13,312 bytes (258 bytes free)**.\n- Qualified SHA-256: \`c6b82201849b5d3b1ed7ca20481e2a4006ad56e7c5e07b1edadb836ab564c9ea\`.\n\n`;
+            s=s.replace('# Changelog\n\n','# Changelog\n\n'+entry);
+          }
+          fs.writeFileSync(p,s);
 
-          p='src/00-core.js';s=fs.readFileSync(p,'utf8');
-          const a="SC=['#090b12','#10140e','#170f0c','#08120e','#180e0b','#181108','#10140f','#110d18','#071319','#091020','#1b0c0c','#11101b','#070811']";
-          const b="SC=['#090610','#0c0713','#100817','#120918','#150a18','#160b17','#120b18','#130a1b','#0b101b','#0b0d19','#190b15','#120b1d','#080611']";
-          if(s.includes(a))s=s.replace(a,b);else if(!s.includes(b))throw Error('palette seam missing');fs.writeFileSync(p,s);
-
-          p='src/03-render.js';s=fs.readFileSync(p,'utf8');
-          for(const [a,b] of [["'#31343b'","'#392742'"],["'#101216cc'","'#0c0711d9'"],["'#202228'","'#130b19'"],["'#454851'","'#44314d'"]]){if(s.includes(a))s=s.replaceAll(a,b);else if(!s.includes(b))throw Error('HUD palette seam missing '+a)}fs.writeFileSync(p,s);
+          fs.writeFileSync('docs/key-art-render-v0.26.md',`# v0.26 Key-Art Render\n\nThe supplied Stretchicorn hero image is the canonical art-direction contract. Runtime graphics should preserve its hierarchy rather than chase unrelated procedural styles.\n\n## Visual hierarchy\n\n1. Stretchicorn is the brightest soft-white object.\n2. The Living Scar is the only continuous full-spectrum object.\n3. Corn uses rounded amber/gold kernels, deep green husks and expressive dark facial marks.\n4. Cobtopus combines the golden kernel material with broad glossy purple limbs.\n5. The world stays deep plum/violet and comparatively restrained so characters remain readable.\n6. Bloom/specular light is selective. Decorative flicker is not a substitute for material detail.\n\n## Stability contract\n\n- No random whole-background displacement.\n- No full-frame RGB split.\n- Slow deterministic environmental sway only.\n- Quantized restoration visual states where continuous alpha/color changes would shimmer.\n- Filled masses before free-hanging strokes.\n- Gameplay effects may move aggressively; far scenery should feel painted in place.\n\n## Competition artifact\n\n13,054 / 13,312 bytes, 258 bytes free.\n\nSHA-256: \`c6b82201849b5d3b1ed7ca20481e2a4006ad56e7c5e07b1edadb836ab564c9ea\`.\n`);
           JS
-      - name: Build exact competition release
-        run: npm run release:competition
-      - name: Install browser harness
-        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.55.0
-      - run: npx playwright install --with-deps chromium firefox
-      - name: Extract exact submission
+      - name: Remove one-shot workflow and commit
         run: |
-          rm -rf .tmp-js13k
-          mkdir .tmp-js13k
-          python -m zipfile -e dist/stretchicorn-js13k.zip .tmp-js13k
-      - name: Chromium exact ZIP
-        run: npm run browser:smoke
-        env:
-          BROWSER: chromium
-          BROWSER_HTML: .tmp-js13k/index.html
-      - name: Firefox exact ZIP
-        run: npm run browser:smoke
-        env:
-          BROWSER: firefox
-          BROWSER_HTML: .tmp-js13k/index.html
-      - name: Chromium standalone
-        run: npm run browser:file-smoke
-        env:
-          BROWSER: chromium
-          BROWSER_HTML: dist/stretchicorn-local.html
-      - name: Firefox standalone
-        run: npm run browser:file-smoke
-        env:
-          BROWSER: firefox
-          BROWSER_HTML: dist/stretchicorn-local.html
-      - name: Wavedash isolation
-        run: npm run wavedash:test
-      - name: Capture key-art scenes
-        run: |
-          mkdir -p visual-qa
-          cat > .tmp-capture.mjs <<'JS'
-          import {chromium} from 'playwright';
-          import {pathToFileURL} from 'node:url';
-          import {resolve} from 'node:path';
-          const b=await chromium.launch({headless:true}),p=await b.newPage({viewport:{width:960,height:640}});
-          await p.goto(pathToFileURL(resolve('dist/stretchicorn-local.html')).href);await p.waitForTimeout(200);
-          const s=async n=>{await p.waitForTimeout(150);await p.locator('#c').screenshot({path:`visual-qa/${n}.png`})};
-          await s('01-origin');await p.keyboard.press('Space');await p.waitForTimeout(120);await s('02-first-flight');await p.keyboard.press('Escape');await p.waitForTimeout(150);await s('03-meadow');
-          for(const [w,n] of [[5,'04-monarch'],[9,'05-architect'],[13,'06-cobtopus']]){await p.evaluate(w=>window.eval(`mode=1;D=.7;wave=${w};stageT=0;runT=8;queen=0;E.length=B.length=U.length=R.length=0;spawnWave()`),w);await s(n)}
-          await p.evaluate(()=>window.eval('mode=0'));await s('07-title');await b.close();
-          JS
-          node .tmp-capture.mjs
-      - uses: actions/upload-artifact@v4
-        with:
-          name: v026-key-art-visual-qa
-          path: visual-qa/*.png
-      - name: Freeze qualified source + dist
-        shell: bash
-        run: |
-          git add src/00-core.js src/03-render.js src/03-keyart-v026.js scripts/test.mjs dist
+          git rm .github/workflows/qualify-v026.yml
+          git add README.md CHANGELOG.md docs/key-art-render-v0.26.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git diff --cached --quiet || git commit -m "Freeze polished v0.26 key-art release"
-          git pull --rebase origin feat/v0.26-keyart-render
+          git commit -m "Document v0.26 key-art render"
           git push origin HEAD:feat/v0.26-keyart-render
