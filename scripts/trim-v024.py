@@ -15,7 +15,7 @@ if n!=1: raise SystemExit('hidden reset shortcut seam missing')
 # Cleaner title: the origin and First Flight already establish the premise. Let logo + mascot + Play Easy breathe.
 s=s.replace(";txt('A LIVING SCAR IN A DEAD WORLD',W/2,132,14,'#b8abbc','center')","")
 s=s.replace(";txt('START EASY • MASTER UP WHEN READY',W/2,420,12,'#8f969c','center')","")
-s=re.sub(r"\[ T \] REPLAY FIRST FLIGHT\s+\[ C \] CONTROLS\s+\[ S \] SETTINGS","T REPLAY • C CONTROLS • S AUDIO",s)
+s=re.sub(r"\[ T \] REPLAY FIRST FLIGHT\s+\[ C \] CONTROLS\s+\[ S \] SETTINGS","T STORY • C KEYS • S AUDIO",s)
 # Faster First Flight phrasing. Each instruction should be readable during movement, not prose the player has to study.
 s=s.replace("WASD • THE HEART IS THE VULNERABLE HALF.","WASD • HEART IS VULNERABLE.")
 s=s.replace("ARROWS • THE HORN IS SAFE. AIM WHERE YOU WANT TO GO.","ARROWS • SAFE HORN AIMS.")
