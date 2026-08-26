@@ -1,12 +1,44 @@
 # Changelog
 
+## v0.25.0 - STORYBOOK MEADOW
+
+- Rejected the diagram-heavy v0.24 arena-background direction after screenshot and human playtest feedback, while preserving the stronger dimensional character/enemy rendering introduced there.
+- Reframed the entire campaign as **one wounded pastoral kingdom** rather than four unrelated visual systems: the world now shares rolling hill masses, a faded horizon rainbow, meadow ground, grass clusters, flower heads, and restrained ambient glints.
+- Added a dedicated modular `src/03-world-v025.js` world renderer so the pastoral direction remains readable and isolated from combat rendering.
+- Updated `scripts/build.mjs` to remove the superseded v0.24 `worldArt()` / `bossArt()` range before concatenating v0.25, so the readable repository can retain history without paying for two world renderers in the 13KB submission.
+- Rebuilt the opening region as **The Withered Meadow**, with broken fence rhythm, a distant rotating windmill, bent grasses, dull flowers, a tiny bird silhouette, rolling hills, and a deliberately subdued rainbow.
+- Rebuilt the Maize Monarch region as **The Scarecrow Court**, using a barn silhouette, dark doorway, a full-bodied scarecrow, sunflower remnants, and agricultural decay instead of monumental court diagrams.
+- Rebuilt the Husk Architect region as **The Drowned Furrows**, using shallow puddles, spectral water reflections, reeds, and a partially embedded waterwheel. The actual Husk Shift walls now provide the fight's imposed geometry instead of duplicating that idea in the background.
+- Rebuilt the late campaign as **The Prism Thicket**, replacing drafting/architectural lines with a gnarled dark tree, heavy botanical branches, and small crystal-flower growth that gains color through restoration.
+- Simplified Cobtopus and Impossible scenery into dark organic roots / world tears so the endgame damages the same meadow instead of introducing a fourth abstract arena language.
+- Changed the visual hierarchy so filled silhouettes carry form while fine strokes are reserved for texture, weather, grass, reeds, and returning rainbow light.
+- Reduced the horizon rainbow's baseline opacity so it reads as atmospheric evidence of the lost world rather than a bright six-band UI diagram; restoration makes it progressively more legible.
+- Kept small noticed-later details such as flower color recovery, puddle reflections, meadow glints, windmill motion, reeds, bird marks, and spectral prism growth rather than generic stars/confetti.
+- Tightened several competition-only HUD/tutorial strings for readability and byte efficiency while preserving the complete Living Scar → First Flight → three real Snaps → automatic Easy onboarding.
+- Screenshot-reviewed the origin, First Flight, Withered Meadow, Scarecrow Court / Monarch, Drowned Furrows / Architect, Prism Thicket, Cobtopus, and Impossible Encore before freezing artifacts.
+- Removed all one-shot v0.24/v0.25 render transform, optimizer, finalizer, qualification, and screenshot workflows after qualification; only permanent js13k and Wavedash verification workflows remain.
+- Final qualified competition ZIP: **13,286 / 13,312 bytes (26 bytes free)**.
+- Qualified SHA-256: `900f27ceb341cfd609f2a6f332ed476a2183f6cb238014349861ebdaf2f4983b`.
+- Exact submission, standalone `file://` build, three-Snap First Flight path, and Wavedash isolation all pass in Chromium/Firefox where applicable.
+
+## v0.24.0 - LUMINOUS WORLD
+
+- Rebuilt Stretchicorn itself with layered procedural volume: body/head shading, highlights, more dimensional muzzle/ears/eyes, stronger horn treatment, multi-strand mane/tail motion, and a luminous six-band Living Scar.
+- Rebuilt corn enemies with foreground/rear husks, kernel geometry, shadows, highlights, eyes/brows, and stronger material separation between enemy roles.
+- Improved bosses with larger visual scale and secondary silhouette forms while leaving collision geometry unchanged.
+- Added greater material depth to Husk Shift barriers, projectiles, pickups, HUD typography, and combat feedback using Canvas-only primitives.
+- Performed screenshot QA on late boss arenas and reduced visual overdraw after the first pass proved that more lines did not necessarily create better art.
+- Retained First Flight, Heavy Drop, kick-driven camera, critical-health scar fray, Chromatic Overload, mastery grades, final release, Impossible anti-chain pressure, and Wavedash isolation.
+- Final qualified competition ZIP after composition refinement: **13,292 / 13,312 bytes (20 bytes free)**.
+- Qualified SHA-256: `a8655e087b8f67ef1c5d20c4229cd3b7bf39c2729ed6a38941734a545349326f`.
+
 ## v0.23.1 - FIRST FLIGHT
 
 - Rebuilt first-time onboarding around an actual safe practice field using production Stretchicorn physics rather than passive control demonstrations.
 - New players now follow Living Scar story → First Flight practice → automatic Easy campaign. The difficulty menu is no longer the first gameplay decision.
 - First Flight requires moving the vulnerable heart, aiming the safe horn, pulling opposite the horn until the rainbow is charged, and completing three real charged Rainbow Snaps before normal combat begins.
 - Added a rainbow Snap target/guide and concise visual coaching around the core mental model: body pulls, horn points, rainbow snaps.
-- Added explicit story/practice skip escape hatches for returning experts while keeping onboarding the default path.
+- Added explicit story/practice skip escape hatches for returning experts while keeping onboarding the default experience.
 - Changed Space / Enter on the title screen from Normal to Easy and visually recommends progressing upward only after the player has learned the mechanic.
 - Added post-clear mastery guidance from Easy → Normal → Hard → Impossible, while retaining direct numeric difficulty access for experienced players.
 - Added Easy-only early-stage strategy coaching for safe-half positioning, tension/Snap usage, and Graze/Parry recharge.
@@ -40,7 +72,7 @@
 - Added subtle procedural life animation to Stretchicorn and corn, including charge squash/stretch, breathing, blinking, impact compression, and scar fade-in during resurrection.
 - Added critical-health scar fraying: randomized control-point displacement, reduced strand width, and alpha instability make the rainbow visibly look close to failing without changing deterministic movement physics.
 - Added distinct boss arena languages: Maize Monarch uses false-court crown/banner geometry, Husk Architect uses drafting grids and construction arcs, and Cobtopus uses organic curling vortex forms.
-- Reworked the Impossible `NOT YET` reveal into a dedicated half-time Heavy Drop. A sawtooth bass is routed through a resonant low-pass filter whose cutoff is modulated by a 6 Hz LFO, with sparse sub kicks and false-death stings synthesized entirely through Web Audio.
+- Reworked the Impossible `NOT YET` reveal into a dedicated half-time Heavy Drop. A sawtooth bass is routed through a resonant low-pass filter with a 6 Hz LFO modulating cutoff, with sparse sub kicks and false-death stings synthesized entirely through Web Audio.
 - Connected the existing procedural kick envelope to Canvas translation so Heavy Drop beats physically jolt the arena, with a stronger multiplier during the Impossible Encore.
 - Added max-combo Chromatic Overload using one reusable off-screen Canvas, `screen` compositing, beat-responsive offsets, and opposing hue rotations for a compact channel-split effect.
 - Added mastery grades and short restored-stage tableaux so cleared arenas remain visible long enough for the player to register the color they brought back.
