@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Apply meadow renderer
-        run: python scripts/apply-v025.py
+        run: python scripts/apply-v025.py && python scripts/trim-v025.py
       - name: Install deterministic compressor
         run: python -m pip install --disable-pip-version-check zopfli==0.4.3
       - name: Build exact release
