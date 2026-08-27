@@ -1,17 +1,102 @@
 name: Qualify v0.28 Boss Trilogy
+
 on:
   push:
     branches: [feat/v0.28-boss-trilogy]
+
 permissions:
   contents: write
+
+concurrency:
+  group: qualify-v028-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: 'true'
+
 jobs:
-  qualify:
+  competition:
+    name: Competition + browsers
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install deterministic compressor
+        run: python -m pip install --disable-pip-version-check zopfli==0.4.3
+      - name: Boss source contract
+        run: |
+          node --check src/03-bosses-v028.js
+          grep -q "function bossAI" src/03-bosses-v028.js
+          grep -q "USE COVER" src/03-bosses-v028.js
+          grep -q "CHAIN 3" src/03-bosses-v028.js
+          grep -q "STOP HEALS" src/03-bosses-v028.js
+          grep -q "FINAL FEAST" src/03-bosses-v028.js
+          grep -q "function bossFace" src/03-bosses-v028.js
+      - name: Full deterministic release contract
+        run: npm run release:competition
+      - name: Extract exact submitted ZIP
+        run: |
+          rm -rf .tmp-js13k
+          mkdir .tmp-js13k
+          python -m zipfile -e dist/stretchicorn-js13k.zip .tmp-js13k
+          test -f .tmp-js13k/index.html
+      - name: Install pinned Playwright harness
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.55.0
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium firefox
+      - name: Chromium exact ZIP smoke
+        env:
+          BROWSER: chromium
+          BROWSER_HTML: .tmp-js13k/index.html
+        run: npm run browser:smoke
+      - name: Firefox exact ZIP smoke
+        env:
+          BROWSER: firefox
+          BROWSER_HTML: .tmp-js13k/index.html
+        run: npm run browser:smoke
+      - name: Chromium standalone file smoke
+        env:
+          BROWSER: chromium
+          BROWSER_HTML: dist/stretchicorn-local.html
+        run: npm run browser:file-smoke
+      - name: Firefox standalone file smoke
+        env:
+          BROWSER: firefox
+          BROWSER_HTML: dist/stretchicorn-local.html
+        run: npm run browser:file-smoke
+      - name: Fingerprint exact release
+        run: |
+          sha256sum dist/stretchicorn-js13k.zip dist/stretchicorn-desktop-v0.28.0.zip
+          wc -c dist/stretchicorn-js13k.zip dist/stretchicorn-desktop-v0.28.0.zip
+
+  wavedash:
+    name: Wavedash isolation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Build and test Wavedash without contaminating competition source
+        run: npm run wavedash:test
+
+  freeze:
+    name: Freeze qualified dist
+    needs: [competition, wavedash]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: feat/v0.28-boss-trilogy
+          ref: ${{ github.sha }}
+          fetch-depth: 0
       - uses: actions/setup-node@v5
         with:
           node-version: '22'
@@ -19,19 +104,16 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --disable-pip-version-check zopfli==0.4.3
-      - name: Boss source contract
+      - name: Reproduce exact artifacts
+        run: npm run release:competition
+      - name: Commit frozen artifacts only when changed
         run: |
-          node --check src/03-bosses-v028.js
-          grep -q "function bossAI" src/03-bosses-v028.js
-          grep -q "COLONEL" src/03-bosses-v028.js
-          grep -q "STOP HEALS" src/03-bosses-v028.js
-          grep -q "FINAL FEAST" src/03-bosses-v028.js
-      - name: Build readable artifact
-        run: npm run build
-      - name: Pack and measure exact release
-        run: |
-          npm run pack:competition
-          npm run verify:offline
-          python scripts/package.py
-          npm run verify:archive || true
-          npm run check:size || true
+          if [[ -n "$(git status --porcelain --untracked-files=all -- dist)" ]]; then
+            git config user.name "stretchicorn-release-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add dist
+            git commit -m "Freeze v0.28 qualified competition artifacts"
+            git push origin HEAD:feat/v0.28-boss-trilogy
+          else
+            echo "dist already matches exact qualified source"
+          fi
