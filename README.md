@@ -6,14 +6,14 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-A 13KB desktop arcade-action game about a dead unicorn revived by the last surviving rainbow and sent through a wounded meadow kingdom to return color to the world.
+A 13KB desktop arcade-action game about a dead unicorn revived by the last surviving rainbow and sent through a drained meadow kingdom to return color to the world.
 
 Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 [**Download the current js13k competition ZIP**](dist/stretchicorn-js13k.zip)  
 [**Download the one-file local playtest**](dist/stretchicorn-local.html)
 
-**v0.26.0 · KEY-ART RENDER · Living Scar → First Flight → Easy → mastery**
+**v0.28.0 · BOSS TRILOGY · Living Scar → First Flight → Easy → mastery**
 
 </div>
 
@@ -30,159 +30,113 @@ PULL ←     ♥ BODY ═══════ 🌈 LIVING SCAR ══════�
            vulnerable          life-force                 safe
 ```
 
-The same rainbow that resurrects Stretchicorn becomes the movement system, spring, weapon, shield and the world's remaining source of full-spectrum color.
+The rainbow is resurrection, body, spring, movement system, weapon, shield, and the world's remaining source of full-spectrum color.
 
 **Stretchicorn is not carrying the magic. Stretchicorn is being held alive by it.**
 
-The world never gives the player a lore dump explaining the catastrophe. The landscape and the bosses are the evidence. As skill and restoration increase, the countryside slowly remembers color.
+v0.27's Living Color renderer begins the world almost drained and returns saturation through campaign progress, combo, and restoration. The visual story and the mechanical story therefore share one rule: skilled movement brings color back.
 
 ---
 
-# First Flight
+## First Flight
 
-Stretchicorn has an unusual controller, so the game does not throw a new player directly into combat or ask them to choose a difficulty they do not understand.
+Stretchicorn uses an unusual two-ended controller, so the game teaches the physical idea before asking the player to survive it.
 
-Every first run follows one authored path:
+Every first run follows:
 
-**Living Scar origin → safe First Flight practice → three real Rainbow Snaps → Easy campaign.**
+**Living Scar origin → safe First Flight → three real Rainbow Snaps → Easy campaign.**
 
-First Flight uses the same production movement, tension and Snap physics as combat, but removes enemies, damage, walls and pickups. It teaches one physical idea at a time:
+First Flight uses the real production movement and tension physics while removing enemies, damage, walls, and pickups.
 
-1. **WASD · move the heart.** The rear half is vulnerable.
-2. **Arrow keys · aim the horn.** The head and horn are safe.
-3. **Pull away.** Separation stores energy in the living scar.
-4. **Space · Rainbow Snap.** Stored tension becomes movement and attack.
-5. Repeat until three genuine charged Snaps have been completed.
+1. **WASD** moves the vulnerable heart-body.
+2. **Arrow keys** point the safe head and horn.
+3. Pull the body away from the horn to store tension in the living scar.
+4. **Space** releases that tension as a Rainbow Snap.
+5. Complete three genuine charged Snaps to begin Easy automatically.
 
-The mental model is deliberately smaller than the key list:
+The intended mental model is deliberately compact:
 
 > **BODY PULLS · HORN POINTS · RAINBOW SNAPS**
 
-After the third Snap, Easy starts automatically. Returning players can skip story/practice or select a difficulty directly, and `T` replays the complete origin from the title screen.
-
-Easy then teaches strategy in context: keep the vulnerable heart behind the safe half, create charge by pulling back, Snap through enemies, and eventually turn Graze/Parry into faster recharge tools.
+Returning players can skip the story/practice, select a difficulty directly with `1`–`4`, or press `T` from the title to replay onboarding.
 
 ---
 
-# v0.26 Key-Art Render
+# v0.28 Boss Trilogy
 
-v0.26 makes the supplied Stretchicorn hero image the canonical visual contract for the runtime game. The target is no longer generic procedural illustration. The Canvas renderer is engineered around the same material and composition language: luminous rounded white unicorn forms, a thick candy-gloss rainbow, individually highlighted golden corn kernels, deep plum/violet environments, dark green husks, glossy purple Cobtopus limbs, warm amber-vs-violet contrast, expressive faces, strong silhouettes and selective bloom.
+v0.28 replaces the three normal campaign bosses as **three different mastery problems**, not three larger versions of ordinary enemies.
 
-The renderer now uses a compact `gel()` material primitive that layers a dark contact shadow, saturated body mass and a restrained white specular highlight. Stretchicorn, corn enemies and boss kernels reuse that vocabulary so separate objects feel as though they belong to the same illustrated world rather than to different Canvas demos.
+The progression is intentional:
 
-The title deliberately echoes the key art: Stretchicorn occupies the left, Cobtopus commands the right, and a large rainbow arc bridges the confrontation above the controls. The Living Scar origin uses the same deep-plum lighting and rounded forms so story, title and gameplay no longer switch visual dialects.
+**read an attack window → route through an enemy formation → manage competing priorities under pressure**
 
-### Stability over flash
+Each encounter reuses verbs the player already learned rather than introducing a boss-only control scheme.
 
-The v0.25 playtest exposed visible background shimmer. v0.26 removes the two biggest causes rather than masking them: per-frame random whole-scene camera offsets are suppressed in the presentation layer, and the full-frame RGB `screen` compositor is retired. Background restoration is quantized into stable visual bands, environmental sway is slow/deterministic, and the far world remains calm while player/enemy animation carries the action.
+## Trial 5 · Hideaway Husk
 
-### Key-art materials
+Hideaway Husk is a frightened defensive boss wrapped in layered husks.
 
-- Stretchicorn: soft white volume, lavender contact shading, bright specular patches, candy mane/tail, warm horn glow and expressive eye/brow marks.
-- Living Scar: thick white luminous core with six saturated rainbow bands and charge-dependent bloom.
-- Corn: rounded kernel cells with alternating gold values and small white highlights, backed by deep green husks and readable faces.
-- Cobtopus: a glossy kernel core with broad purple tentacles built from dark mass + violet highlight instead of loose decorative curves.
-- World: deep violet/plum sky values, grounded farm silhouettes, subdued rainbow atmosphere and a UI frame drawn from the same purple family.
+Its closed husks are a real gameplay guard. Rainbow Snaps and parried friendly kernels cannot damage it while the guard is active.
 
-The old character/world/title renderers remain readable in source history, but `scripts/build.mjs` removes the superseded function ranges before concatenating `src/03-keyart-v026.js`. The competition ZIP therefore pays only for the final art system.
+The fight cycles through:
 
-Final qualified artifact: **13,054 / 13,312 bytes (258 bytes free)**.
+```text
+HIDE → COVER! → seven-kernel blast → husks OPEN → punish window → HIDE
+```
 
-SHA-256: `c6b82201849b5d3b1ed7ca20481e2a4006ad56e7c5e07b1edadb836ab564c9ea`.
+The arena's existing blocks become meaningful shelter. The player is rewarded for reading the warning, placing the vulnerable heart behind cover, surviving the committed blast, then snapping into the opening.
 
-# v0.25 Storybook Meadow
+**What it tests:** patience, positioning, cover use, and recognition of vulnerability windows.
 
-v0.25 replaces the previous diagram-heavy environment direction with one continuous illustrated countryside.
+## Trial 9 · The Kernel Colonel
 
-The visual rule is now:
+The Colonel does not politely remain in attack range. It retreats when Stretchicorn closes distance, circles the arena, and deploys four-kernel squads between itself and the player.
 
-> **Filled silhouettes describe the world. Fine strokes are reserved for texture, weather and magic.**
+Its command guard stays active until the player destroys **three soldiers inside the chain window**. A visible `0/3 → 3/3` counter makes that relationship readable. Completing the chain produces:
 
-Every arena shares the same visual anatomy:
+**EXPOSED!**
 
-- rolling distant hills,
-- a faded rainbow hanging low on the horizon,
-- a dark meadow ground plane,
-- swaying grass clusters,
-- small flower heads,
-- tiny luminous glints that appear as restoration returns,
-- restrained pastoral objects rather than abstract arena diagrams.
+and temporarily drops the Colonel's guard.
 
-The result is meant to feel like one place changing as Stretchicorn travels deeper into it, not thirteen disconnected level backgrounds.
+Trying to ignore the troops and chase the commander is deliberately inefficient. The army is also the route to the boss.
 
-## The Withered Meadow
+**What it tests:** chaining, target routing, pursuit control, and converting enemy density into a deliberate offensive sequence.
 
-The opening trials return to the pastoral language that originally made Stretchicorn feel most distinctive.
+## Trial 13 · The Cobnocopia
 
-A broken fence crosses the foreground. A small windmill turns slowly in the distance. Bent grasses and dull flowers sit against rolling hills while the rainbow is barely visible through the dark sky. A tiny bird silhouette occasionally rewards looking away from the combat for a moment.
+The final normal boss is a horn-of-plenty corruption that alternates protected and exposed phases while creating healing kernels around the arena.
 
-At low restoration, the countryside is almost monochrome. As skill rises, flower heads and small points of light begin borrowing colors from Stretchicorn's rainbow.
+The healers physically travel toward the boss. If one reaches it, Cobnocopia regains HP. Killing the healer interrupts that recovery, forcing a real target-priority choice between preparing the next damage window and denying healing.
 
-## The Scarecrow Court
+Below 20% HP the fight changes:
 
-The Maize Monarch does not live in a geometric throne room. It has claimed a ruined farmstead.
+**FINAL FEAST!**
 
-A dark barn, open doorway, sunflower remnants and a broad scarecrow silhouette turn the same meadow into a folk-horror court. The Monarch's authority is deliberately false: it rules agricultural wreckage as though it were a palace.
+Cobnocopia remains exposed, six healing kernels arrive immediately, and additional food continues spawning. The last phase becomes an aggressive race between damage, interception, movement, and survival rather than simply a faster version of the same pattern.
 
-This keeps the boss absurd enough to remain a giant corn monarch while giving the scene atmosphere rather than another collection of symbols.
-
-## The Drowned Furrows
-
-The Husk Architect appears where the old meadow irrigation system has sunk into water.
-
-Shallow puddles catch thin rainbow reflections as restoration returns. Reeds lean in the wind. A heavy waterwheel is partially embedded in the wetland rather than presented as a floating diagram.
-
-The Architect's actual Husk Shift walls provide the rigid geometry. The background stays organic, so the boss's ability to impose rectangular structure feels invasive rather than visually redundant.
-
-## The Prism Thicket
-
-Late in the campaign the meadow becomes strange without ceasing to be natural.
-
-A gnarled dark tree and heavy botanical branches replace architectural line work. Small crystal-flower shapes grow near the ground. Their color is conditional on restoration, so the magical endgame emerges out of the same countryside instead of switching to a separate neon world.
-
-Cobtopus deepens that corruption with roots pulling toward a dark organic center. The Impossible Encore tears the same meadow rather than inventing a fourth abstract visual system.
+**What it tests:** target priority, timing, spatial awareness, and sustained execution while several valuable targets compete for attention.
 
 ---
 
-## Restoration
+## Difficulty ladder
 
-The rainbow is the only object allowed to carry the full spectrum continuously.
+The intended first-player path is:
 
-The world earns color back through play. Campaign progress, combo, Lucky 13 and stage clears feed the restoration state. The response is deliberately environmental rather than confetti-heavy:
+**First Flight → Easy → Normal → Hard → Impossible**
 
-- the horizon rainbow becomes more legible,
-- flowers regain spectral color,
-- puddles begin catching colored reflections,
-- small glints appear in the meadow,
-- prism growth becomes luminous,
-- restored-stage tableaux hold the healed scene for a moment before the next trial.
+Space / Enter defaults to Easy. Experienced players can press `1`, `2`, `3`, or `4` directly.
 
-The same magic operates at two scales:
+Impossible remains an expert anti-chain ruleset rather than a population-spam mode:
 
-**Rainbow + dead unicorn → remembers life.**  
-**Rainbow + wounded meadow → remembers color.**
+- population is capped around Hard density instead of endlessly adding chain fuel,
+- hostile attack cadence increases,
+- enemies gain additional HP,
+- movement and hostile projectile speed rise,
+- pickups become scarcer,
+- cyan piercing attacks cannot be countered and must be dodged,
+- Impossible Lucky 13 grants charge/readiness and score but not heart/shield sustain.
 
----
-
-# Bosses
-
-The three signature bosses remain mechanically distinct, but v0.25 makes their environments part of their character rather than surrounding them with abstract explanatory graphics.
-
-### Maize Monarch
-
-A false ruler occupying a barn-and-scarecrow court. Its crown, mantle and ceremonial entrance contrast against a world that is visibly agricultural and broken.
-
-### Husk Architect
-
-A spatial adversary inside drowned farmland. The pastoral scene stays soft and wet while the Architect materializes hard rectangular barriers on top of it. The visual conflict is intentional: **the meadow grows; the Architect imposes.**
-
-### Cobtopus
-
-The corruption becomes biological. Gnarled branches, roots and a dark center pull the familiar meadow inward. By Trial 13, the threat no longer looks built. It looks grown.
-
-### Impossible Encore
-
-The false clear still triggers **NOT YET** and the half-time Heavy Drop. The world itself is torn by broad dark scars while Monarch, Architect and Cobtopus return together. The finale reuses the established countryside and damages it rather than covering it in another layer of diagrammatic effects.
+After Trial 13, Impossible still reaches the bounded **Encore**. Its old compact fallback boss grammar is intentionally preserved so the expert ending remains finite and distinct from the new campaign trilogy.
 
 ---
 
@@ -200,42 +154,27 @@ The false clear still triggers **NOT YET** and the half-time Heavy Drop. The wor
 | **C** | Rebind controls |
 | **S** | Music + SFX |
 
-A charged Rainbow Snap is simultaneously attack, dash, dodge, traversal, pickup route and combo setup.
+A charged Rainbow Snap is simultaneously attack, dash, dodge, traversal, pickup route, and combo setup.
 
-Only the ♥ body takes damage. The head and rainbow can safely enter danger to attack, collect powerups, Graze ordinary kernels and Parry counterable shots.
-
----
-
-## Difficulty is a mastery ladder
-
-The intended first-player path is:
-
-**First Flight → Easy → Normal → Hard → Impossible**
-
-Space / Enter defaults to Easy on the title. Experienced players can still press `1`, `2`, `3`, or `4` directly.
-
-Impossible remains an expert anti-chain mode rather than a population spam mode. It uses Hard-capped enemy density with stronger attack cadence, health, movement, projectiles, Husk Shift pressure, scarcer sustain and cyan piercing attacks that cannot be countered and must truly be dodged.
-
-Its finale preserves the bounded three-boss → six-terminal-copy Encore rather than creating an unbounded Splitcorn swarm.
+Only the ♥ body takes ordinary damage. The head and living rainbow can enter danger to attack, collect powerups, Graze ordinary kernels, and Parry counterable shots.
 
 ---
 
-## Audio and impact systems
+## Visual direction
 
-The renderer rewrite does not remove the v0.22/v0.24 combat presentation work:
+The supplied hero image remains the visual contract established in v0.26:
 
-- procedural Web Audio soundtrack,
-- half-time Impossible Heavy Drop,
-- filtered saw wobble bass,
-- kick-driven camera response,
-- critical-health Living Scar fraying,
-- max-combo Chromatic Overload,
-- mastery grades and restored-stage tableaux,
-- bittersweet final scar release.
+- luminous rounded white Stretchicorn forms,
+- thick candy-gloss rainbow,
+- golden kernel cells with restrained highlights,
+- deep green husks,
+- plum/violet environment values,
+- strong silhouettes and readable faces,
+- selective glow rather than decorative particle wallpaper.
 
-The ending remains the inverse of the game's control language. For thirteen trials, tension and connection mean survival. Once the world is restored, the living scar can finally stop holding the two halves together.
+v0.27 adds the Living Color rule: the countryside begins drained, then progressively regains saturation as Stretchicorn restores it.
 
-**THE LAST RAINBOW LETS GO.**
+v0.28 gives the three bosses their own silhouettes and readable combat states rather than adding another arena-decoration layer. Boss identity is expressed primarily through **behavior + shape + vulnerability language**.
 
 ---
 
@@ -254,46 +193,91 @@ pinned Roadroller 2.1.0 model
       ↓
 Zopfli 0.4.3 / 80 iterations
       ↓
-js13k ZIP
+one-file js13k ZIP
 ```
 
-v0.25 keeps the readable v0.24 renderer in the repository for history, then loads the Storybook Meadow renderer as a small dedicated module. During production build, `scripts/build.mjs` removes the superseded `worldArt()` / `bossArt()` range before concatenating the v0.25 module, so the submitted game never pays for two world renderers.
+The readable repository retains historical systems, while `scripts/build.mjs` removes superseded boss AI, old Husk Shift machinery, retired boss costumes, duplicate micro-HUD elements, and obsolete render ranges before composing the current modules.
 
-Final qualified v0.25 artifact:
+This replacement architecture matters because v0.28 did not have enough budget to ship the old bosses and the new trilogy simultaneously.
+
+### Exact v0.28 artifact
 
 ```text
-13,054 / 13,312 bytes
-258 bytes free
+dist/stretchicorn-js13k.zip
+dist/stretchicorn-desktop-v0.28.0.zip
+13,305 / 13,312 bytes
+7 bytes free
 ```
 
 SHA-256:
 
 ```text
-c6b82201849b5d3b1ed7ca20481e2a4006ad56e7c5e07b1edadb836ab564c9ea
+c1072fde0e3e1fcb8e503d14aa71f88b22d4ce2ff8d3cce64601cdd7c79b7e3d
 ```
 
-Runtime contains no external image, font, music, framework or game-engine assets.
+The stable and versioned ZIPs are byte-identical and share Git blob `b1cc87529ab56e0a3dddea1dc8a0af9c3d12118f`.
+
+**Seven bytes means seven bytes.** Future gameplay or presentation additions should replace lower-value code or improve compression rather than casually growing the payload.
 
 ---
 
 ## Qualification
 
-The exact v0.25 competition artifact passes:
+Final v0.28 qualification run: **`33045527163`**.
 
-- deterministic gameplay and Impossible regression tests,
-- Living Scar + First Flight assertions,
-- three genuine First Flight Snaps before automatic Easy handoff,
-- deterministic packed-artifact verification,
-- offline / no-network audit,
-- single-root-`index.html` ZIP validation,
-- the 13,312-byte hard limit,
+The exact qualified head passed:
+
+- deterministic v0.28 gameplay regression tests,
+- real guarded/open Hideaway damage semantics,
+- Hideaway seven-kernel blast → open transition,
+- Colonel three-kill chain → temporary guard release → guard recovery,
+- Colonel squad deployment,
+- Cobnocopia protected/open cycle,
+- healer travel and +3 HP recovery,
+- six-healer Final Feast below 20%,
+- anti-chain Impossible rules,
+- bounded Impossible Encore and true ending,
+- safe spawning across all 13 trials,
+- fixed-step / high-refresh input invariants,
+- deterministic Roadroller output,
+- offline/no-network audit,
+- exact one-file root-level ZIP validation,
+- **13,305 / 13,312 byte hard-size gate**,
 - exact submitted ZIP in Chromium,
 - exact submitted ZIP in Firefox,
-- standalone `file://` HTML in Chromium,
-- standalone `file://` HTML in Firefox,
+- standalone `file://` build in Chromium,
+- standalone `file://` build in Firefox,
 - Wavedash isolation.
 
-The visual direction was also screenshot-reviewed across the origin, First Flight, Withered Meadow, Scarecrow Court / Monarch, Drowned Furrows / Architect, Prism Thicket, Cobtopus and Impossible Encore before the release artifacts were frozen.
+The qualified artifacts were then independently reproduced and frozen to the branch by the release bot.
+
+Automated tests can prove state transitions and boundedness. They cannot tell us whether the bosses *feel* good. The remaining gate is human playtesting.
+
+---
+
+## What to judge in the v0.28 playtest
+
+### Hideaway Husk
+- Is `COVER!` early enough to react without feeling leisurely?
+- Do the blocks read naturally as shelter?
+- Is the seven-kernel blast dangerous but understandable?
+- Is the open window long enough to reward a clean read?
+
+### Kernel Colonel
+- Does retreat create a chase puzzle rather than annoyance?
+- Is the `0/3 → 3/3` relationship immediately understandable?
+- Does chaining through the squad feel better than chasing directly?
+- Is the exposed window satisfying and long enough to capitalize on?
+
+### Cobnocopia
+- Are healing kernels visually recognizable as urgent targets?
+- Is the HP recovery noticeable without requiring explanatory text?
+- Do protected/open phases remain readable while healers are active?
+- Does Final Feast feel climactic rather than merely cluttered?
+
+### Impossible
+- Does the new normal-boss trilogy leave the old Encore feeling like a deliberate corrupted encore rather than a regression?
+- Is the final density still readable at full speed?
 
 ---
 
@@ -303,7 +287,7 @@ Fastest local playtest:
 
 [`dist/stretchicorn-local.html`](dist/stretchicorn-local.html)
 
-Download that one file and double-click it. No server is required.
+Download that one file and double-click it. No local server is required.
 
 Competition submission:
 
@@ -311,7 +295,7 @@ Competition submission:
 
 Versioned snapshot:
 
-[`dist/stretchicorn-desktop-v0.26.0.zip`](dist/stretchicorn-desktop-v0.26.0.zip)
+[`dist/stretchicorn-desktop-v0.28.0.zip`](dist/stretchicorn-desktop-v0.28.0.zip)
 
 Build the exact release:
 
@@ -337,12 +321,16 @@ npm run release:competition
 ## Architecture
 
 ```text
-src/00-core.js         state, spawning, geometry, procedural audio
-src/01-combat.js       Snap, Parry, Graze, Splitcorn, scoring
-src/02-update.js       fixed-step simulation, AI, Impossible pressure
-src/03-render.js       character/enemy/combat rendering
-src/03-world-v025.js   Storybook Meadow world + boss scenery
-src/04-ui-input.js     Living Scar, First Flight, menus, victory flow
+src/00-core.js              state, spawning, geometry, procedural audio
+src/01-combat.js            Snap, Parry, Graze, Splitcorn, scoring
+src/02-update.js            fixed-step simulation and ordinary enemy AI
+src/03-render.js            base character/enemy/combat rendering
+src/03-keyart-v026.js       canonical glossy character/material renderer
+src/03-living-color-v027.js grayscale origin + progressive world saturation
+src/03-bosses-v028.js       Hideaway, Colonel, Cobnocopia AI + silhouettes
+src/04-ui-input.js          First Flight, menus, victory flow, controls
+scripts/test.mjs            deterministic gameplay contracts
+scripts/release-smoke.mjs   exact built-artifact semantic smoke
 ```
 
 Designed for **js13kGames 2026** around **Unicorns & Rainbows**.
