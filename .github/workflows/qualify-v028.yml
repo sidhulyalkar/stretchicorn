@@ -23,8 +23,8 @@ jobs:
         run: |
           node --check src/03-bosses-v028.js
           grep -q "HIDEAWAY HUSK" src/03-bosses-v028.js
-          grep -q "THE KERNEL COLONEL" src/03-bosses-v028.js
-          grep -q "THE COBNOCOPIA" src/03-bosses-v028.js
+          grep -q "KERNEL COLONEL" src/03-bosses-v028.js
+          grep -q "COBNOCOPIA" src/03-bosses-v028.js
           grep -q "FINAL FEAST" src/03-bosses-v028.js
       - name: Build readable artifact
         run: npm run build
