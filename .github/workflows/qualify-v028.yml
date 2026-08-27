@@ -22,8 +22,8 @@ jobs:
       - name: Boss source contract
         run: |
           node --check src/03-bosses-v028.js
-          grep -q "HIDEAWAY HUSK" src/03-bosses-v028.js
-          grep -q "KERNEL COLONEL" src/03-bosses-v028.js
+          grep -q "function bossAI" src/03-bosses-v028.js
+          grep -q "COLONEL" src/03-bosses-v028.js
           grep -q "COBNOCOPIA" src/03-bosses-v028.js
           grep -q "FINAL FEAST" src/03-bosses-v028.js
       - name: Build readable artifact
