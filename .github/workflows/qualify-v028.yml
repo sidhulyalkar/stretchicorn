@@ -24,7 +24,7 @@ jobs:
           node --check src/03-bosses-v028.js
           grep -q "function bossAI" src/03-bosses-v028.js
           grep -q "COLONEL" src/03-bosses-v028.js
-          grep -q "COBNOCOPIA" src/03-bosses-v028.js
+          grep -q "STOP HEALS" src/03-bosses-v028.js
           grep -q "FINAL FEAST" src/03-bosses-v028.js
       - name: Build readable artifact
         run: npm run build
