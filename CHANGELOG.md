@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.28.0 - BOSS TRILOGY
+
+- Replaced the three normal campaign bosses with three distinct mastery encounters rather than reskins or raw-stat checks.
+- Rebuilt Trial 5 as **Hideaway Husk**, a guarded defensive boss that telegraphs `COVER!`, commits to a seven-kernel blast, then opens its husks for a real punish window. Arena blocks now function as meaningful shelter during the attack.
+- Enforced boss guard state in combat authority: guarded bosses reject both Rainbow Snap damage and friendly/parried projectile damage, so visual shielding and collision semantics cannot disagree.
+- Rebuilt Trial 9 as **The Kernel Colonel**, an evasive commander that retreats, circles, and deploys four-soldier squads. Chaining three troop kills fills a visible `0/3 → 3/3` guard counter and creates a temporary `EXPOSED!` damage window.
+- Preserved hit-stop as part of Colonel feedback and hardened tests so the guard transition is asserted on the first live simulation frame after the third kill rather than during cinematic freeze.
+- Rebuilt Trial 13 as **The Cobnocopia**, which alternates guarded/open states while spawning interruptible healing kernels. Healers physically route toward the boss and restore +3 HP on contact.
+- Added **FINAL FEAST** below 20% HP: Cobnocopia remains exposed, immediately creates six healers, and continues feeding additional healing targets so the final phase becomes a target-priority and DPS race.
+- Added dedicated procedural silhouettes for all three bosses while removing the retired normal-boss costumes, old boss backdrop renderer, duplicate boss micro-HUD, and superseded Husk Shift machinery from the packed composition.
+- Retained a compact fallback boss grammar for the Impossible Encore, preserving its bounded one-generation 3→6 false-death structure and true ending without paying for both old and new normal-boss systems.
+- Replaced stale Husk Architect regression assertions with built-artifact contracts that exercise Hideaway guard/open behavior, Colonel chain/exposure/recovery/squad deployment, Cobnocopia healing and Final Feast, all 13 safe spawns, and bounded Impossible cleanup.
+- Hardened exact-dist tests around the competition golfer's renamed runtime fields (`state`, `tele`, `team`) instead of accidentally injecting readable-source property names into the transformed runtime.
+- Exact submitted ZIP and standalone `file://` builds pass Chromium and Firefox. Wavedash isolation also passes.
+- Full v0.28 qualification run: `33045527163`.
+- Final qualified competition ZIP: **13,305 / 13,312 bytes (7 bytes free)**.
+- Qualified SHA-256: `c1072fde0e3e1fcb8e503d14aa71f88b22d4ce2ff8d3cce64601cdd7c79b7e3d`.
+- Stable and versioned v0.28 ZIPs are byte-identical and share Git blob `b1cc87529ab56e0a3dddea1dc8a0af9c3d12118f`.
+
+## v0.27.0 - LIVING COLOR
+
+- Reframed the whole visual arc around one explicit rule: the world begins drained and **regains color through play**.
+- Added `colorRise()` so campaign progress, combo, and restoration progressively reduce the grayscale/saturation suppression applied to the playable world.
+- Rebuilt **The Living Scar** opening as a readable grayscale resurrection sequence: a broken unicorn, one surviving light, the rainbow stitching the missing body, the first return of color, then First Flight.
+- Replaced the shorter passive transition with a longer staged cinematic using the existing key-art character renderer so the origin story and gameplay share one visual language.
+- Preserved visible story Skip controls and the safe First Flight handoff. New players still perform three genuine charged Rainbow Snaps before Easy begins automatically.
+- Added dedicated Chromium and Firefox visual regression checks proving the origin begins nearly grayscale and the late campaign contains substantially more color.
+- Captured a nine-frame visual QA sequence spanning the broken opening, last light, stitching, awakening, and Trials 1/5/9/13 restoration progression.
+- Preserved all v0.26 key-art rendering, v0.23.1 onboarding, anti-chain Impossible rules, bounded Encore, deterministic packaging, and Wavedash isolation.
+- Full Living Color qualification run: `33024153248`.
+- Final qualified competition ZIP: **13,300 / 13,312 bytes (12 bytes free)**.
+- Qualified SHA-256: `27b18b6cce0ce4b4b0e7107fdcee6ac4764f2c43310c880f751ba0cd9b0728e2`.
+
 ## v0.26.0 - KEY-ART RENDER
 
 - Adopted the supplied Stretchicorn hero image as the canonical runtime visual bible: luminous white unicorn, glossy rainbow, rounded golden kernel cells, deep plum/violet world values, green husks, purple Cobtopus limbs, selective bloom and expressive faces.
