@@ -1,7 +1,7 @@
 'use strict';
 /* v0.28 BOSS TRILOGY: cover, chain routing, healing priority. */
 let ke28=killE,co28=cob;
-function bossMark(e,n){e.b=n;e.g=1;e.state=0;e.tele=n==1?.9:1.7;e.cd=.5;e.p=e.s=0}
+function bossMark(e,n){e.b=n;e.g=1;e.tele=1;e.cd=.5}
 function squad(e){let dx=A.x-e.x,dy=A.y-e.y,d=ln(dx,dy),px=-dy/d,py=dx/d;for(let i=1;i<5;i++){let q=enemy(i==3?1:0,e.x+dx*i/5+px*(i&1?25:-25),e.y+dy*i/5+py*(i&1?25:-25));q.in=.28}}
 function blast(e){let a=e.a,cs=Math.cos(a),sn=Math.sin(a),px=-sn,py=cs;for(let i=-3;i<4;i++)B.push({x:e.x+px*i*13,y:e.y+py*i*13,vx:cs*450,vy:sn*450,team:2,r:8,l:3});shake=9}
 function ring(e,n=8){for(let i=0;i<n;i++){let a=i*T/n+t*.15;B.push({x:e.x,y:e.y,vx:Math.cos(a)*210,vy:Math.sin(a)*210,team:2,r:6,l:5,curve:i&1?.16:-.16})}}
