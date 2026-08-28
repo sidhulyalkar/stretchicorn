@@ -8,9 +8,9 @@ concurrency:
   group: qualify-v029-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  size:
+  release:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -22,11 +22,13 @@ jobs:
         run: |
           node --check src/03-bosses-v028.js
           node --check scripts/build.mjs
-      - name: Build and package exact artifact
+          node --check scripts/test.mjs
+          node --check scripts/release-smoke.mjs
+      - name: Full release contract
+        run: npm run release:competition
+      - name: Wavedash isolation
+        run: npm run wavedash:test
+      - name: Artifact identity
         run: |
-          npm run build
-          npm run pack:competition
-          npm run verify:offline
-          python3 scripts/package.py
-          npm run verify:archive
-          npm run check:size
+          sha256sum dist/stretchicorn-js13k.zip dist/stretchicorn-desktop-v0.29.0.zip
+          cmp dist/stretchicorn-js13k.zip dist/stretchicorn-desktop-v0.29.0.zip
