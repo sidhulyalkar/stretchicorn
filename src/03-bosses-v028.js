@@ -1,8 +1,8 @@
 'use strict';
 /* v0.29 PARRY TRIALS: readable cover, reflected-kernel shields, twin Cobtopus finale. */
 let ke29=killE,co29=cob,up29=upd,sc29=scene,bl29=block,pc29=0,need29=1,gate29=0;
-function req29(f=0){return D<1?1:D<1.5?(f?2:1):D<2?(f?3:2):(f?4:3)}
-function hp29(n){return n*(D<1?.78:D<1.5?1:D<2?1.25:1.55)}
+function req29(f=0){return Math.ceil(D)+(f&&D>=1)}
+function hp29(n){return n*(D<1?.8:Math.ceil(D)/4+.75)}
 function bossMark(e,n){e.b=n;e.g=1;e.tele=.7;e.cd=.5;e.p=0;e.s=0}
 function bricks(){for(let i=R.length;i--;)if(R[i].d)R.splice(i,1);let q=bi++&3;wall(q&1?245:605,q<2?175:390,110,82,1);if(wave>5)wall(q&1?605:245,q<2?390:175,110,82,1);if(wave>11)wall(425,q&1?145:430,110,72,1)}
 function phases(dt){if(![9,12,13].includes(wave))return;bt+=dt*(D>2?1.2:1);if(bp==1&&bt>1){bp=2;bt=0}else if(bp==2&&bt>1.35){bp=0;bt=0}else if(!bp&&bt>1.25){bp=1;bt=0;bricks()}}
