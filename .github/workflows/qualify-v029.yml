@@ -43,3 +43,42 @@ jobs:
         run: |
           wc -c dist/stretchicorn-js13k.zip
           sha256sum dist/stretchicorn-js13k.zip
+
+  browser-smoke:
+    name: Browser smoke (${{ matrix.browser }})
+    needs: qualify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Extract exact submitted ZIP
+        shell: bash
+        run: |
+          rm -rf .tmp-js13k
+          mkdir .tmp-js13k
+          python -m zipfile -e dist/stretchicorn-js13k.zip .tmp-js13k
+          test -f .tmp-js13k/index.html
+      - name: Install pinned Playwright harness
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.55.0
+      - name: Install ${{ matrix.browser }}
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Run exact submitted ZIP smoke
+        env:
+          BROWSER: ${{ matrix.browser }}
+          BROWSER_HTML: .tmp-js13k/index.html
+        run: npm run browser:smoke
+      - name: Open standalone playtest directly from disk
+        env:
+          BROWSER: ${{ matrix.browser }}
+          BROWSER_HTML: dist/stretchicorn-local.html
+        run: npm run browser:file-smoke
