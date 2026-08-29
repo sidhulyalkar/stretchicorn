@@ -1,0 +1,46 @@
+name: Qualify v0.34 reference boss art
+
+on:
+  push:
+    branches:
+      - feat/v0.34-reference-boss-polish
+
+permissions:
+  contents: read
+
+env:
+  CI: 'true'
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check zopfli==0.4.3
+      - run: npm run release:competition
+      - run: |
+          wc -c dist/index.html dist/stretchicorn-js13k.zip
+          sha256sum dist/stretchicorn-js13k.zip
+      - run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Capture reference-inspired bosses
+        run: |
+          mkdir -p boss-proof
+          node <<'NODE'
+          const {chromium}=require('playwright'),path=require('path');
+          (async()=>{const b=await chromium.launch({headless:true}),p=await b.newPage({viewport:{width:960,height:640}});await p.goto('file://'+path.resolve('dist/stretchicorn-local.html'));await p.waitForTimeout(150);
+          async function snap(w,n,open=0){await p.evaluate(({w,open})=>{mode=1;D=1;wave=w;hitstop=0;spawnWave();E[0].in=0;stageT=0;msgT=0;if(open){E[0].g=0;E[0].state=2}draw()},{w,open});await p.locator('canvas').screenshot({path:'boss-proof/'+n+'.png'})}
+          await snap(5,'hideaway-closed');await snap(5,'hideaway-open',1);await snap(9,'kernel-colonel');await b.close()})().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v034-reference-proof
+          path: boss-proof/*.png
+          if-no-files-found: error
