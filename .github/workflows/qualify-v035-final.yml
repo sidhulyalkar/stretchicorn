@@ -5,6 +5,10 @@ on:
     branches:
       - feat/v0.33-the-split
 
+concurrency:
+  group: v035-final-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
