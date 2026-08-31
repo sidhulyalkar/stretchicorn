@@ -6,296 +6,374 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-A 13KB desktop arcade-action game about a dead unicorn revived by the last surviving rainbow and sent through a drained meadow kingdom to return color to the world.
+A **13KB desktop arcade-action game** where one unicorn is split across two control points and held together by a living rainbow.
+
+Move the vulnerable body. Aim the safe horn. Stretch the rainbow until it bites back.
 
 Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
-[**Download the current js13k competition ZIP**](dist/stretchicorn-js13k.zip)  
-[**Download the one-file local playtest**](dist/stretchicorn-local.html)
+[**Play the standalone build**](dist/stretchicorn-local.html) · [**Download the js13k ZIP**](dist/stretchicorn-js13k.zip)
 
-**v0.28.0 · BOSS TRILOGY · Living Scar → First Flight → Easy → mastery**
+**v0.38.0 · 13 trials · 3 authored bosses · 1 Impossible Encore · 12,640 bytes**
 
 </div>
 
 ---
 
-## The premise
-
-Stretchicorn begins **dead**.
-
-A catastrophe tore the unicorn apart and drained the world almost completely of color. One surviving ribbon of rainbow light finds the two halves. It cannot rebuild the missing body, so it becomes the missing body itself: an elastic living scar that stitches Stretchicorn back into motion.
+## The game in one picture
 
 ```text
-PULL ←     ♥ BODY ═══════ 🌈 LIVING SCAR ═══════ 🦄 HEAD / HORN     → AIM
-           vulnerable          life-force                 safe
+         movement / danger                         aim / offense
+               ↓                                        ↓
+         ♥ BODY  ═══════════════ 🌈 ═══════════════  🦄 HORN
+       vulnerable         elastic living rainbow          safe
+               \________________________________________/
+                          STRETCH → SNAP
 ```
 
-The rainbow is resurrection, body, spring, movement system, weapon, shield, and the world's remaining source of full-spectrum color.
+Stretchicorn is controlled from **both ends**.
 
-**Stretchicorn is not carrying the magic. Stretchicorn is being held alive by it.**
+- **WASD** moves the heart/body.
+- **Arrow Keys** aim the head and horn.
+- Pull the two halves apart to build rainbow tension.
+- **Space** converts that tension into a fast Rainbow Snap.
+- The body is vulnerable; the head/horn and rainbow are the tools you deliberately throw into danger.
 
-v0.27's Living Color renderer begins the world almost drained and returns saturation through campaign progress, combo, and restoration. The visual story and the mechanical story therefore share one rule: skilled movement brings color back.
-
----
-
-## First Flight
-
-Stretchicorn uses an unusual two-ended controller, so the game teaches the physical idea before asking the player to survive it.
-
-Every first run follows:
-
-**Living Scar origin → safe First Flight → three real Rainbow Snaps → Easy campaign.**
-
-First Flight uses the real production movement and tension physics while removing enemies, damage, walls, and pickups.
-
-1. **WASD** moves the vulnerable heart-body.
-2. **Arrow keys** point the safe head and horn.
-3. Pull the body away from the horn to store tension in the living scar.
-4. **Space** releases that tension as a Rainbow Snap.
-5. Complete three genuine charged Snaps to begin Easy automatically.
-
-The intended mental model is deliberately compact:
-
-> **BODY PULLS · HORN POINTS · RAINBOW SNAPS**
-
-Returning players can skip the story/practice, select a difficulty directly with `1`–`4`, or press `T` from the title to replay onboarding.
+That geometry is the entire game engine in miniature. Movement, aiming, offense, defense, traversal, spacing, parries, pickups, and combos all emerge from the same split creature instead of separate ability buttons.
 
 ---
 
-# v0.28 Boss Trilogy
+# Why Stretchicorn feels different
 
-v0.28 replaces the three normal campaign bosses as **three different mastery problems**, not three larger versions of ordinary enemies.
+Most action games ask you to move one avatar and point a weapon from it.
 
-The progression is intentional:
+Stretchicorn asks you to manage a **relationship between two points**.
 
-**read an attack window → route through an enemy formation → manage competing priorities under pressure**
+The vulnerable heart can retreat while the horn attacks. The horn can orbit an enemy while the body anchors somewhere safer. Stretching farther creates stronger attack geometry but also creates a larger creature to manage. A good Snap can simultaneously cross the arena, hit several enemies, avoid a projectile lane, collect something, and set up the next attack.
 
-Each encounter reuses verbs the player already learned rather than introducing a boss-only control scheme.
+The result is intentionally closer to steering a spring-loaded constellation than piloting a conventional character.
+
+---
+
+## Core combat vocabulary
+
+### 🌈 Rainbow Snap
+
+Pull the body away from the horn to store tension, then release with **Space**.
+
+A charged Snap is simultaneously:
+
+- attack,
+- dash,
+- dodge,
+- traversal,
+- combo route,
+- and repositioning tool.
+
+Good play is less about standing still and firing, and more about repeatedly finding valuable lines through the arena.
+
+### 🌽 Kernel Parry
+
+Large round gold kernels are counterable.
+
+Meet them with the horn and they reverse direction. A successful returned kernel can then damage enemies or interact with boss shields.
+
+Returned shots reward precision and spacing:
+
+- **RETURN x2** for a close return,
+- **RETURN x3** for a medium return,
+- **RETURN x4** for a long return.
+
+The game therefore gives real value to creating distance and lining up a difficult counter-shot instead of always choosing the nearest Snap.
+
+### ✨ Graze
+
+The safe offensive side of Stretchicorn can skim danger to keep momentum and recharge pressure. The game rewards entering dangerous geometry deliberately rather than treating every projectile as something to flee from.
+
+### 13-chain rhythm
+
+Kills, scoring, rainbow charge, and the recurring **Lucky 13** motif turn dense encounters into routing problems. Enemy crowds are useful until they become dangerous enough that blindly chaining through them stops working.
+
+---
+
+# Thirteen trials
+
+The campaign is one escalating combat curriculum rather than thirteen isolated gimmicks.
+
+Early trials teach spacing and Snap geometry. Mid-game introduces ranged kernels, parries, changing cover, and shield logic. Late trials combine those ideas under denser pressure before the final boss asks the player to use the whole vocabulary at once.
+
+The world changes with the run as well: it begins dark and drained, then regains saturation and increasingly improbable rainbow structure as Stretchicorn restores it.
+
+---
+
+# Boss trilogy
+
+The three campaign bosses are designed as **different combat questions**, not larger corn with larger health bars.
 
 ## Trial 5 · Hideaway Husk
 
-Hideaway Husk is a frightened defensive boss wrapped in layered husks.
+A defensive husk with a small cob hiding inside.
 
-Its closed husks are a real gameplay guard. Rainbow Snaps and parried friendly kernels cannot damage it while the guard is active.
+Its shell is mechanically authoritative:
 
-The fight cycles through:
+- **shield closed:** Snaps and reflected kernels are blocked,
+- **opening tell:** Husk slows and commits,
+- **firing window:** the shell opens and the cob peeks out,
+- **counterplay:** attack the exposed core or send its own kernels back,
+- **recovery:** the shell closes and the duel resets.
 
-```text
-HIDE → COVER! → seven-kernel blast → husks OPEN → punish window → HIDE
-```
+The lesson is simple and readable:
 
-The arena's existing blocks become meaningful shelter. The player is rewarded for reading the warning, placing the vulnerable heart behind cover, surviving the committed blast, then snapping into the opening.
+> **When Husk attacks, Husk becomes vulnerable.**
 
-**What it tests:** patience, positioning, cover use, and recognition of vulnerability windows.
-
-## Trial 9 · The Kernel Colonel
-
-The Colonel does not politely remain in attack range. It retreats when Stretchicorn closes distance, circles the arena, and deploys four-kernel squads between itself and the player.
-
-Its command guard stays active until the player destroys **three soldiers inside the chain window**. A visible `0/3 → 3/3` counter makes that relationship readable. Completing the chain produces:
-
-**EXPOSED!**
-
-and temporarily drops the Colonel's guard.
-
-Trying to ignore the troops and chase the commander is deliberately inefficient. The army is also the route to the boss.
-
-**What it tests:** chaining, target routing, pursuit control, and converting enemy density into a deliberate offensive sequence.
-
-## Trial 13 · The Cobnocopia
-
-The final normal boss is a horn-of-plenty corruption that alternates protected and exposed phases while creating healing kernels around the arena.
-
-The healers physically travel toward the boss. If one reaches it, Cobnocopia regains HP. Killing the healer interrupts that recovery, forcing a real target-priority choice between preparing the next damage window and denying healing.
-
-Below 20% HP the fight changes:
-
-**FINAL FEAST!**
-
-Cobnocopia remains exposed, six healing kernels arrive immediately, and additional food continues spawning. The last phase becomes an aggressive race between damage, interception, movement, and survival rather than simply a faster version of the same pattern.
-
-**What it tests:** target priority, timing, spatial awareness, and sustained execution while several valuable targets compete for attention.
+It teaches patience without turning the first boss into a waiting game.
 
 ---
 
-## Difficulty ladder
+## Trial 9 · Kernel Colonel
 
-The intended first-player path is:
+A corn commander with evil eyes, a curled mustache, military details, and a husk shield.
 
-**First Flight → Easy → Normal → Hard → Impossible**
+The Colonel cannot be solved by repeatedly diving into its body. Its shield is opened through reflected-kernel counterplay, after which the player has a real damage window.
 
-Space / Enter defaults to Easy. Experienced players can press `1`, `2`, `3`, or `4` directly.
+The fight tests:
 
-Impossible remains an expert anti-chain ruleset rather than a population-spam mode:
+- projectile reading,
+- controlled spacing,
+- return accuracy,
+- and converting a defensive action into offense.
 
-- population is capped around Hard density instead of endlessly adding chain fuel,
-- hostile attack cadence increases,
-- enemies gain additional HP,
-- movement and hostile projectile speed rise,
-- pickups become scarcer,
-- cyan piercing attacks cannot be countered and must be dodged,
-- Impossible Lucky 13 grants charge/readiness and score but not heart/shield sustain.
-
-After Trial 13, Impossible still reaches the bounded **Encore**. Its old compact fallback boss grammar is intentionally preserved so the expert ending remains finite and distinct from the new campaign trilogy.
+Long-distance returns become especially valuable because the same parry skill used to open the fight can also deliver amplified damage once the target is vulnerable.
 
 ---
 
-## Controls
+## Trial 13 · Cobtopus Prime
+
+The finale combines the campaign's mechanics instead of merely increasing speed.
+
+### Phase I · Prime shell
+
+Cobtopus Prime alternates between protection and a short exposed-core attack window while arena pressure and returnable kernels force the player to move decisively.
+
+### Phase II · split cores
+
+Destroying the shell does **not** end the fight.
+
+Prime ruptures into two independent cores. Each core has its own reflected-kernel shield requirement and must be opened separately.
+
+Required returns scale with difficulty:
+
+| Difficulty | Returns per core |
+|---|---:|
+| Easy | 1 |
+| Normal | 2 |
+| Hard | 3 |
+| Impossible | 4 |
+
+Killing one core cannot prematurely end the fight. Both must be opened and destroyed.
+
+---
+
+## Anti-pin Phase Shift
+
+Aggressive Snap play is supposed to be strong, but bosses should not become stationary collision targets.
+
+If a player lands **three rapid successful direct hits** on a boss, the boss performs a deterministic **PHASE SHIFT** to the opposite side of the arena relative to the vulnerable heart.
+
+The player keeps the earned burst damage, but must reacquire the target and rebuild attack geometry.
+
+This specifically counters repetitive boss pinning without punishing normal aggression or inflating boss HP.
+
+---
+
+# Difficulty
+
+Choose directly from the title:
+
+| Key | Mode | Character |
+|---|---|---|
+| `1` | Easy | learn the geometry |
+| `2` | Normal | intended campaign pressure |
+| `3` | Hard | faster, denser, mixed projectile decisions |
+| `4` | Impossible | expert anti-chain pressure + Encore |
+
+`Space` starts Easy immediately.
+
+There is **no intro cutscene and no mandatory tutorial scene**. Launch goes straight to the title and then straight into play.
+
+## Hard: parry or dodge?
+
+Late Hard deliberately breaks the idea that every projectile is free counterattack fuel.
+
+- **Gold round kernels:** parry / return.
+- **Cyan spikes:** cannot be returned; dodge them.
+
+The mix appears progressively in the last trials, so dense enemy fields become a classification problem rather than a parry buffet.
+
+## Impossible
+
+Impossible is designed around expert behavior rather than simply spawning an absurd number of enemies.
+
+It increases hostile pressure while protecting the game from the accidental advantage of unlimited chain targets. Late trials contain a heavier cyan dodge-only mix, boss return gates are stricter, and completing the campaign reaches a bounded **Impossible Encore** instead of an endless survival tail.
+
+---
+
+# A sky that remembers the run
+
+The background is part of the progression system.
+
+Stretchicorn begins in a dark, partially drained world. Campaign progress and restoration bring back color, and v0.38 turns the rainbow itself into a visible restoration meter.
+
+### Early restoration
+
+**Single rainbow.**
+
+A broad six-band arch sits behind the arena as a faint promise.
+
+### Mid restoration
+
+**Double rainbow.**
+
+A smaller second rainbow appears inside the same geometry.
+
+### Late restoration
+
+**Triple rainbow.**
+
+A third nested arch completes the restored sky.
+
+All three rainbows share one procedural primitive and one center. The color order follows natural radial ordering: **red/pink outside, violet inside**. The inner arches are progressively fainter so the effect reads as atmosphere rather than combat clutter.
+
+The title uses the same nested-rainbow geometry, so the menu and arena now belong to one visual language.
+
+---
+
+# Procedural presentation
+
+The competition build ships **no raster game art and no external resources**.
+
+Stretchicorn, corn enemies, husks, mustaches, tentacles, shields, kernels, rainbow bands, terrain, particles, menus, boss telegraphs, and sky restoration are all built from Canvas primitives already present in the game.
+
+The visual strategy is deliberate reuse:
+
+- rounded ellipses become body mass, kernel cells, highlights, eyes, and armor details,
+- arcs become shields, boss machinery, rainbow skies, and telegraphs,
+- Bézier curves become husks, tentacles, mane, tail, terrain, and elastic motion,
+- the six-color palette serves character rendering, world restoration, boss feedback, and the title,
+- the same corn renderer scales from regular enemies into increasingly authored silhouettes.
+
+That reuse is how the bosses gained personality without paying for sprite sheets.
+
+---
+
+# Procedural audio
+
+The soundtrack and combat feedback are generated with the Web Audio API.
+
+Short oscillator voices, pitched kernel pops, percussion, and synthesized bass share a small procedural sound vocabulary. Gameplay events and music deliberately reuse related sounds so popping corn, landing attacks, and the soundtrack feel like parts of the same arcade machine.
+
+No audio files are shipped.
+
+---
+
+# Controls
 
 | Input | Action |
 |---|---|
-| **W A S D** | Move the vulnerable heart-body |
-| **Arrow Keys** | Aim / steer the safe head and horn |
+| **W A S D** | Move the vulnerable body / heart |
+| **Arrow Keys** | Aim / steer the head and horn |
 | **Space** | Horn strike / charged Rainbow Snap |
 | **1 / 2 / 3 / 4** | Easy / Normal / Hard / Impossible |
 | **P** | Pause |
-| **M** | Menu |
-| **T** | Replay Living Scar + First Flight from title |
+| **M** | Return to menu |
 | **C** | Rebind controls |
-| **S** | Music + SFX |
+| **S** | Music + SFX settings |
 
-A charged Rainbow Snap is simultaneously attack, dash, dodge, traversal, pickup route, and combo setup.
-
-Only the ♥ body takes ordinary damage. The head and living rainbow can enter danger to attack, collect powerups, Graze ordinary kernels, and Parry counterable shots.
+The title intentionally stays compact: choose pressure, learn the three core inputs, and play.
 
 ---
 
-## Visual direction
+# 13KB engineering
 
-The supplied hero image remains the visual contract established in v0.26:
+Everything above has to fit inside a js13k competition archive.
 
-- luminous rounded white Stretchicorn forms,
-- thick candy-gloss rainbow,
-- golden kernel cells with restrained highlights,
-- deep green husks,
-- plum/violet environment values,
-- strong silhouettes and readable faces,
-- selective glow rather than decorative particle wallpaper.
-
-v0.27 adds the Living Color rule: the countryside begins drained, then progressively regains saturation as Stretchicorn restores it.
-
-v0.28 gives the three bosses their own silhouettes and readable combat states rather than adding another arena-decoration layer. Boss identity is expressed primarily through **behavior + shape + vulnerability language**.
-
----
-
-## 13KB engineering
-
-The competition build is deterministic:
+The release pipeline is deterministic:
 
 ```text
 readable source
       ↓
-custom safe identifier golf
+custom source slicing + safe identifier golf
       ↓
 Terser 5.50.0
       ↓
 pinned Roadroller 2.1.0 model
       ↓
-Zopfli 0.4.3 / 80 iterations
+Zopfli 0.4.3 / deterministic ZIP
       ↓
-one-file js13k ZIP
+one root-level index.html
 ```
 
-The readable repository retains historical systems, while `scripts/build.mjs` removes superseded boss AI, old Husk Shift machinery, retired boss costumes, duplicate micro-HUD elements, and obsolete render ranges before composing the current modules.
+The readable repository intentionally preserves some historical source context, while `scripts/build.mjs` removes superseded implementations before packing. New systems frequently replace older, lower-value byte ranges instead of simply accumulating on top of them.
 
-This replacement architecture matters because v0.28 did not have enough budget to ship the old bosses and the new trilogy simultaneously.
+That strategy is why the current game contains substantially more authored combat and art than earlier versions while still retaining useful headroom.
 
-### Exact v0.28 artifact
+## Exact v0.38 competition artifact
 
 ```text
 dist/stretchicorn-js13k.zip
-dist/stretchicorn-desktop-v0.28.0.zip
-13,305 / 13,312 bytes
-7 bytes free
+dist/stretchicorn-desktop-v0.38.0.zip
+12,640 / 13,312 bytes
+672 bytes free
 ```
 
 SHA-256:
 
 ```text
-c1072fde0e3e1fcb8e503d14aa71f88b22d4ce2ff8d3cce64601cdd7c79b7e3d
+2753615971b736a5e0e0c2636c94276344ed0cb846cedfeaf8a5c7fdc9138cf9
 ```
 
-The stable and versioned ZIPs are byte-identical and share Git blob `b1cc87529ab56e0a3dddea1dc8a0af9c3d12118f`.
-
-**Seven bytes means seven bytes.** Future gameplay or presentation additions should replace lower-value code or improve compression rather than casually growing the payload.
+The archive contains exactly one root-level `index.html` and is fully self-contained/offline.
 
 ---
 
-## Qualification
+# Qualification
 
-Final v0.28 qualification run: **`33045527163`**.
+The v0.38 release lineage has automated contracts for the mechanics that would be easiest to accidentally break while byte-golfing:
 
-The exact qualified head passed:
+- title → gameplay launch with no hidden intro/training state,
+- all 13 safe-spawn invariants,
+- authoritative closed/open boss shields,
+- Hideaway firing vulnerability,
+- Kernel Colonel reflected-kernel gate,
+- Cobtopus Prime Phase I and independent split-core Phase II,
+- Easy / Normal / Hard / Impossible return-count scaling,
+- `RETURN x2/x3/x4` distance tiers,
+- three-hit boss Phase Shift,
+- late-Hard cyan dodge-only projectile pressure,
+- deterministic single → double → triple rainbow restoration,
+- natural outer-red / inner-violet rainbow ordering,
+- deterministic packing,
+- offline/no-network validation,
+- exact one-file archive structure,
+- hard 13,312-byte size gate,
+- extracted competition ZIP smoke tests in Chromium and Firefox,
+- standalone `file://` smoke tests in Chromium and Firefox.
 
-- deterministic v0.28 gameplay regression tests,
-- real guarded/open Hideaway damage semantics,
-- Hideaway seven-kernel blast → open transition,
-- Colonel three-kill chain → temporary guard release → guard recovery,
-- Colonel squad deployment,
-- Cobnocopia protected/open cycle,
-- healer travel and +3 HP recovery,
-- six-healer Final Feast below 20%,
-- anti-chain Impossible rules,
-- bounded Impossible Encore and true ending,
-- safe spawning across all 13 trials,
-- fixed-step / high-refresh input invariants,
-- deterministic Roadroller output,
-- offline/no-network audit,
-- exact one-file root-level ZIP validation,
-- **13,305 / 13,312 byte hard-size gate**,
-- exact submitted ZIP in Chromium,
-- exact submitted ZIP in Firefox,
-- standalone `file://` build in Chromium,
-- standalone `file://` build in Firefox,
-- Wavedash isolation.
-
-The qualified artifacts were then independently reproduced and frozen to the branch by the release bot.
-
-Automated tests can prove state transitions and boundedness. They cannot tell us whether the bosses *feel* good. The remaining gate is human playtesting.
+Final v0.38 runtime qualification: **GitHub Actions run `33424531311`**.
 
 ---
 
-## What to judge in the v0.28 playtest
-
-### Hideaway Husk
-- Is `COVER!` early enough to react without feeling leisurely?
-- Do the blocks read naturally as shelter?
-- Is the seven-kernel blast dangerous but understandable?
-- Is the open window long enough to reward a clean read?
-
-### Kernel Colonel
-- Does retreat create a chase puzzle rather than annoyance?
-- Is the `0/3 → 3/3` relationship immediately understandable?
-- Does chaining through the squad feel better than chasing directly?
-- Is the exposed window satisfying and long enough to capitalize on?
-
-### Cobnocopia
-- Are healing kernels visually recognizable as urgent targets?
-- Is the HP recovery noticeable without requiring explanatory text?
-- Do protected/open phases remain readable while healers are active?
-- Does Final Feast feel climactic rather than merely cluttered?
-
-### Impossible
-- Does the new normal-boss trilogy leave the old Encore feeling like a deliberate corrupted encore rather than a regression?
-- Is the final density still readable at full speed?
-
----
-
-## Build and play
+# Build and play
 
 Fastest local playtest:
 
 [`dist/stretchicorn-local.html`](dist/stretchicorn-local.html)
 
-Download that one file and double-click it. No local server is required.
+Download that single file and double-click it. No server is required.
 
-Competition submission:
+Competition archive:
 
 [`dist/stretchicorn-js13k.zip`](dist/stretchicorn-js13k.zip)
-
-Versioned snapshot:
-
-[`dist/stretchicorn-desktop-v0.28.0.zip`](dist/stretchicorn-desktop-v0.28.0.zip)
 
 Build the exact release:
 
@@ -318,19 +396,32 @@ npm run release:competition
 
 ---
 
-## Architecture
+# Architecture
 
 ```text
-src/00-core.js              state, spawning, geometry, procedural audio
-src/01-combat.js            Snap, Parry, Graze, Splitcorn, scoring
-src/02-update.js            fixed-step simulation and ordinary enemy AI
-src/03-render.js            base character/enemy/combat rendering
-src/03-keyart-v026.js       canonical glossy character/material renderer
-src/03-living-color-v027.js grayscale origin + progressive world saturation
-src/03-bosses-v028.js       Hideaway, Colonel, Cobnocopia AI + silhouettes
-src/04-ui-input.js          First Flight, menus, victory flow, controls
-scripts/test.mjs            deterministic gameplay contracts
-scripts/release-smoke.mjs   exact built-artifact semantic smoke
+src/00-core.js              shared state, geometry, spawning, procedural audio
+src/01-combat.js            Snap, Parry, Graze, scoring, combat authority
+src/02-update.js            fixed-step simulation and enemy behavior
+src/03-render.js            base scene / combat rendering
+src/03-keyart-v026.js       glossy procedural character/material vocabulary
+src/03-living-color-v027.js dark → restored color progression wrapper
+src/03-bosses-v028.js       boss mechanics and encounter authority
+src/03-boss-art-v034.js     compact procedural boss-detail pass
+src/03-sky-v030.js          v0.38 nested single/double/triple rainbow world
+src/03-title-v037.js        procedural title tableau
+src/04-ui-input.js          menu, victory flow, controls, input
+scripts/build.mjs           release composition, source slicing, identifier golf
+scripts/test-v038.mjs       current nested-rainbow contract
+scripts/test-v037.mjs       no-intro + late-Hard contract
+scripts/test-v032.mjs       boss/counterplay/runtime regression contract
 ```
 
-Designed for **js13kGames 2026** around **Unicorns & Rainbows**.
+---
+
+<div align="center">
+
+## **STRETCH · SNAP · SHUCK.**
+
+Thirteen trials. A living rainbow. An unreasonable amount of corn packed into 12.64 KB. 🌈🌽
+
+</div>
