@@ -12,8 +12,7 @@ try{
  page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text())});
  await page.goto(pathToFileURL(resolve(artifact)).href,{waitUntil:'load',timeout:15000});
  const canvas=page.locator('#c');await canvas.waitFor({state:'visible',timeout:5000});await page.waitForTimeout(120);
- const intro=await canvas.evaluate(n=>n.toDataURL());await page.keyboard.press('Space');await page.waitForTimeout(120);const practice=await canvas.evaluate(n=>n.toDataURL());if(intro===practice)throw Error('local story did not reach First Flight');await page.keyboard.press('Escape');await page.waitForTimeout(180);const play=await canvas.evaluate(n=>n.toDataURL());
- if(practice===play)throw Error('local First Flight did not reach Easy gameplay');
+ const title=await canvas.evaluate(n=>n.toDataURL());await page.keyboard.press('Space');await page.waitForTimeout(180);const play=await canvas.evaluate(n=>n.toDataURL());if(title===play)throw Error('local title did not start Easy gameplay');
  if(errors.length)throw Error(`page errors: ${errors.join(' | ')}`);if(consoleErrors.length)throw Error(`console errors: ${consoleErrors.join(' | ')}`);if(external.length)throw Error(`network requests attempted: ${[...new Set(external)].join(', ')}`);
- console.log(`PASS: ${engine} opened ${artifact} directly via file://, rendered story + First Flight practice, started Easy gameplay, and attempted no network requests`);await context.close();
+ console.log(`PASS: ${engine} opened ${artifact} directly via file://, rendered title, started Easy gameplay, and attempted no network requests`);await context.close();
 }finally{if(browser)await browser.close()}
