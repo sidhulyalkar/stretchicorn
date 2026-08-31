@@ -1,0 +1,10 @@
+import{readFileSync,existsSync}from'node:fs';
+const h=readFileSync('dist/index.html','utf8'),t=readFileSync('src/03-title-v037.js','utf8'),b=readFileSync('src/03-bosses-v028.js','utf8'),c=readFileSync('src/01-combat.js','utf8'),u=readFileSync('src/04-ui-input.js','utf8'),build=readFileSync('scripts/build.mjs','utf8');
+if(existsSync('src/03-story-v033.js')||build.includes("'03-story-v033.js'"))throw Error('retired intro story still ships');
+for(const q of['STRETCHICORN','STRETCH • SNAP • SHUCK.','T TRAINING','demo(180,265,0,600,.82)','co31({x:p[0],y:p[1],type:0'])if(!t.includes(q))throw Error('missing procedural title contract: '+q);
+if(/\.png|\.jpg|\.webp|data:image/i.test(h))throw Error('title must remain procedural');
+for(const q of['THE SPLIT','STRETCHICORN FOUND A MAGICAL','RESTORED •'])if(h.includes(q))throw Error('retired interstitial shipped: '+q);
+if(c.includes('grade')||c.includes('RESTORED •'))throw Error('round grading was not removed');
+if(!b.includes('D>1&&wave>9')||!b.includes('b.team=1,b.r=8')||!b.includes('CYAN SPIKES CANNOT BE RETURNED • DODGE'))throw Error('late-Hard piercing kernel contract missing');
+if(!u.includes('mode=0;requestAnimationFrame(loop)')||!u.includes("else if(k=='t')practice()"))throw Error('title-first / optional-training flow missing');
+console.log('PASS: v0.37 boots to procedural title, removes story/grading interstitials, and adds late-Hard cyan dodge-only kernels');
