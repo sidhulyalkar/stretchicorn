@@ -1,24 +1,79 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420" role="img" aria-labelledby="title desc">
-  <title id="title">Stretchicorn controls</title>
-  <desc id="desc">WASD moves the vulnerable body, arrow keys aim the safe head, Space attacks or Rainbow Snaps, P pauses, M returns to menu, and the rainbow charges when the body moves away from the horn direction.</desc>
-  <rect width="1000" height="420" rx="28" fill="#11131a"/>
-  <text x="500" y="48" fill="#ffffff" font-family="system-ui, sans-serif" font-size="28" font-weight="700" text-anchor="middle">THE TWO-HANDED UNICORN</text>
-  <text x="500" y="78" fill="#b9bfd0" font-family="system-ui, sans-serif" font-size="16" text-anchor="middle">Move the body with one hand. Aim the horn with the other. Pull away to charge.</text>
-  <g transform="translate(72 125)" font-family="system-ui, sans-serif" text-anchor="middle">
-    <text x="90" y="0" fill="#ffda67" font-size="19" font-weight="700">MOVE BODY</text>
-    <g fill="#232735" stroke="#767f98" stroke-width="2"><rect x="62" y="18" width="56" height="56" rx="9"/><rect x="0" y="80" width="56" height="56" rx="9"/><rect x="62" y="80" width="56" height="56" rx="9"/><rect x="124" y="80" width="56" height="56" rx="9"/></g>
-    <g fill="#ffffff" font-size="23" font-weight="700"><text x="90" y="54">W</text><text x="28" y="116">A</text><text x="90" y="116">S</text><text x="152" y="116">D</text></g>
-    <text x="90" y="167" fill="#b9bfd0" font-size="15">controls the vulnerable ♥</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="t d">
+<title id="t">How to control Stretchicorn</title>
+<desc id="d">WASD moves the vulnerable body, arrow keys aim the safe horn, and Space releases rainbow tension as a Snap. Gold kernels can be parried and cyan spikes must be dodged.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#090611"/><stop offset=".55" stop-color="#180b27"/><stop offset="1" stop-color="#250f35"/></linearGradient>
+  <radialGradient id="body"><stop stop-color="#fff"/><stop offset=".72" stop-color="#f8f1ff"/><stop offset="1" stop-color="#cbbbe2"/></radialGradient>
+  <linearGradient id="horn" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#fff4b0"/><stop offset="1" stop-color="#ffbd3f"/></linearGradient>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+</defs>
+<rect width="1200" height="620" rx="30" fill="url(#bg)"/>
+<ellipse cx="600" cy="355" rx="445" ry="185" fill="#8b4ac7" opacity=".08" filter="url(#soft)"/>
+<text x="600" y="54" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="27" font-weight="800" text-anchor="middle" letter-spacing="2">ONE CREATURE · TWO CONTROL POINTS · THREE INPUTS</text>
+<text x="600" y="86" fill="#bcaec9" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="600" text-anchor="middle" letter-spacing="1.8">THE ENTIRE COMBAT SYSTEM STARTS HERE</text>
+
+<g font-family="Inter,Arial,sans-serif" font-weight="800" text-anchor="middle">
+  <g transform="translate(92 122)">
+    <rect x="50" y="0" width="46" height="42" rx="8" fill="#241a31" stroke="#ffcf67" stroke-width="2"/><text x="73" y="28" fill="#fff" font-size="18">W</text>
+    <rect x="0" y="50" width="46" height="42" rx="8" fill="#241a31" stroke="#ffcf67" stroke-width="2"/><text x="23" y="78" fill="#fff" font-size="18">A</text>
+    <rect x="50" y="50" width="46" height="42" rx="8" fill="#241a31" stroke="#ffcf67" stroke-width="2"/><text x="73" y="78" fill="#fff" font-size="18">S</text>
+    <rect x="100" y="50" width="46" height="42" rx="8" fill="#241a31" stroke="#ffcf67" stroke-width="2"/><text x="123" y="78" fill="#fff" font-size="18">D</text>
+    <text x="73" y="122" fill="#ffcf67" font-size="16">MOVE BODY</text>
   </g>
-  <g transform="translate(280 140)">
-    <line x1="70" y1="85" x2="360" y2="85" stroke="#ff5f87" stroke-width="18" stroke-linecap="round"/><line x1="115" y1="85" x2="160" y2="85" stroke="#ffb84d" stroke-width="18"/><line x1="160" y1="85" x2="205" y2="85" stroke="#ffe66d" stroke-width="18"/><line x1="205" y1="85" x2="250" y2="85" stroke="#79e58c" stroke-width="18"/><line x1="250" y1="85" x2="300" y2="85" stroke="#64cfff" stroke-width="18"/><line x1="300" y1="85" x2="360" y2="85" stroke="#b792ff" stroke-width="18" stroke-linecap="round"/>
-    <circle cx="60" cy="85" r="32" fill="#ffffff"/><text x="60" y="94" fill="#ff4f73" font-family="system-ui, sans-serif" font-size="27" text-anchor="middle">♥</text><circle cx="372" cy="85" r="30" fill="#ffffff"/><polygon points="394,82 447,60 400,96" fill="#ffe978"/><path d="M354 60 Q370 30 390 55 Q370 47 364 68" fill="#ff82b4"/>
-    <text x="60" y="138" fill="#ff8ca3" font-family="system-ui, sans-serif" font-size="16" text-anchor="middle">BODY = HEALTH</text><text x="372" y="138" fill="#a9e9ff" font-family="system-ui, sans-serif" font-size="16" text-anchor="middle">HEAD = SAFE WEAPON</text>
-    <path d="M60 35 H5" stroke="#ffe66d" stroke-width="4" marker-end="url(#arrowL)"/><text x="30" y="22" fill="#ffe66d" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle">PULL</text><path d="M400 35 H465" stroke="#7ee3ff" stroke-width="4" marker-end="url(#arrowR)"/><text x="436" y="22" fill="#7ee3ff" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle">AIM</text>
+  <g transform="translate(962 122)">
+    <rect x="50" y="0" width="46" height="42" rx="8" fill="#241a31" stroke="#72d8ff" stroke-width="2"/><text x="73" y="29" fill="#fff" font-size="20">↑</text>
+    <rect x="0" y="50" width="46" height="42" rx="8" fill="#241a31" stroke="#72d8ff" stroke-width="2"/><text x="23" y="79" fill="#fff" font-size="20">←</text>
+    <rect x="50" y="50" width="46" height="42" rx="8" fill="#241a31" stroke="#72d8ff" stroke-width="2"/><text x="73" y="79" fill="#fff" font-size="20">↓</text>
+    <rect x="100" y="50" width="46" height="42" rx="8" fill="#241a31" stroke="#72d8ff" stroke-width="2"/><text x="123" y="79" fill="#fff" font-size="20">→</text>
+    <text x="73" y="122" fill="#72d8ff" font-size="16">AIM HORN</text>
   </g>
-  <g transform="translate(758 125)" font-family="system-ui, sans-serif" text-anchor="middle">
-    <text x="90" y="0" fill="#75dcff" font-size="19" font-weight="700">AIM HEAD</text><g fill="#232735" stroke="#767f98" stroke-width="2"><rect x="62" y="18" width="56" height="56" rx="9"/><rect x="0" y="80" width="56" height="56" rx="9"/><rect x="62" y="80" width="56" height="56" rx="9"/><rect x="124" y="80" width="56" height="56" rx="9"/></g><g fill="#ffffff" font-size="25" font-weight="700"><text x="90" y="54">↑</text><text x="28" y="116">←</text><text x="90" y="116">↓</text><text x="152" y="116">→</text></g><text x="90" y="167" fill="#b9bfd0" font-size="15">continuous horn direction</text>
-  </g>
-  <g transform="translate(275 335)" font-family="system-ui, sans-serif"><rect x="0" y="0" width="190" height="52" rx="12" fill="#2b2442" stroke="#b792ff" stroke-width="2"/><text x="95" y="22" fill="#ffffff" font-size="17" font-weight="700" text-anchor="middle">SPACE</text><text x="95" y="42" fill="#cfc4ff" font-size="13" text-anchor="middle">Horn / Rainbow Snap</text><rect x="215" y="0" width="120" height="52" rx="12" fill="#232735" stroke="#767f98" stroke-width="2"/><text x="275" y="22" fill="#ffffff" font-size="17" font-weight="700" text-anchor="middle">P</text><text x="275" y="42" fill="#b9bfd0" font-size="13" text-anchor="middle">Pause</text><rect x="360" y="0" width="120" height="52" rx="12" fill="#232735" stroke="#767f98" stroke-width="2"/><text x="420" y="22" fill="#ffffff" font-size="17" font-weight="700" text-anchor="middle">M</text><text x="420" y="42" fill="#b9bfd0" font-size="13" text-anchor="middle">Menu</text></g>
-  <defs><marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#7ee3ff"/></marker><marker id="arrowL" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#ffe66d"/></marker></defs>
+</g>
+<path d="M218 235 C230 255 250 267 280 279" fill="none" stroke="#ffcf67" stroke-width="3" stroke-linecap="round"/>
+<path d="M982 235 C965 251 946 264 918 276" fill="none" stroke="#72d8ff" stroke-width="3" stroke-linecap="round"/>
+
+<g fill="none" stroke-linecap="round" stroke-width="11" opacity=".95">
+  <path d="M238 321 C204 294 184 300 169 315" stroke="#ff5c8a"/><path d="M238 329 C202 309 181 318 165 333" stroke="#ff9b45"/><path d="M238 337 C204 326 184 338 168 352" stroke="#ffe25c"/><path d="M238 345 C207 344 187 357 175 370" stroke="#68d889"/><path d="M239 353 C211 362 195 376 187 389" stroke="#62c9f3"/><path d="M243 361 C221 378 211 391 207 404" stroke="#a984ef"/>
+</g>
+<ellipse cx="291" cy="340" rx="77" ry="61" fill="#a78dc9" opacity=".3" filter="url(#glow)"/>
+<ellipse cx="286" cy="333" rx="71" ry="57" fill="url(#body)"/>
+<ellipse cx="267" cy="314" rx="24" ry="12" fill="#fff" opacity=".55"/>
+<path d="M279 329 C269 314 250 327 279 353 C308 327 289 314 279 329Z" fill="#ff4e87"/>
+<ellipse cx="269" cy="375" rx="19" ry="8" fill="#c4afd9" opacity=".5"/><ellipse cx="307" cy="375" rx="19" ry="8" fill="#c4afd9" opacity=".5"/>
+<text x="286" y="426" fill="#ffcf67" font-family="Inter,Arial,sans-serif" font-size="19" font-weight="800" text-anchor="middle">♥ VULNERABLE</text>
+<text x="286" y="450" fill="#bcaec9" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="600" text-anchor="middle">ANCHOR · RETREAT · POSITION</text>
+
+<g fill="none" stroke-linecap="round" stroke-width="11" filter="url(#glow)">
+  <path d="M351 309 C505 292 678 292 831 309" stroke="#ff5c8a"/><path d="M351 320 C505 305 678 305 831 320" stroke="#ff9b45"/><path d="M351 331 C505 318 678 318 831 331" stroke="#ffe25c"/><path d="M351 342 C505 331 678 331 831 342" stroke="#68d889"/><path d="M351 353 C505 344 678 344 831 353" stroke="#62c9f3"/><path d="M351 364 C505 357 678 357 831 364" stroke="#a984ef"/>
+</g>
+<text x="591" y="272" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="800" text-anchor="middle">PULL APART → STORE TENSION</text>
+<text x="591" y="391" fill="#cdbfd7" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="700" text-anchor="middle">THE RAINBOW IS BODY · SPRING · DASH · WEAPON</text>
+
+<ellipse cx="873" cy="336" rx="65" ry="55" fill="#9b7fc0" opacity=".28" filter="url(#glow)"/>
+<ellipse cx="870" cy="330" rx="61" ry="51" fill="url(#body)"/>
+<path d="M827 296 L803 270 L837 283Z" fill="#efe4fb"/><path d="M916 294 L932 267 L897 284Z" fill="#efe4fb"/>
+<circle cx="842" cy="279" r="9" fill="#ff5c8a"/><circle cx="853" cy="273" r="9" fill="#ff9b45"/><circle cx="864" cy="271" r="9" fill="#ffe25c"/><circle cx="875" cy="274" r="9" fill="#68d889"/><circle cx="886" cy="279" r="9" fill="#62c9f3"/>
+<path d="M914 320 L985 337 L919 347Z" fill="url(#horn)" filter="url(#glow)"/>
+<path d="M854 316 Q865 306 876 316" fill="none" stroke="#21172d" stroke-width="5" stroke-linecap="round"/><circle cx="862" cy="325" r="6" fill="#17101f"/><circle cx="864" cy="323" r="2" fill="#fff"/><path d="M880 344 Q891 352 901 341" fill="none" stroke="#24152f" stroke-width="4" stroke-linecap="round"/>
+<text x="870" y="426" fill="#72d8ff" font-family="Inter,Arial,sans-serif" font-size="19" font-weight="800" text-anchor="middle">HORN SAFE</text>
+<text x="870" y="450" fill="#bcaec9" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="600" text-anchor="middle">AIM · PARRY · ATTACK</text>
+
+<g transform="translate(410 476)" font-family="Inter,Arial,sans-serif" text-anchor="middle">
+  <rect width="380" height="70" rx="15" fill="#23172f" stroke="#fff" stroke-width="2"/>
+  <text x="190" y="31" fill="#fff" font-size="18" font-weight="800" letter-spacing="3">SPACE</text>
+  <text x="190" y="55" fill="#ffda6b" font-size="16" font-weight="800">RELEASE TENSION → RAINBOW SNAP</text>
+</g>
+
+<g font-family="Inter,Arial,sans-serif" font-weight="800">
+  <g transform="translate(66 505)"><circle cx="22" cy="22" r="16" fill="#f5b52e" stroke="#ffe986" stroke-width="4"/><circle cx="17" cy="17" r="4" fill="#fff4bd"/><text x="49" y="19" fill="#ffe26b" font-size="15">GOLD KERNEL</text><text x="49" y="39" fill="#fff" font-size="14">PARRY ↩</text></g>
+  <g transform="translate(966 505)"><path d="M22 3 L39 22 L22 41 L5 22Z" fill="#54d9ff" stroke="#baf3ff" stroke-width="3"/><text x="49" y="19" fill="#72e3ff" font-size="15">CYAN SPIKE</text><text x="49" y="39" fill="#fff" font-size="14">DODGE ↗</text></g>
+</g>
+
+<g transform="translate(1036 315) rotate(12)">
+  <ellipse cx="0" cy="0" rx="28" ry="40" fill="#5c3910" opacity=".5"/><ellipse cx="0" cy="-3" rx="24" ry="35" fill="#d99519"/>
+  <g fill="#f4bd37"><circle cx="-9" cy="-19" r="7"/><circle cx="8" cy="-19" r="7"/><circle cx="-10" cy="-4" r="7"/><circle cx="8" cy="-4" r="7"/><circle cx="-9" cy="11" r="7"/><circle cx="8" cy="11" r="7"/></g>
+  <path d="M-21 17 Q-45 27 -34 43 Q-13 33 -4 22" fill="#3e7b45"/><path d="M20 17 Q44 29 32 43 Q12 32 4 22" fill="#3e7b45"/>
+  <path d="M-13 -12 L-3 -16 M13 -12 L3 -16" stroke="#29170d" stroke-width="4" stroke-linecap="round"/><circle cx="-8" cy="-7" r="3" fill="#17100c"/><circle cx="8" cy="-7" r="3" fill="#17100c"/>
+</g>
+<path d="M988 336 C1000 333 1010 330 1020 327" fill="none" stroke="#f5b52e" stroke-width="3" stroke-dasharray="6 7"/>
 </svg>
