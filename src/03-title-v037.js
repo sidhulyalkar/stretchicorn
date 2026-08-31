@@ -1,0 +1,4 @@
+'use strict';
+/* v0.37 TITLE TABLEAU: reuse the real hero/corn renderers instead of shipping raster key art. */
+function mascot(){let w=wave,r=ready;ready=1;demo(180,265,0,600,.82);ready=r;wave=2;for(let p of[[105,180,14],[855,180,15],[115,370,13],[845,365,14],[490,395,11]])co31({x:p[0],y:p[1],type:0,r:p[2],hit:0});wave=w}
+function title(){splash();txt('STRETCHICORN',W/2+3,91,52,'#32103f','center');txt('STRETCHICORN',W/2,87,52,'#fff','center');for(let i=0;i<6;i++){X.fillStyle=RC[i];X.fillRect(340+i*47,105,44,3)}txt('STRETCH • SNAP • SHUCK.',W/2,132,12,'#cbbbd2','center');mascot();let n=['1  EASY','2  NORMAL','3  HARD','4  IMPOSSIBLE'];n.forEach((v,i)=>{let x=156+i*170;X.fillStyle='#160d1d';X.fillRect(x,450,148,40);X.strokeStyle=i?'#3c2945':'#ffcf70';X.strokeRect(x,450,148,40);txt(v,x+74,475,13,i?'#b9acc2':'#fff','center')});txt('[ SPACE ] PLAY EASY',W/2,530,18,'#fff','center');txt('T TRAINING • C KEYS • S AUDIO',W/2,566,12,'#9d90a7','center')}
