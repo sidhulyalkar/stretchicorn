@@ -47,6 +47,17 @@ jobs:
       - name: Rebuild and verify competition release
         run: npm run release:competition
 
+      - name: Upload verified competition candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: competition-${{ github.sha }}
+          retention-days: 7
+          path: |
+            dist/index.html
+            dist/stretchicorn-local.html
+            dist/stretchicorn-js13k.zip
+            dist/stretchicorn-desktop-v*.zip
+
       - name: Require committed competition artifacts to match source
         shell: bash
         run: |
