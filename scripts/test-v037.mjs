@@ -1,7 +1,7 @@
 import{readFileSync,existsSync}from'node:fs';
 const h=readFileSync('dist/index.html','utf8'),t=readFileSync('src/03-title-v037.js','utf8'),b=readFileSync('src/03-bosses-v028.js','utf8'),c=readFileSync('src/01-combat.js','utf8'),u=readFileSync('src/04-ui-input.js','utf8'),build=readFileSync('scripts/build.mjs','utf8');
 if(existsSync('src/03-story-v033.js')||build.includes("'03-story-v033.js'"))throw Error('retired intro story still ships');
-for(const q of['STRETCHICORN','STRETCH • SNAP • SHUCK.','WASD MOVE • ARROWS AIM • SPACE SNAP','demo(180,265,0,600,.82)','co31({x:p[0],y:p[1],type:0'])if(!t.includes(q))throw Error('missing procedural title contract: '+q);
+for(const q of['STRETCHICORN','STRETCH • SNAP • SHUCK.','WASD BODY • MOUSE/ARROWS HORN • CLICK/SPACE SNAP','demo(180,265,0,600,.82)','co31({x:p[0],y:p[1],type:0'])if(!t.includes(q))throw Error('missing procedural title contract: '+q);
 if(/\.png|\.jpg|\.webp|data:image/i.test(h))throw Error('title must remain procedural');
 for(const q of['THE SPLIT','STRETCHICORN FOUND A MAGICAL','THE LIVING SCAR','FIRST FLIGHT','T TRAINING','RESTORED •'])if(h.includes(q))throw Error('retired intro/interstitial shipped: '+q);
 if(c.includes('grade')||c.includes('RESTORED •'))throw Error('round grading was not removed');
