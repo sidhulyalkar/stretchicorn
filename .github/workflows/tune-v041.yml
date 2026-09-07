@@ -13,5 +13,5 @@ jobs:
       - run: npm run build
       - name: Search Roadroller model
         run: |
-          sed -i "s/'-O0'/'-O1'/" scripts/pack-competition.mjs
+          sed -i "s/'-q',//;s/'-O0'/'-O1'/" scripts/pack-competition.mjs
           node scripts/pack-competition.mjs || true
