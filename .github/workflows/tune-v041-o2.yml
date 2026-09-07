@@ -1,0 +1,22 @@
+name: Tune v041 O2
+on:
+  push:
+    branches: [feat/easy-first-flight-guide]
+    paths: ['.github/workflows/tune-v041-o2.yml']
+jobs:
+  tune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: {node-version: 22}
+      - run: npm run build
+      - name: Find stronger Roadroller parameters
+        run: |
+          mkdir -p .tmp-o2
+          node - <<'NODE'
+          const{readFileSync,writeFileSync}=require('fs');let h=readFileSync('dist/index.html','utf8'),a=h.indexOf('<script>'),b=h.lastIndexOf('</script>');writeFileSync('.tmp-o2/game.js',h.slice(a+8,b));
+          NODE
+          npx --yes terser@5.50.0 .tmp-o2/game.js --compress passes=5,toplevel=true --mangle toplevel=true --ecma 2020 --output .tmp-o2/min.js
+          npx --yes roadroller@2.1.0 -O2 -D .tmp-o2/min.js -o .tmp-o2/packed.js
+          wc -c .tmp-o2/min.js .tmp-o2/packed.js
