@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import vm from 'node:vm';
+import vm from'node:vm';
 
 // Exercise the composed release source, including its overrides and real update
 // order. Rendering/audio are inert; gameplay state and collision code are real.
@@ -10,7 +10,7 @@ function game(storage={SV:'0,0'}) {
   const noop=()=>{}, gradient={addColorStop:noop};
   const ctx=new Proxy({createLinearGradient:()=>gradient,createRadialGradient:()=>gradient},
     {get:(o,k)=>o[k]||(o[k]=noop),set:(o,k,v)=>(o[k]=v,true)});
-  const canvas={width:960,height:640,getContext:()=>ctx};
+  const canvas={width:960,height:640,clientWidth:960,clientHeight:640,getContext:()=>ctx};
   const s={console,Math,Date,localStorage:storage,setTimeout:noop,clearTimeout:noop,
     requestAnimationFrame:noop,document:{querySelector:()=>canvas,createElement:()=>canvas}};
   s.window=s;vm.createContext(s);vm.runInContext(code,s);
@@ -22,11 +22,15 @@ const target="let e=enemy(0,500,300,-1);e.hp=e.max=100;e.cd=e.tele=999";
 const shot="B.push({x:e.x,y:e.y,vx:0,vy:0,team:1,r:7,l:2,p:t})";
 const key=k=>`onkeydown({key:${JSON.stringify(k)},repeat:false,preventDefault(){}})`;
 
-for (const mode of [0,2,3,4,5,6,8]) {
+for (const mode of [0,2,3,4,5,6,7,8]) {
   const r=game();r(`wave=9;spawnWave();mode=${mode};bp=1;bt=.99;winT=100`);
   const before=r('JSON.stringify([bp,bt,R])');
   r('for(let i=0;i<120;i++)upd(1/60)');
   assert.equal(r('JSON.stringify([bp,bt,R])'),before,`wall timers outside play, mode ${mode}`);
+}
+{
+  const r=game();r('mode=2;'+key('f'));assert.equal(r('mode==7&&sel==2'),true,'pause opens Field Guide with pause return target');
+  r(key('f'));assert.equal(r('mode'),2,'Field Guide returns to pause');r(key('p'));assert.equal(r('mode'),1,'pause resumes after guide round trip');
 }
 {
   const r=game();r(target+';'+shot+';mode=2');const before=r('t');
@@ -101,4 +105,4 @@ for (const order of [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]) {
   const denied=game(new Proxy({}, {get(){throw Error('storage disabled')},set(){throw Error('storage disabled')}}));
   denied('score=500;save();mode=3;draw();'+key(' '));assert.equal(denied('mode'),1,'blocked storage never blocks play');
 }
-console.log('PASS: v0.39 pause, single return authority, shield gates, terminal death, retry, per-mode best, and all six Encore victory orders');
+console.log('PASS: v0.39 pause/Field Guide round trip, return authority, shield gates, terminal death, retry, per-mode best, and all six Encore victory orders');
