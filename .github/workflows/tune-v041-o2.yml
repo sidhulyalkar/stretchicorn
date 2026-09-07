@@ -14,16 +14,11 @@ jobs:
         with: {python-version: '3.12'}
       - run: python -m pip install --disable-pip-version-check zopfli==0.4.3
       - run: npm run build
-      - name: Search and measure O2 release
+      - name: Measure concise gameplay hints
         run: |
-          mkdir -p .tmp-o2
           node - <<'NODE'
-          const{readFileSync,writeFileSync}=require('fs');let h=readFileSync('dist/index.html','utf8'),a=h.indexOf('<script>'),b=h.lastIndexOf('</script>');writeFileSync('.tmp-o2/pre',h.slice(0,a+8));writeFileSync('.tmp-o2/post',h.slice(b));writeFileSync('.tmp-o2/game.js',h.slice(a+8,b));
+          const{readFileSync,writeFileSync}=require('fs'),p='dist/index.html';let s=readFileSync(p,'utf8');for(const[a,b]of[['BODY TAKES DAMAGE • HORN IS SAFE','BODY HURTS • HORN SAFE'],['HUSK SHIELD BLOCKS HITS • STRIKE WHEN IT FIRES','HUSK OPENS WHILE FIRING'],['ROUND KERNELS • HIT WITH HORN TO RETURN','HORN RETURNS GOLD KERNELS'],['RETURN ROUND KERNELS INTO THE SHIELD','RETURN GOLD INTO SHIELD'],['RED HATCH = BLOCK ABOUT TO FORM','RED HATCH → BLOCK'],['PHASE I • SHIELD CLOSED • ATTACK ONLY WHEN OPEN','PHASE I • WAIT FOR OPEN CORE'],['CYAN SPIKES CANNOT BE RETURNED • DODGE','CYAN SPIKES • DODGE'],['PHASE II • RETURN KERNELS INTO BOTH CORES','PHASE II • RETURN INTO BOTH CORES'],['SHIELD OPEN • RETURN FIRE','SHIELD OPEN • RETURN']])s=s.replaceAll(a,b);writeFileSync(p,s)
           NODE
-          npx --yes terser@5.50.0 .tmp-o2/game.js --compress passes=5,toplevel=true --mangle toplevel=true --ecma 2020 --output .tmp-o2/min.js
-          npx --yes roadroller@2.1.0 -O2 -D .tmp-o2/min.js -o .tmp-o2/packed.js
-          node - <<'NODE'
-          const{readFileSync,writeFileSync}=require('fs');writeFileSync('dist/index.html',readFileSync('.tmp-o2/pre','utf8')+readFileSync('.tmp-o2/packed.js','utf8').trim()+readFileSync('.tmp-o2/post','utf8'));
-          NODE
+          node scripts/pack-competition.mjs
           python3 scripts/package.py
           wc -c dist/index.html dist/stretchicorn-js13k.zip
