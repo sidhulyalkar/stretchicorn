@@ -6,7 +6,7 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-A **12.64 KB desktop arcade-action game** where one unicorn is split across two control points and held together by a living rainbow.
+A **12.98 KB desktop arcade-action game** where one unicorn is split across two control points and held together by a living rainbow.
 
 **Move the vulnerable body. Aim the safe horn. Pull them apart. Snap through an army of corn.**
 
@@ -14,7 +14,7 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 [**▶ Play the standalone build**](dist/stretchicorn-local.html) · [**⬇ Download the js13k ZIP**](dist/stretchicorn-js13k.zip)
 
-**v0.38.0 · 13 trials · 3 authored bosses · 4 difficulties · 1 Impossible Encore · 12,640 bytes**
+**v0.39.0 · 13 trials · 3 authored bosses · 4 difficulties · 1 Impossible Encore · 12,975 bytes**
 
 </div>
 
@@ -86,7 +86,7 @@ That makes a difficult cross-arena counter more valuable than simply batting the
 
 ### ✨ Graze
 
-The safe offensive half can skim danger to sustain momentum. Good play often means getting *closer* to the dangerous geometry, not running from everything on screen.
+Skim a gold kernel just outside the vulnerable body’s hit radius to gain score and recharge the rainbow. The horn remains safe, but the graze reward is measured around the body.
 
 ### 13-chain rhythm
 
@@ -174,12 +174,14 @@ It breaks repetitive pinning without inflating HP or arbitrarily rejecting a suc
 
 | Key | Mode | What changes |
 |---|---|---|
-| `1` | **Easy** | learn the geometry with forgiving pressure |
+| `1` | **Easy** | forgiving pressure; retry the failed trial with fresh hearts and score reset |
 | `2` | **Normal** | the intended campaign rhythm |
 | `3` | **Hard** | denser late fights + gold/cyan projectile decisions |
 | `4` | **Impossible** | expert anti-chain pressure + stricter boss gates + Encore |
 
 **Space starts Easy immediately.** There is no mandatory intro cutscene and no tutorial scene between the title and the game.
+
+After a loss, Space or Enter retries the current trial on Easy. Score and temporary powers reset, so retries cannot farm a cumulative score. Normal, Hard and Impossible restart at Trial 1. Best scores are saved separately for each difficulty and shown on the loss screen; play still works when browser storage is unavailable.
 
 Impossible was specifically designed around an unusual playtest finding: simply spawning more enemies can make Stretchicorn *easier* for advanced players because more targets create more chaining opportunities.
 
@@ -189,7 +191,7 @@ Finish Trial 13 on Impossible and the game still has one last answer:
 
 **NOT YET.**
 
-The bounded Impossible Encore pushes the system to its final readable limit rather than becoming endless survival sludge.
+The Impossible Encore brings back one Husk, one Colonel and one shielded core together. Each uses the counterplay already learned, with four returns needed to open the core. Defeat all three in any order to finish; destroyed bosses stay defeated. The transition clears old projectiles and briefly protects the body.
 
 ---
 
@@ -269,7 +271,7 @@ That is why the final game is both denser and cleaner than many earlier versions
 
 ---
 
-# 12,640 bytes
+# 12,975 bytes
 
 The deterministic production pipeline is:
 
@@ -291,15 +293,15 @@ Current competition artifact:
 
 ```text
 dist/stretchicorn-js13k.zip
-dist/stretchicorn-desktop-v0.38.0.zip
-12,640 / 13,312 bytes
-672 bytes free
+dist/stretchicorn-desktop-v0.39.0.zip
+12,975 / 13,312 bytes
+337 bytes free
 ```
 
 SHA-256:
 
 ```text
-2753615971b736a5e0e0c2636c94276344ed0cb846cedfeaf8a5c7fdc9138cf9
+949c6414af0512268fb8ce1af3e9a5f40ae8a988aaa9f51f4b013f39d081172b
 ```
 
 The committed artifact rebuilds byte-for-byte from source and contains exactly one root-level `index.html`.
@@ -308,8 +310,13 @@ The committed artifact rebuilds byte-for-byte from source and contains exactly o
 
 # Release confidence
 
-The current `main` release is tested against the failure modes most likely to sneak in during extreme byte optimization:
+The v0.39 candidate is tested against the failure modes most likely to sneak in during extreme byte optimization:
 
+- pause freezes forming cover and reflected-shot timing,
+- one returned kernel resolves once, including shield-opening hits, expired shots and overlapping targets,
+- Easy trial retry resets score, hearts, input and temporary state,
+- per-difficulty best scores survive reload and fail safely when storage is blocked,
+- all six boss defeat orders finish the finite Impossible Encore,
 - direct title → gameplay launch with no hidden intro/training state,
 - all 13 safe-spawn invariants,
 - closed/open boss-shield authority,
@@ -328,7 +335,9 @@ The current `main` release is tested against the failure modes most likely to sn
 - exact submitted ZIP in Chromium and Firefox,
 - standalone `file://` build in Chromium and Firefox.
 
-The authoritative post-promotion `main` CI run is **`33428468123`**, with Competition Integrity, Chromium and Firefox all green.
+The candidate and its current CI results are tracked in [PR #18](https://github.com/sidhulyalkar/stretchicorn/pull/18). The release workflow rebuilds the ZIP, checks committed artifact parity, and tests the exact archive and standalone file in Chromium and Firefox.
+
+See [the v0.39 design review](docs/design-review-v039.md) for the winners comparison, measured byte cost, and focused playtest priorities.
 
 ---
 
@@ -386,7 +395,8 @@ src/03-sky-v030.js          nested single/double/triple rainbow world
 src/03-title-v037.js        procedural title tableau
 src/04-ui-input.js          menu, victory flow, controls, input
 scripts/build.mjs           source composition, slicing and identifier golf
-scripts/test-v038.mjs       current rainbow-world regression contract
+scripts/test-v039.mjs       collision, pause, retry, score and Encore regressions
+scripts/test-v038.mjs       rainbow-world regression contract
 scripts/test-v037.mjs       no-intro + late-Hard regression contract
 scripts/test-v032.mjs       boss/counterplay runtime regression contract
 ```
@@ -399,6 +409,6 @@ scripts/test-v032.mjs       boss/counterplay runtime regression contract
 
 **Three inputs. Thirteen trials. A living rainbow. An unreasonable amount of corn.**
 
-### **12.64 KB.** 🌈🌽🦄
+### **12.98 KB.** 🌈🌽🦄
 
 </div>
