@@ -10,13 +10,20 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with: {node-version: 22}
+      - uses: actions/setup-python@v6
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check zopfli==0.4.3
       - run: npm run build
-      - name: Find stronger Roadroller parameters
+      - name: Search and measure O2 release
         run: |
           mkdir -p .tmp-o2
           node - <<'NODE'
-          const{readFileSync,writeFileSync}=require('fs');let h=readFileSync('dist/index.html','utf8'),a=h.indexOf('<script>'),b=h.lastIndexOf('</script>');writeFileSync('.tmp-o2/game.js',h.slice(a+8,b));
+          const{readFileSync,writeFileSync}=require('fs');let h=readFileSync('dist/index.html','utf8'),a=h.indexOf('<script>'),b=h.lastIndexOf('</script>');writeFileSync('.tmp-o2/pre',h.slice(0,a+8));writeFileSync('.tmp-o2/post',h.slice(b));writeFileSync('.tmp-o2/game.js',h.slice(a+8,b));
           NODE
           npx --yes terser@5.50.0 .tmp-o2/game.js --compress passes=5,toplevel=true --mangle toplevel=true --ecma 2020 --output .tmp-o2/min.js
           npx --yes roadroller@2.1.0 -O2 -D .tmp-o2/min.js -o .tmp-o2/packed.js
-          wc -c .tmp-o2/min.js .tmp-o2/packed.js
+          node - <<'NODE'
+          const{readFileSync,writeFileSync}=require('fs');writeFileSync('dist/index.html',readFileSync('.tmp-o2/pre','utf8')+readFileSync('.tmp-o2/packed.js','utf8').trim()+readFileSync('.tmp-o2/post','utf8'));
+          NODE
+          python3 scripts/package.py
+          wc -c dist/index.html dist/stretchicorn-js13k.zip
