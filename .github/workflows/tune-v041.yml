@@ -1,0 +1,17 @@
+name: Tune v041 packing
+on:
+  push:
+    branches: [feat/easy-first-flight-guide]
+    paths: ['.github/workflows/tune-v041.yml']
+jobs:
+  tune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: {node-version: 22}
+      - run: npm run build
+      - name: Search Roadroller model
+        run: |
+          sed -i "s/'-O0'/'-O1'/" scripts/pack-competition.mjs
+          node scripts/pack-competition.mjs || true
