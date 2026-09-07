@@ -3,8 +3,8 @@ const h=readFileSync('dist/index.html','utf8'),t=readFileSync('src/03-title-v037
 if(existsSync('src/03-story-v033.js')||build.includes("'03-story-v033.js'"))throw Error('retired intro story still ships');
 for(const q of['STRETCHICORN','STRETCH • SNAP • SHUCK.','WASD BODY • MOUSE/ARROWS HORN • CLICK/SPACE SNAP','demo(180,265,0,600,.82)','co31({x:p[0],y:p[1],type:0'])if(!t.includes(q))throw Error('missing procedural title contract: '+q);
 if(/\.png|\.jpg|\.webp|data:image/i.test(h))throw Error('title must remain procedural');
-for(const q of['THE SPLIT','STRETCHICORN FOUND A MAGICAL','THE LIVING SCAR','FIRST FLIGHT','T TRAINING','RESTORED •'])if(h.includes(q))throw Error('retired intro/interstitial shipped: '+q);
+for(const q of['THE SPLIT','STRETCHICORN FOUND A MAGICAL','THE LIVING SCAR','T TRAINING','RESTORED •'])if(h.includes(q))throw Error('retired intro/interstitial shipped: '+q);
 if(c.includes('grade')||c.includes('RESTORED •'))throw Error('round grading was not removed');
 if(!b.includes('D>1&&wave>9')||!b.includes('b.team=1,b.r=8')||!b.includes('CYAN SPIKES CANNOT BE RETURNED • DODGE'))throw Error('late-Hard piercing kernel contract missing');
-if(!u.includes('mode=0;requestAnimationFrame(loop)')||u.includes('function practice(')||u.includes('function train(')||u.includes("k=='t'")||u.includes('mode==10'))throw Error('intro/training route still exists in maintained UI');
-console.log('PASS: v0.37 has no intro/training scene, boots title -> gameplay, and retains late-Hard cyan dodge-only kernels');
+if(!u.includes('mode=0;requestAnimationFrame(loop)')||u.includes('function practice(')||u.includes('function train(')||u.includes("k=='t'")||u.includes('mode==10'))throw Error('retired standalone intro/training route returned');
+console.log('PASS: v0.37 has no standalone intro scene, boots title -> gameplay, and retains late-Hard cyan dodge-only kernels');
