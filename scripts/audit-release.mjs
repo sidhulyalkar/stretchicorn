@@ -1,0 +1,7 @@
+import{createHash}from'node:crypto';import{readFileSync,readdirSync,statSync}from'node:fs';
+const limit=13312,pkg=JSON.parse(readFileSync('package.json','utf8')),stable='dist/stretchicorn-js13k.zip',versioned=`dist/stretchicorn-desktop-v${pkg.version}.zip`,fmt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const files=readdirSync('dist').sort(),expected=['index.html',`stretchicorn-desktop-v${pkg.version}.zip`,'stretchicorn-js13k.zip','stretchicorn-local.html'].sort();if(files.join('\n')!==expected.join('\n'))throw Error(`dist hygiene mismatch\nexpected: ${expected.join(', ')}\nactual: ${files.join(', ')}`);
+for(const f of [stable,versioned,'dist/index.html','dist/stretchicorn-local.html'])if(!statSync(f).isFile())throw Error(`missing release artifact ${f}`);
+const a=readFileSync(stable),b=readFileSync(versioned);if(!a.equals(b))throw Error('stable/versioned competition ZIPs differ');const size=a.length,free=limit-size,hash=createHash('sha256').update(a).digest('hex');if(free<0)throw Error(`competition ZIP exceeds limit by ${-free} bytes`);
+for(const doc of ['README.md','RELEASING.md']){const s=readFileSync(doc,'utf8'),need=[`${fmt(size)} / ${fmt(limit)}`,`${free} bytes free`,hash,`stretchicorn-desktop-v${pkg.version}.zip`];for(const token of need)if(!s.includes(token))throw Error(`${doc} is stale: missing ${token}`)}
+console.log(`PASS: release metadata + dist hygiene; ${size}/${limit} bytes; ${free} free; sha256=${hash}`);
