@@ -145,10 +145,10 @@ For the ZIP path, CI:
 3. blocks external requests,
 4. verifies Canvas geometry,
 5. opens Controls from the real title screen,
-6. toggles pointer gameplay OFF,
-7. verifies the gameplay cursor changes,
+6. verifies the rendered pointer state starts ON,
+7. toggles pointer gameplay OFF and verifies the rendered OFF state,
 8. reopens Controls with a Canvas click while pointer gameplay is disabled,
-9. toggles pointer gameplay back ON,
+9. toggles pointer gameplay back ON and verifies the rendered ON state,
 10. starts gameplay,
 11. pauses/resumes,
 12. starts a non-default difficulty,
@@ -219,7 +219,7 @@ Before uploading `dist/stretchicorn-js13k.zip`, confirm all of the following:
 - [ ] archive opens directly to `index.html`
 - [ ] no wrapper directory exists
 - [ ] stable/versioned ZIPs are byte-identical
-- [ ] SHA-256 matches the qualified README/changelog value
+- [ ] SHA-256 matches the qualified README/current release-note value
 - [ ] `npm run release:competition` passes on the intended commit
 - [ ] committed `dist/` matches the rebuild
 - [ ] Chromium exact-ZIP smoke is green
