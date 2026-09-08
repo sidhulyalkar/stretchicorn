@@ -7,6 +7,6 @@ for(const q of['STYLE 1234 • BEST 1600','TIME 137s • ♥ 9/13','COBTOPUS BUR
 words=[];pops=0;c.winT=.7;c.victory();if(pops!==28)throw Error('popcorn burst must persist through the restored-sky beat');
 for(const q of['SKY RESTORED!','RAINBOW POPCORN!'])if(!words.includes(q))throw Error('missing late finale beat: '+q);
 c.panel=(a,b)=>cards.push([a,b]);c.mode=4;c.draw();if(!cards[0]||!cards[0][1].includes('STYLE 1234 • BEST 1600'))throw Error('final result must persist after the animation');
-for(const q of['STYLE SCORE','Charged Snaps, grazes and parries raise Style fastest.'])if(!guide.includes(q))throw Error('missing Style explanation: '+q);
+for(const q of['STYLE SCORE','Style = how boldly + skillfully you fight.','Win = restore sky. Style = mastery, not victory.','Best is per difficulty; Time + ♥ show speed/survival.'])if(!guide.includes(q))throw Error('missing Style/result explanation: '+q);
 if(ui.includes('THE LAST RAINBOW LETS GO.'))throw Error('legacy Stretchicorn breakup finale survived');
-console.log('PASS: finale keeps Stretchicorn intact, bursts the defeated boss into rainbow popcorn, and persists per-difficulty Style with time and hearts');
+console.log('PASS: finale keeps Stretchicorn intact, bursts the defeated boss into rainbow popcorn, and the guide explains victory vs Style mastery, Best, time and hearts');
