@@ -1,0 +1,88 @@
+name: Freeze final v0.39 artifacts
+
+on:
+  push:
+    branches:
+      - feat/v042-popcorn-finale-style-summary
+
+permissions:
+  contents: write
+
+jobs:
+  freeze:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: feat/v042-popcorn-finale-style-summary
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install deterministic compressor
+        run: python -m pip install --disable-pip-version-check zopfli==0.4.3
+      - name: Rebuild and qualify candidate
+        run: |
+          npm run build
+          node scripts/run-regressions.mjs
+          npm run pack:competition
+          npm run verify:offline
+          python3 scripts/package.py
+          npm run verify:archive
+          npm run check:size
+      - name: Refresh public release metadata
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          old_hash='074b379ed4d3dbaec326b07cb0ae0b1313af77b6a4e5d5ae5791e9360102401a'
+          new_hash='d78c8a03bfb7d2aef4a89815bf56c87823847ad7853d23f9c8baec5972e174f2'
+          for name in ['README.md','RELEASING.md','PLAY_LOCAL.md','docs/release-v039.md']:
+              p=Path(name)
+              s=p.read_text()
+              for a,b in [
+                  ('13,310 / 13,312','13,284 / 13,312'),
+                  ('13,310 byte','13,284 byte'),
+                  ('2 bytes free','28 bytes free'),
+                  ('**2 free bytes**','**28 free bytes**'),
+                  ('has 2 bytes of headroom','has 28 bytes of headroom'),
+                  ('At 2 bytes free','At 28 bytes free'),
+                  ('99.985%','99.790%'),
+                  ('Two spare bytes','Twenty-eight spare bytes'),
+                  (old_hash,new_hash),
+              ]:
+                  s=s.replace(a,b)
+              p.write_text(s)
+          p=Path('README.md')
+          s=p.read_text()
+          s=s.replace('scripts/\n  build.mjs', 'scripts/\n  run-regressions.mjs    one manifest for the current VM regression chain\n  audit-release.mjs      release metadata + dist hygiene contract\n  build.mjs')
+          s=s.replace('- exact 13,312-byte ceiling,', '- exact 13,312-byte ceiling,\n- release metadata and working-tree dist hygiene,')
+          p.write_text(s)
+          p=Path('docs/release-v039.md')
+          s=p.read_text()
+          marker='## Final hardening pass\n'
+          note='The final cleanup also retires legacy keyboard-rebind and Music/SFX preference migration now that those editing screens no longer ship. Returning players therefore cannot be stranded on invisible old bindings or muted audio; the supported default keyboard/audio behavior is authoritative, while the current pointer ON/OFF preference still migrates and persists. This simplification reclaimed 26 compressed bytes.\n\n'
+          if note not in s:
+              s=s.replace(marker,marker+'\n'+note)
+          p.write_text(s)
+          p=Path('CHANGELOG.md')
+          s=p.read_text()
+          if '## v0.39.0 - FINAL SUBMISSION CANDIDATE' not in s:
+              entry='''\n## v0.39.0 - FINAL SUBMISSION CANDIDATE\n\n- Consolidated Stretchicorn into a finite 13-trial arcade campaign built around independent vulnerable-body movement, safe horn aiming, rainbow tension and Rainbow Snap routing.\n- Added Easy First Flight onboarding, an in-game Field Guide, four difficulties, Double Rainbow, graze/parry/return combat, temporary procedural hay, five powerups and Lucky 13.\n- Finalized three authored mastery bosses: Hideaway Husk, Kernel Colonel and two-phase Cobtopus Prime with independently gated split cores.\n- Hardened Impossible around anti-chain pressure and a finite Encore rather than simply multiplying enemy population.\n- Reframed end-of-run scoring as Style mastery with per-difficulty Best, time and hearts, followed by the rainbow-popcorn sky-restoration finale.\n- Added persistent laptop-safe Mouse Aim + Click ON/OFF controls while preserving Arrow aim and Space Snap.\n- Retired loading/saving legacy custom-keybind and Music/SFX preferences after those editing screens left the shipping UI, preventing invisible old settings from trapping returning players. Current pointer preference migration remains supported.\n- Centralized the active VM regression manifest and added deterministic multi-difficulty boss soaks, exact-ZIP Chromium/Firefox interaction checks, standalone file:// checks, offline/network guards, deterministic archive verification and release metadata/dist hygiene auditing.\n- All shipping game graphics and audio remain procedural Canvas/Web Audio with zero external runtime assets.\n- Final competition ZIP: **13,284 / 13,312 bytes (28 bytes free)**.\n- Qualified SHA-256: `d78c8a03bfb7d2aef4a89815bf56c87823847ad7853d23f9c8baec5972e174f2`.\n'''
+              s=s.replace('# Changelog\n','# Changelog\n'+entry,1)
+          p.write_text(s)
+          PY
+          npm run audit:release
+      - name: Commit exact artifacts and docs
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add dist README.md RELEASING.md PLAY_LOCAL.md CHANGELOG.md docs/release-v039.md
+          if git diff --cached --quiet; then
+            echo 'Nothing to freeze'
+          else
+            git commit -m 'release: freeze 13,284-byte final candidate'
+            git push origin HEAD:feat/v042-popcorn-finale-style-summary
+          fi
