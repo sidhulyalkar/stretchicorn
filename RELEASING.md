@@ -64,6 +64,8 @@ The readable repository can therefore retain historical context in versioned sou
 
 ### 2. Run the current VM regression chain
 
+`scripts/run-regressions.mjs` is the single regression manifest used by `npm test` and the competition release gate. Keeping the suite list in one place prevents `test`, `smoke` and `release:competition` from silently drifting apart.
+
 The suite currently includes:
 
 - final legacy-settings / input-authority / deterministic soak audit,
@@ -121,6 +123,17 @@ Roadroller is run twice. The two packed outputs must be byte-identical or the re
 `scripts/check-size.mjs` prints the used/free byte count and fails above 13,312 bytes.
 
 At the current candidate there are only **2 free bytes**. Any source change should be treated as a release change and requalified from zero.
+
+### 8. Audit release metadata and working-tree hygiene
+
+`scripts/audit-release.mjs` makes the documentation and repository shape part of the release contract. It requires:
+
+- `dist/` to contain exactly the current competition HTML, standalone HTML, stable ZIP and current versioned ZIP,
+- stable and versioned ZIPs to remain byte-identical,
+- the final ZIP to remain within the 13,312-byte ceiling,
+- `README.md` and `RELEASING.md` to contain the actual current versioned filename, byte count, free-byte count and SHA-256.
+
+This catches a different class of release bug: a perfectly valid game artifact accompanied by stale public documentation or an accidental pile of historical binaries.
 
 ## Committed artifact parity
 
@@ -221,6 +234,7 @@ Before uploading `dist/stretchicorn-js13k.zip`, confirm all of the following:
 - [ ] stable/versioned ZIPs are byte-identical
 - [ ] SHA-256 matches the qualified README/current release-note value
 - [ ] `npm run release:competition` passes on the intended commit
+- [ ] `npm run audit:release` confirms metadata and `dist/` hygiene
 - [ ] committed `dist/` matches the rebuild
 - [ ] Chromium exact-ZIP smoke is green
 - [ ] Firefox exact-ZIP smoke is green
