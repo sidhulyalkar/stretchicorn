@@ -1,61 +1,89 @@
-# Play Stretchicorn v0.28 locally with one HTML file
+# Play Stretchicorn locally with one HTML file
 
-For the fastest Boss Trilogy playtest, download this single generated file:
+For the fastest playtest, download:
 
 **[`dist/stretchicorn-local.html`](dist/stretchicorn-local.html)**
 
-Then double-click `stretchicorn-local.html` in Finder or Explorer. No local server, npm install, Wavedash, or `src/` directory is required.
+Then double-click it in Finder or Explorer. No local server, npm install, Wavedash runtime or neighboring `src/` files are required.
 
-The file starts with **The Living Scar** origin and then enters **First Flight**, a safe practice field using the real production movement physics. New players move the vulnerable heart, aim the safe horn, create rainbow tension, and complete three charged Rainbow Snaps before Easy begins automatically. Story and practice each retain a skip path for returning players. Press **T** from the title to replay onboarding.
+The standalone file is built from the same current source as the competition package, but it intentionally keeps a readable startup/error wrapper. If startup fails, the Canvas reports the failure instead of silently showing a blank screen.
 
-## What changed in v0.28
+## Current playtest flow
 
-The three campaign bosses now test different kinds of mastery:
+The title screen lets you:
 
-- **Trial 5 · Hideaway Husk**: use arena cover during `COVER!`, survive the seven-kernel blast, then attack when its husks open.
-- **Trial 9 · The Kernel Colonel**: the boss retreats and deploys squads. Chain three troop kills to drop the command guard and create an `EXPOSED!` damage window.
-- **Trial 13 · The Cobnocopia**: alternate between protected/open phases while intercepting healing kernels before they reach the boss. Below 20% HP, `FINAL FEAST!` turns the ending into a six-healer priority race.
+- click **Easy / Normal / Hard / Impossible** or press `1`-`4`,
+- press Space / Enter to begin Easy,
+- click **Field Guide** for the complete combat vocabulary,
+- press `C` or click **Controls** to change pointer gameplay behavior.
 
-For the most useful human test, pay attention to whether each mechanic is understandable from the action itself, not merely whether the fight can be beaten.
+Easy begins with **FIRST FLIGHT** inside Trial 1. Five practice targets appear one at a time and must be defeated with genuine charged Rainbow Snaps before the campaign advances to Trial 2.
+
+There is no separate intro/tutorial physics mode. First Flight uses the production body movement, horn aim, charge and Snap rules.
+
+## Controls
+
+- **WASD**: move the vulnerable heart/body
+- **Mouse or Arrow Keys**: aim the safe horn
+- **Left Click or Space**: Rainbow Snap
+- **P**: pause / resume
+- **F while paused**: Field Guide
+- **C**: Controls
+- **M**: back / menu
+
+### Laptop-safe mode
+
+The Controls screen contains **MOUSE AIM + CLICK ON/OFF**.
+
+Turning it OFF prevents touchpad movement from stealing horn aim and prevents accidental gameplay clicks from triggering Snap. Arrow Keys and Space remain active. Menu clicks remain active so pointer gameplay can always be switched back on.
+
+The setting persists through localStorage when available and fails safely when storage is unavailable.
+
+## What to playtest
+
+The most useful final checks are not only "can I beat it?" Pay attention to:
+
+- whether First Flight teaches pull → aim → Snap without explanation fatigue,
+- whether gold kernels read as parry/graze opportunities and cyan spikes read as dodge-only threats,
+- whether Double Rainbow feels discoverable and worth chaining,
+- whether temporary hay gives enough warning before becoming solid,
+- whether Hideaway, Colonel and Prime each communicate a distinct counterplay rule,
+- whether Impossible remains difficult for a player who is already good at chaining,
+- whether Style / Best / Time / Hearts make the result screen motivating rather than confusing,
+- whether the mouse toggle solves accidental laptop touchpad input without making the menus awkward.
 
 ## Current qualified artifact
 
-The competition package corresponding to this playtest is:
+Competition package:
 
 **[`dist/stretchicorn-js13k.zip`](dist/stretchicorn-js13k.zip)**
 
-Qualified v0.28 result:
+Versioned twin:
+
+**[`dist/stretchicorn-desktop-v0.39.0.zip`](dist/stretchicorn-desktop-v0.39.0.zip)**
 
 ```text
-13,305 / 13,312 bytes
-7 bytes free
-SHA-256 c1072fde0e3e1fcb8e503d14aa71f88b22d4ce2ff8d3cce64601cdd7c79b7e3d
+13,310 / 13,312 bytes
+2 bytes free
+SHA-256 074b379ed4d3dbaec326b07cb0ae0b1313af77b6a4e5d5ae5791e9360102401a
 ```
 
-The stable ZIP and `dist/stretchicorn-desktop-v0.28.0.zip` are byte-identical.
+The stable and versioned ZIPs are byte-identical and each contains exactly one root-level `index.html`.
 
-Do not submit `stretchicorn-local.html` to js13kGames. The readable one-file tester intentionally contains uncompressed source and a startup error renderer; only the ZIP is size-qualified.
-
-## Why the repository root `index.html` is different
-
-The root `index.html` is the readable/Wavedash development shell. It intentionally loads JavaScript and CSS from `src/`, so downloading only the root file is not a standalone game.
-
-If you download the entire repository ZIP, the root shell can use those neighboring files. If you want one file, use `dist/stretchicorn-local.html`.
+Do **not** submit `stretchicorn-local.html` to js13kGames. Submit `dist/stretchicorn-js13k.zip`.
 
 ## Browser qualification
 
-Final v0.28 qualification run `33045527163` verified:
+The release workflow checks both forms of the game in Chromium and Firefox:
 
-- the exact extracted competition ZIP in Chromium,
-- the exact extracted competition ZIP in Firefox,
-- the standalone local HTML directly through `file://` in Chromium,
-- the standalone local HTML directly through `file://` in Firefox,
-- no attempted external network requests,
-- Wavedash isolation,
-- deterministic reproduction of the frozen competition artifacts.
+- exact extracted competition ZIP,
+- standalone HTML opened directly through `file://`,
+- no external network attempts,
+- no page/console errors,
+- title → Controls pointer OFF/ON round trip,
+- title → gameplay,
+- pause rendering.
 
-The automated suite also exercises Hideaway's guard/open cycle, the Colonel's three-kill exposure grammar, Cobnocopia healing and Final Feast, all 13 safe spawns, and the bounded Impossible Encore.
+The VM regression suite separately exercises combat authority, retries, safe spawns, boss gates, Encore completion, First Flight, Field Guide, pointer migration and deterministic soak coverage.
 
-## Failure visibility
-
-The standalone local build installs a small startup error renderer before the game source. If a future JavaScript regression prevents startup, the Canvas displays the startup error rather than silently remaining blank.
+See [`README.md`](README.md) for the full game overview and [`RELEASING.md`](RELEASING.md) for the deterministic submission pipeline.
