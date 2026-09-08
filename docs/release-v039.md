@@ -31,6 +31,6 @@ The current game has converged on a finite 13-trial arcade campaign with direct 
 
 The final cleanup added a deterministic soak/input audit, extended Chromium and Firefox browser checks through the real Controls UI, refreshed the public documentation, and removed retired one-off tuning/test helpers and old binary ZIP snapshots from the working tree.
 
-Historical binary candidates remain available through Git history. The working `dist/` directory now represents the current submission rather than acting as an artifact museum.
+Historical binary candidates remain available through Git history. The working `dist/` directory now represents the current submission rather than acting as an artifact museum. The full development history remains preserved in [`../CHANGELOG.md`](../CHANGELOG.md); this file is the concise current-candidate release note.
 
 For the complete feature tour, see [`../README.md`](../README.md). For packaging and submission invariants, see [`../RELEASING.md`](../RELEASING.md).
