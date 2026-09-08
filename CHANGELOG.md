@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.39.0 - FINAL SUBMISSION CANDIDATE
+
+- Consolidated Stretchicorn into a finite 13-trial arcade campaign built around independent vulnerable-body movement, safe horn aiming, rainbow tension and Rainbow Snap routing.
+- Added Easy First Flight onboarding, an in-game Field Guide, four difficulties, Double Rainbow, graze/parry/return combat, temporary procedural hay, five powerups and Lucky 13.
+- Finalized three authored mastery bosses: Hideaway Husk, Kernel Colonel and two-phase Cobtopus Prime with independently gated split cores.
+- Hardened Impossible around anti-chain pressure and a finite Encore rather than simply multiplying enemy population.
+- Reframed end-of-run scoring as Style mastery with per-difficulty Best, time and hearts, followed by the rainbow-popcorn sky-restoration finale.
+- Added persistent laptop-safe Mouse Aim + Click ON/OFF controls while preserving Arrow aim and Space Snap.
+- Retired loading/saving legacy custom-keybind and Music/SFX preferences after those editing screens left the shipping UI, preventing invisible old settings from trapping returning players. Current pointer preference migration remains supported.
+- Centralized the active VM regression manifest and added deterministic multi-difficulty boss soaks, exact-ZIP Chromium/Firefox interaction checks, standalone file:// checks, offline/network guards, deterministic archive verification and release metadata/dist hygiene auditing.
+- All shipping game graphics and audio remain procedural Canvas/Web Audio with zero external runtime assets.
+- Final competition ZIP: **13,284 / 13,312 bytes (28 bytes free)**.
+- Qualified SHA-256: `d78c8a03bfb7d2aef4a89815bf56c87823847ad7853d23f9c8baec5972e174f2`.
+
 ## v0.28.0 - BOSS TRILOGY
 
 - Replaced the three normal campaign bosses with three distinct mastery encounters rather than reskins or raw-stat checks.
