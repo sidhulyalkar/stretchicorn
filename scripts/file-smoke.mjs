@@ -7,7 +7,7 @@ if(!launcher||typeof launcher.launch!='function')throw Error(`Unsupported browse
 const errors=[],consoleErrors=[],external=[];let browser;
 try{
  browser=await launcher.launch({headless:true});
- const context=await browser.newContext({viewport:{width:1280,height:800}});await context.addInitScript(()=>{const p=CanvasRenderingContext2D.prototype,f=p.fillText;p.fillText=function(s,...a){s=String(s);if(s==='PAUSED')window.__pauseSeen=1;if(s==='CONTROLS')window.__controlsSeen=1;if(s.startsWith('MOUSE AIM + CLICK:'))window.__pointerLabel=s;return f.call(this,s,...a)}});const page=await context.newPage();
+ const context=await browser.newContext({viewport:{width:1280,height:800}});await context.addInitScript(()=>{const p=CanvasRenderingContext2D.prototype,f=p.fillText;p.fillText=function(s,...a){s=String(s);if(s==='PAUSED')window.__pauseSeen=1;if(s==='CONTROLS')window.__controlsSeen=1;if(s.startsWith('MOUSE AIM + CLICK '))window.__pointerLabel=s;return f.call(this,s,...a)}});const page=await context.newPage();
  await page.route('**/*',async route=>{let u=new URL(route.request().url());if(u.protocol==='file:')return route.continue();external.push(u.href);return route.abort('blockedbyclient')});
  page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text())});
  await page.goto(pathToFileURL(resolve(artifact)).href,{waitUntil:'load',timeout:15000});
