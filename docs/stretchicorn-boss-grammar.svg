@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc">
+<title id="title">Stretchicorn boss counterplay grammar</title>
+<desc id="desc">Three boss cards show Hideaway Husk, Kernel Colonel, and Cobtopus Prime, each with a distinct counterplay rule rather than larger health bars.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#08060e"/><stop offset="1" stop-color="#1c0d2a"/></linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1b1226"/><stop offset="1" stop-color="#0d0a13"/></linearGradient>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1400" height="650" rx="30" fill="url(#bg)"/>
+<text x="700" y="60" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="31" font-weight="800" text-anchor="middle" letter-spacing="2">THREE BOSSES · THREE DIFFERENT QUESTIONS</text>
+<text x="700" y="91" fill="#bfaecd" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="600" text-anchor="middle">BOSSES CHANGE THE RULES OF GOOD GEOMETRY INSTEAD OF JUST ADDING HEALTH</text>
+
+<!-- Husk -->
+<g transform="translate(52 132)">
+  <rect width="410" height="454" rx="22" fill="url(#panel)" stroke="#6a5232" stroke-width="2"/>
+  <text x="28" y="40" fill="#ffcf67" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="800">TRIAL 5</text>
+  <text x="28" y="71" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800">HIDEAWAY HUSK</text>
+  <g transform="translate(205 178)" filter="url(#glow)">
+    <path d="M-90 -16 C-80 -88 -18 -106 0 -78 C20 -107 82 -87 90 -16 L68 60 C45 87 -45 87 -68 60Z" fill="#8a5a28" stroke="#c79248" stroke-width="8"/>
+    <path d="M-60 -4 C-49 -50 -14 -63 0 -43 C14 -63 48 -50 60 -4 L44 43 C27 59 -27 59 -44 43Z" fill="#18111e" stroke="#e4bd70" stroke-width="5"/>
+    <circle cx="0" cy="9" r="16" fill="#f2b432"/><circle cx="-6" cy="3" r="4" fill="#fff2b1"/>
+  </g>
+  <text x="205" y="292" fill="#ffcf67" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="800" text-anchor="middle">OFFENSE CREATES THE OPENING</text>
+  <line x1="32" y1="320" x2="378" y2="320" stroke="#35281d"/>
+  <text x="32" y="351" fill="#d8cedf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">• closed shell is real protection</text>
+  <text x="32" y="380" fill="#d8cedf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">• firing window exposes the target</text>
+  <text x="32" y="409" fill="#d8cedf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">• patience beats face-tanking</text>
+  <rect x="32" y="425" width="346" height="1" fill="#49351f"/>
+  <text x="32" y="448" fill="#9e8b77" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">LESSON: WAIT → READ → PUNISH</text>
+</g>
+
+<!-- Colonel -->
+<g transform="translate(495 132)">
+  <rect width="410" height="454" rx="22" fill="url(#panel)" stroke="#355c69" stroke-width="2"/>
+  <text x="28" y="40" fill="#61c8ff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="800">TRIAL 9</text>
+  <text x="28" y="71" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800">KERNEL COLONEL</text>
+  <g transform="translate(205 176)" filter="url(#glow)">
+    <ellipse rx="72" ry="76" fill="#d49a37" stroke="#ffe08a" stroke-width="7"/>
+    <path d="M-60 -46 L0 -88 L60 -46 L43 -20 L-43 -20Z" fill="#394953" stroke="#83d9ef" stroke-width="5"/>
+    <circle cx="-23" cy="0" r="8" fill="#15151a"/><circle cx="23" cy="0" r="8" fill="#15151a"/>
+    <path d="M-31 30 Q0 50 31 30" fill="none" stroke="#5a3219" stroke-width="6"/>
+    <circle cx="-48" cy="51" r="12" fill="#ffcf67" stroke="#fff3b2" stroke-width="3"/>
+    <circle cx="48" cy="51" r="12" fill="#ffcf67" stroke="#fff3b2" stroke-width="3"/>
+  </g>
+  <path d="M72 286 C124 244 160 244 205 286 C250 244 286 244 338 286" fill="none" stroke="#ffe16a" stroke-width="4" stroke-dasharray="8 7"/>
+  <text x="205" y="309" fill="#61c8ff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="800" text-anchor="middle">RETURN FIRE BECOMES THE KEY</text>
+  <line x1="32" y1="320" x2="378" y2="320" stroke="#23343b"/>
+  <text x="32" y="351" fill="#d8cedf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">• gold kernels can be parried</text>
+  <text x="32" y="380" fill="#d8cedf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">• reflected shots open the boss</text>
+  <text x="32" y="409" fill="#d8cedf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">• distance rewards precision</text>
+  <rect x="32" y="425" width="346" height="1" fill="#2c424a"/>
+  <text x="32" y="448" fill="#829ba4" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">LESSON: RECEIVE → RESHAPE → RETURN</text>
+</g>
+
+<!-- Prime -->
+<g transform="translate(938 132)">
+  <rect width="410" height="454" rx="22" fill="url(#panel)" stroke="#68468b" stroke-width="2"/>
+  <text x="28" y="40" fill="#b28dff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="800">TRIAL 13</text>
+  <text x="28" y="71" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800">COBTOPUS PRIME</text>
+  <g transform="translate(205 170)" filter="url(#glow)">
+    <ellipse rx="60" ry="57" fill="#6c3b73" stroke="#d1a3e6" stroke-width="7"/>
+    <circle cx="-19" cy="-10" r="8" fill="#fff"/><circle cx="19" cy="-10" r="8" fill="#fff"/>
+    <circle cx="-19" cy="-10" r="4" fill="#19101e"/><circle cx="19" cy="-10" r="4" fill="#19101e"/>
+    <g fill="none" stroke="#925bb2" stroke-width="14" stroke-linecap="round"><path d="M-38 34 C-100 63 -93 116 -130 126"/><path d="M-14 46 C-56 88 -40 126 -70 146"/><path d="M14 46 C56 88 40 126 70 146"/><path d="M38 34 C100 63 93 116 130 126"/></g>
+  </g>
+  <circle cx="158" cy="286" r="23" fill="#5d3568" stroke="#b28dff" stroke-width="5"/><circle cx="252" cy="286" r="23" fill="#5d3568" stroke="#b28dff" stroke-width="5"/>
+  <text x="205" y="317" fill="#c4a5ff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="800" text-anchor="middle">PHASE I → TWO INDEPENDENT CORES</text>
+  <line x1="32" y1="330" x2="378" y2="330" stroke="#352542"/>
+  <text x="32" y="361" fill="#d8cedf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">• protected/open phase windows</text>
+  <text x="32" y="390" fill="#d8cedf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">• each core owns its return gate</text>
+  <text x="32" y="419" fill="#d8cedf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14">• anti-pin Phase Shift relocates</text>
+  <rect x="32" y="435" width="346" height="1" fill="#49305a"/>
+  <text x="32" y="458" fill="#a38bb1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12">LESSON: COMBINE THE WHOLE VOCABULARY</text>
+</g>
+</svg>
