@@ -98,7 +98,7 @@ When pointer gameplay is **OFF**:
 - menu/UI clicks still work so the option can always be turned back on,
 - stale pointer state is cleared before re-enabling.
 
-The setting is stored alongside the existing local preferences. Older two-value settings migrate to pointer controls **ON** by default.
+The pointer setting is stored locally and defaults to **ON** when no current preference exists. Retired custom keybind and Music/SFX settings are intentionally not restored because those editing screens no longer ship.
 
 ---
 
