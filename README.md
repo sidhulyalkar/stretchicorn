@@ -186,6 +186,8 @@ Style rewards:
 
 The combo multiplier climbs toward **4×** while active play continues. Each difficulty also keeps its own **Best** score.
 
+Those Best scores are stored locally in the browser. Once a player has recorded a score, the title screen shows the highest saved **BEST STYLE** across Easy, Normal, Hard and Impossible. The four difficulty-specific records remain separate underneath that headline best. No account or network connection is required.
+
 The final result separates three ideas that used to be conflated:
 
 - **Victory**: did you restore the sky?
@@ -517,122 +519,80 @@ The canonical `npm run release:competition` path currently covers:
 - committed `dist/` parity with rebuilt source,
 - exact submitted ZIP in Chromium,
 - exact submitted ZIP in Firefox,
-- standalone `file://` HTML in Chromium,
-- standalone `file://` HTML in Firefox,
-- Wavedash publishing-layer isolation.
+- standalone `file://` playtest in Chromium,
+- standalone `file://` playtest in Firefox.
 
-The real-browser smoke path also toggles the laptop-safe pointer controls OFF and back ON through the actual Canvas UI, then starts gameplay, pauses, and checks for console/page/network failures.
-
-Current development is tracked in [PR #21](https://github.com/sidhulyalkar/stretchicorn/pull/21).
+The final release path is intentionally boring. That is a compliment.
 
 ---
 
-# Build and play
+# Repository map
 
-## Fastest local playtest
+```text
+src/                      readable source modules
+scripts/
+  run-regressions.mjs    one manifest for the current VM regression chain
+  audit-release.mjs      release metadata + dist hygiene contract
+  build.mjs              source composition + standalone builder
+  pack-competition.mjs   deterministic Terser + Roadroller packer
+  package.py             deterministic Zopfli ZIP writer
+  test-v044.mjs          final storage/input + multi-difficulty soak audit
+  test-v043.mjs          persistent pointer-input authority
+  test-v042.mjs          rainbow-popcorn finale + Style result semantics
+  test-v041.mjs          Easy First Flight built-artifact tutorial
+  test-v040.mjs          Field Guide + mouse + hay regressions
+  test-v039.mjs          collision/pause/retry/Encore authority
+  browser-smoke.mjs      exact submitted ZIP browser interaction smoke
+  file-smoke.mjs         direct standalone file:// browser smoke
+dist/
+  index.html
+  stretchicorn-local.html
+  stretchicorn-js13k.zip
+  stretchicorn-desktop-v0.39.0.zip
+docs/
+  stretchicorn-hero.png
+  stretchicorn-controls.svg
+  release-v039.md
+```
 
-Download [`dist/stretchicorn-local.html`](dist/stretchicorn-local.html) and double-click it.
+Historical release artifacts live in Git history rather than cluttering the current working tree.
 
-It is a self-contained `file://` build with no server requirement. It intentionally includes readable startup/error handling and is **not** the competition submission artifact.
+---
 
-## Rebuild the exact competition package
+# Build it
 
 Requirements:
 
-- Node.js 22
+- Node.js 22+
 - Python 3.12+
 - `zopfli==0.4.3`
 
 ```bash
-python3 -m pip install zopfli==0.4.3
 npm run release:competition
 ```
 
-Useful development commands:
+That command rebuilds the game, runs the active VM regression manifest, packs the competition HTML, verifies offline behavior, creates deterministic ZIPs, audits release metadata and `dist/` hygiene, verifies archive identity and checks the hard byte ceiling.
+
+For direct local play:
 
 ```bash
-npm run build                 # readable + standalone generated HTML
-npm test                      # full VM regression chain
-npm run smoke                 # faster current regression chain
-npm run release:competition   # full deterministic release gate
-npm run browser:smoke         # exact HTML through local HTTP + Playwright
-npm run browser:file-smoke    # standalone file:// Playwright check
-npm run wavedash:test         # publishing-layer isolation
+npm run play:local
 ```
 
-See [`PLAY_LOCAL.md`](PLAY_LOCAL.md) for the one-file tester and [`RELEASING.md`](RELEASING.md) for the submission preflight.
-
----
-
-# Architecture
-
-The readable source is intentionally modular even though the shipping artifact is aggressively transformed.
+or open:
 
 ```text
-src/
-  00-core.js              state, geometry, spawning, audio, walls, pickups
-  01-combat.js            Snap, Double Rainbow, hurt, scoring, collision, parry
-  02-update.js            fixed-step simulation, movement, projectiles, enemy AI
-  03-render.js            base scene and combat rendering
-  03-keyart-v026.js       shared character/material grammar
-  03-living-color-v027.js retained visual vocabulary used by the build composition
-  03-bosses-v028.js       boss state machines, return gates, finale authority
-  03-boss-art-v034.js     compact procedural boss detail grammar
-  03-sky-v030.js          storm-to-single/double/triple rainbow restoration
-  03-title-v037.js        title tableau, Field Guide, hay material, pointer routing
-  04-ui-input.js          title/pause/result/Controls input and fixed-step RAF loop
-  style.css               one-canvas layout
-
-scripts/
-  run-regressions.mjs    one manifest for the current VM regression chain
-  audit-release.mjs      release metadata + dist hygiene contract
-  build.mjs               source composition, retired-seam slicing, identifier golf
-  pack-competition.mjs    pinned Terser + deterministic Roadroller packing
-  package.py              deterministic Zopfli archive generation
-  verify-archive.py       root path, parity, metadata, CRC, size and SHA checks
-  check-offline.mjs       rejects external references / network-capable runtime APIs
-  browser-smoke.mjs       Chromium/Firefox exact-build interaction smoke
-  file-smoke.mjs          Chromium/Firefox standalone file:// smoke
-  test-v044.mjs           final input migration + deterministic soak audit
-  test-v043.mjs           pointer controls regression
-  test-v042.mjs           finale/result regression
-  test-v041.mjs           Easy First Flight regression
-  test-v040.mjs           guide / pointer / hay integration contract
-  test-v039.mjs           pause, retry, boss authority, Encore regression
-  test-v038.mjs           nested rainbow regression
-  test-v037.mjs           title/direct-start + cyan pressure regression
-  test-v036.mjs           boss rendering regression
-  test-v035.mjs           compact base shape-language regression
-  test-v032.mjs           boss/counterplay runtime regression
-  test-sky-v030.mjs       sky renderer contract
+dist/stretchicorn-local.html
 ```
 
-A few versioned module names remain because the project evolved through byte-budget experiments. The production builder explicitly composes the winning pieces and removes superseded seams before minification. That architecture lets the readable repository preserve why a rendering/mechanics layer exists without paying for multiple versions in the 13 KB output.
+See [`PLAY_LOCAL.md`](PLAY_LOCAL.md) and [`RELEASING.md`](RELEASING.md) for the complete paths.
 
 ---
 
-# Repository hygiene
+# Design principle
 
-The working tree keeps only the current release ZIP pair. Historical binary releases remain recoverable from Git history rather than accumulating in `dist/`.
+> **Make every byte do more than one job.**
 
-One-off packing tuners, retired v0.29/v0.31 harnesses, obsolete Living Color smoke scripts and old screenshot/trim helpers were removed during the final cleanup pass. The scripts left in the repository either participate in the current release/test path or document active publishing behavior.
+Stretchicorn's rainbow is a weapon, movement system, dodge route, charge meter and compositional spine. Its corn kernels are enemies, projectiles, pickups, boss motifs and musical percussion. Its background is scenery and progression. Its difficulty modes are balance settings and different mastery tests.
 
-Historical design notes remain under [`docs/`](docs/) because they explain decisions that shaped the final game without entering the competition archive.
-
----
-
-# Competition artifact vs repository assets
-
-The repository includes screenshots/key art for GitHub documentation. Those files are **not** part of the js13k submission.
-
-The actual competition ZIP contains only the generated root `index.html`, with all game graphics and sound created at runtime.
-
----
-
-<div align="center">
-
-## **STRETCH · SNAP · SHUCK.**
-
-**One vulnerable body. One safe horn. Thirteen trials. Two spare bytes.** 🌈🌽
-
-</div>
+That is the game.
