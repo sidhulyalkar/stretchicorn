@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.39.0 - FINAL SUBMISSION CANDIDATE
+
+- Consolidated Stretchicorn into a finite 13-trial arcade campaign built around independent vulnerable-body movement, safe horn aiming, rainbow tension and Rainbow Snap routing.
+- Added Easy First Flight onboarding, an in-game Field Guide, four difficulties, Double Rainbow, graze/parry/return combat, temporary procedural hay, five powerups and Lucky 13.
+- Finalized three authored mastery bosses: Hideaway Husk, Kernel Colonel and two-phase Cobtopus Prime with independently gated split cores.
+- Hardened Impossible around anti-chain pressure and a finite Encore rather than simply multiplying enemy population.
+- Reframed end-of-run scoring as Style mastery with per-difficulty Best, time and hearts, followed by the rainbow-popcorn sky-restoration finale.
+- Added persistent laptop-safe Mouse Aim + Click ON/OFF controls while preserving Arrow aim and Space Snap.
+- Retired loading/saving legacy custom-keybind and Music/SFX preferences after those editing screens left the shipping UI, preventing invisible old settings from trapping returning players. Current pointer preference migration remains supported.
+- Centralized the active VM regression manifest and added deterministic multi-difficulty boss soaks, exact-ZIP Chromium/Firefox interaction checks, standalone file:// checks, offline/network guards, deterministic archive verification and release metadata/dist hygiene auditing.
+- All shipping game graphics and audio remain procedural Canvas/Web Audio with zero external runtime assets.
+- Final competition ZIP: **13,310 / 13,312 bytes (2 bytes free)**.
+- Qualified SHA-256: `ff8dc4532a654407be15d4b8f14f4c0a695b9cc712e13be56882c1347dd66912`.
+
 ## v0.28.0 - BOSS TRILOGY
 
 - Replaced the three normal campaign bosses with three distinct mastery encounters rather than reskins or raw-stat checks.
@@ -77,7 +91,7 @@
 - Improved bosses with larger visual scale and secondary silhouette forms while leaving collision geometry unchanged.
 - Added greater material depth to Husk Shift barriers, projectiles, pickups, HUD typography, and combat feedback using Canvas-only primitives.
 - Performed screenshot QA on late boss arenas and reduced visual overdraw after the first pass proved that more lines did not necessarily create better art.
-- Retained First Flight, Heavy Drop, kick-driven camera, critical-health scar fray, Chromatic Overload, mastery grades, final release, Impossible anti-chain pressure, and Wavedash isolation.
+- Retained First Flight, Heavy Drop audio, kick-driven camera, critical-health scar fray, Chromatic Overload, mastery grades, final release, Impossible anti-chain pressure, and Wavedash isolation.
 - Final qualified competition ZIP after composition refinement: **13,292 / 13,312 bytes (20 bytes free)**.
 - Qualified SHA-256: `a8655e087b8f67ef1c5d20c4229cd3b7bf39c2729ed6a38941734a545349326f`.
 
@@ -177,7 +191,7 @@
 - Kept `M` and `P` reserved while rebinding controls so custom bindings cannot silently conflict with menu/pause shortcuts.
 - Removed the unused `nearest()` helper, reclaiming submission bytes without changing gameplay.
 - Preserved the complete HUSKSHIFT campaign, POP DROP audio, settings, custom controls and exact-artifact validation.
-- Final competition ZIP: **13,284 / 13,312 bytes (28 bytes free)**.
+- Final competition ZIP: **13,310 / 13,312 bytes (2 bytes free)**.
 
 ## v0.20.6 — HUSKSHIFT FIX
 

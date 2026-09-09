@@ -1,110 +1,253 @@
 # Stretchicorn js13k release workflow
 
-Stretchicorn treats the competition ZIP as a release artifact, not as a hand-made upload. The repository keeps the exact submission bytes in `dist/` and CI rebuilds them from source on every relevant pull request and push.
+Stretchicorn treats the competition ZIP as a reproducible release artifact, not as a hand-made upload. The repository keeps the exact current submission bytes in `dist/`, and CI rebuilds them from source before accepting the candidate.
+
+## Current qualified submission
+
+```text
+version: 0.39.0
+dist/stretchicorn-js13k.zip
+dist/stretchicorn-desktop-v0.39.0.zip
+13,310 / 13,312 bytes
+2 bytes free
+SHA-256 ff8dc4532a654407be15d4b8f14f4c0a695b9cc712e13be56882c1347dd66912
+```
+
+The stable and versioned ZIPs are byte-identical.
 
 ## Canonical artifacts
 
-Every competition release writes the same bytes to two names:
+A release produces:
 
-- `dist/stretchicorn-desktop-v<VERSION>.zip` — immutable/versioned release artifact
-- `dist/stretchicorn-js13k.zip` — stable link to the current competition submission
+- `dist/index.html`: generated competition HTML before ZIP packaging
+- `dist/stretchicorn-local.html`: readable standalone `file://` playtest
+- `dist/stretchicorn-desktop-v<VERSION>.zip`: versioned competition artifact
+- `dist/stretchicorn-js13k.zip`: stable alias for the current submission
 
-Both archives must contain exactly one self-contained file at the ZIP root:
+The competition ZIP must contain exactly one self-contained file at ZIP root:
 
 ```text
 index.html
 ```
 
-No wrapper directory, extra files, symlinks, external runtime assets, or network services are permitted in the competition artifact.
+No wrapper directory, extra files, symlinks, external runtime assets or network services are allowed.
 
-The version comes from `package.json`; release scripts must not hard-code it.
+Historical ZIP snapshots are kept in Git history rather than accumulating in the working-tree `dist/` directory. The working tree should contain only the current versioned ZIP plus the stable alias.
 
-## Build a competition release
+## Required environment
 
-Install the deterministic compressor used by CI:
+CI currently qualifies with:
+
+- Node.js 22
+- Python 3.12
+- `zopfli==0.4.3`
+
+Install the pinned compressor locally:
 
 ```bash
-python3 -m pip install --user zopfli==0.4.3
+python3 -m pip install zopfli==0.4.3
 ```
 
-Then run the canonical release command:
+## Canonical release command
 
 ```bash
 npm run release:competition
 ```
 
-That command fails closed unless all of the following pass:
+This is the release gate. It fails closed unless the full chain succeeds.
 
-1. `dist/index.html` is rebuilt from the readable `src/` files.
-2. The production VM regression suite passes.
-3. The exact built-artifact smoke suite passes.
-4. The built HTML contains no external resource references or network-capable runtime APIs.
-5. Deterministic Zopfli ZIPs are generated.
-6. Each ZIP contains exactly one root-level `index.html`.
-7. ZIP CRC, metadata, path safety, and extracted-content parity are valid.
-8. The stable and versioned ZIPs are byte-identical.
-9. Each ZIP is at or below the js13k `13,312` byte ceiling.
-10. A SHA-256 fingerprint is printed for the canonical submission bytes.
+### 1. Build current source
 
-After any gameplay or source change intended for release, commit the regenerated `dist/index.html`, versioned ZIP, and stable ZIP together with the source changes.
+`scripts/build.mjs` composes the readable modules, removes explicitly retired seams from the competition composition, applies the safe identifier-golf map and writes both generated HTML forms.
 
-## Real-browser smoke tests
+The readable repository can therefore retain historical context in versioned source modules without shipping duplicate runtime systems.
 
-The deterministic release checks are complemented by real Chromium and Firefox smoke tests in GitHub Actions. CI first extracts the committed `dist/stretchicorn-js13k.zip`, then serves that exact root-level `index.html`. The browser harness verifies the 960×640 Canvas is visible, starts a run from keyboard input, exercises pause/menu controls, fails on page or console errors, and blocks/fails any external request attempt.
+### 2. Run the current VM regression chain
 
-To run the same exact-ZIP browser harness locally:
+`scripts/run-regressions.mjs` is the single regression manifest used by `npm test` and the competition release gate. Keeping the suite list in one place prevents `test`, `smoke` and `release:competition` from silently drifting apart.
+
+The suite currently includes:
+
+- final legacy-settings / input-authority / deterministic soak audit,
+- pointer OFF/ON behavior,
+- victory/result semantics,
+- Easy First Flight,
+- Field Guide and hay integration,
+- pause/retry/storage/boss/Encore authority,
+- nested rainbow restoration,
+- direct-title flow and cyan pressure,
+- boss art and base shape grammar,
+- boss/counterplay runtime invariants,
+- sky contract.
+
+A failed regression stops packaging.
+
+### 3. Pack the competition HTML
+
+`scripts/pack-competition.mjs` runs:
+
+```text
+Terser 5.50.0
+      ↓
+Roadroller 2.1.0 with a pinned model/configuration
+      ↓
+packed dist/index.html
+```
+
+Roadroller is run twice. The two packed outputs must be byte-identical or the release aborts.
+
+### 4. Verify offline behavior
+
+`scripts/check-offline.mjs` rejects external resource references and network-capable runtime APIs in the competition HTML.
+
+### 5. Generate deterministic ZIPs
+
+`scripts/package.py` uses pinned Zopfli and deterministic archive metadata to produce both ZIP names.
+
+### 6. Verify archive integrity
+
+`scripts/verify-archive.py` checks:
+
+- exactly one archive member,
+- exact root-level `index.html` path,
+- safe path semantics,
+- extracted content parity,
+- CRC/ZIP validity,
+- stable/versioned byte identity,
+- deterministic metadata,
+- hard `13,312` byte ceiling,
+- SHA-256 fingerprint.
+
+### 7. Check final size
+
+`scripts/check-size.mjs` prints the used/free byte count and fails above 13,312 bytes.
+
+At the current candidate there are only **2 free bytes**. Any source change should be treated as a release change and requalified from zero.
+
+### 8. Audit release metadata and working-tree hygiene
+
+`scripts/audit-release.mjs` makes the documentation and repository shape part of the release contract. It requires:
+
+- `dist/` to contain exactly the current competition HTML, standalone HTML, stable ZIP and current versioned ZIP,
+- stable and versioned ZIPs to remain byte-identical,
+- the final ZIP to remain within the 13,312-byte ceiling,
+- `README.md` and `RELEASING.md` to contain the actual current versioned filename, byte count, free-byte count and SHA-256.
+
+This catches a different class of release bug: a perfectly valid game artifact accompanied by stale public documentation or an accidental pile of historical binaries.
+
+## Committed artifact parity
+
+CI rebuilds the release and then checks `git status -- dist`.
+
+If rebuilding changes a tracked artifact or creates a missing artifact, CI fails. This prevents a source commit from silently carrying stale submission bytes.
+
+Expected failure message:
+
+```text
+Generated artifacts are stale. Run: npm run release:competition
+```
+
+## Real-browser qualification
+
+After competition integrity succeeds, GitHub Actions tests the exact committed submission in both **Chromium** and **Firefox**.
+
+For the ZIP path, CI:
+
+1. extracts `dist/stretchicorn-js13k.zip`,
+2. serves that exact `index.html` locally,
+3. blocks external requests,
+4. verifies Canvas geometry,
+5. opens Controls from the real title screen,
+6. verifies the rendered pointer state starts ON,
+7. toggles pointer gameplay OFF and verifies the rendered OFF state,
+8. reopens Controls with a Canvas click while pointer gameplay is disabled,
+9. toggles pointer gameplay back ON and verifies the rendered ON state,
+10. starts gameplay,
+11. pauses/resumes,
+12. starts a non-default difficulty,
+13. fails on page errors, console errors or network attempts.
+
+CI then opens `dist/stretchicorn-local.html` directly through `file://` in the same browser and repeats the critical Controls/title/gameplay/pause path.
+
+This catches browser/runtime failures that a Node VM cannot.
+
+## Run the browser harness locally
 
 ```bash
 npm install --no-save --package-lock=false playwright@1.55.0
 npx playwright install chromium firefox
-rm -rf .tmp-js13k && mkdir .tmp-js13k
+
+rm -rf .tmp-js13k
+mkdir .tmp-js13k
 python3 -m zipfile -e dist/stretchicorn-js13k.zip .tmp-js13k
+
 BROWSER=chromium BROWSER_HTML=.tmp-js13k/index.html npm run browser:smoke
 BROWSER=firefox BROWSER_HTML=.tmp-js13k/index.html npm run browser:smoke
+
+BROWSER=chromium BROWSER_HTML=dist/stretchicorn-local.html npm run browser:file-smoke
+BROWSER=firefox BROWSER_HTML=dist/stretchicorn-local.html npm run browser:file-smoke
 ```
 
-Playwright is intentionally a CI/developer harness only. It is never bundled into the competition ZIP.
+Playwright is a developer/CI harness only and is never bundled into the submission.
 
-## Version bump
+## Source-change protocol
 
-For a new release:
+Because the candidate has 2 bytes of headroom, do not treat even tiny gameplay copy edits as harmless.
 
-1. Update `version` in `package.json`.
-2. Update release notes/changelog.
-3. Run `npm run release:competition`.
-4. Run or review the Chromium and Firefox smoke checks.
-5. Playtest the generated `dist/index.html` on real desktop hardware.
-6. Commit the newly generated versioned ZIP and stable ZIP.
+For any change that can alter `dist/index.html`:
 
-Old versioned ZIPs may remain in `dist/` as historical release snapshots. `stretchicorn-js13k.zip` always points at the newest release bytes.
+1. make the smallest source change possible,
+2. run `npm run release:competition`,
+3. confirm size is still `<= 13,312`,
+4. inspect the generated standalone file manually,
+5. commit source and all regenerated current `dist/` artifacts together,
+6. wait for Competition integrity,
+7. wait for Chromium smoke,
+8. wait for Firefox smoke,
+9. wait for Wavedash isolation when relevant,
+10. perform one final human playtest before submission.
 
-## CI invariants
+Documentation/test-only changes should still leave `dist/` byte-identical.
 
-`Verify js13k competition release` has two layers and can also be launched manually with `workflow_dispatch`:
+## Version bump protocol
 
-- **Competition integrity** rebuilds the canonical package and validates gameplay, offline behavior, archive structure, deterministic bytes, content parity, and size.
-- **Browser smoke** extracts the exact stable submission ZIP and runs it independently in Chromium and Firefox.
+For a new named release:
 
-The integrity job then checks `git status` for `dist/`. If rebuilding changes a tracked artifact or creates a missing versioned/stable ZIP, CI fails with:
+1. update `version` in `package.json`,
+2. update `CHANGELOG.md`,
+3. run `npm run release:competition`,
+4. confirm the new `dist/stretchicorn-desktop-v<VERSION>.zip`,
+5. delete the previous versioned ZIP from the working tree if it is no longer the current candidate,
+6. keep `dist/stretchicorn-js13k.zip` as the stable alias,
+7. update README/release fingerprints,
+8. re-run browser qualification.
 
-```text
-Competition artifact is stale. Run: npm run release:competition
-```
-
-This prevents source changes from merging without refreshing the exact submission package.
+The old artifact remains available from Git history.
 
 ## Submission preflight
 
-Before uploading `dist/stretchicorn-js13k.zip`, confirm:
+Before uploading `dist/stretchicorn-js13k.zip`, confirm all of the following:
 
-- the js13k submission form accepts the ZIP,
-- the ZIP size reported by the operating system is no more than `13,312` bytes,
-- opening the archive shows `index.html` immediately at the top level,
-- the latest `Competition integrity`, `Browser smoke (chromium)`, and `Browser smoke (firefox)` checks are green,
-- the game receives one final manual keyboard/audio playtest in current Chrome and Firefox.
+- [ ] ZIP is at or below `13,312` bytes
+- [ ] archive opens directly to `index.html`
+- [ ] no wrapper directory exists
+- [ ] stable/versioned ZIPs are byte-identical
+- [ ] SHA-256 matches the qualified README/current release-note value
+- [ ] `npm run release:competition` passes on the intended commit
+- [ ] `npm run audit:release` confirms metadata and `dist/` hygiene
+- [ ] committed `dist/` matches the rebuild
+- [ ] Chromium exact-ZIP smoke is green
+- [ ] Firefox exact-ZIP smoke is green
+- [ ] Chromium standalone `file://` smoke is green
+- [ ] Firefox standalone `file://` smoke is green
+- [ ] Wavedash isolation is green when the publishing layer changed
+- [ ] manual title → Controls → Easy → boss sampling → result flow still feels correct
+- [ ] no manual unzip/re-zip step has touched the submission
 
-Do not manually unzip and re-zip the artifact. The release package has very little byte headroom and recompression can change its size.
+Do not manually re-compress the archive. At 2 bytes free, a different ZIP tool can easily move the candidate over the limit.
 
 ## Wavedash isolation
 
-Wavedash is a publishing layer only. Its SDK/bootstrap code must never enter either js13k ZIP. The competition builder reads `src/` directly and produces `dist/index.html`; Wavedash uses its own platform output.
+Wavedash is a publishing layer only. Its SDK/bootstrap output must never enter the js13k ZIP.
+
+The competition builder reads the game source directly and produces `dist/index.html`; Wavedash uses a separate generated publishing artifact and its own isolation test.
