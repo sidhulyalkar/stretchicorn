@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="t d">
 <title id="t">How to control Stretchicorn</title>
-<desc id="d">WASD moves the vulnerable body. Mouse or arrow keys aim the safe horn. Click or Space releases rainbow tension as a Snap. C opens Controls where mouse aim and gameplay click can be disabled. Gold kernels can be parried and cyan spikes must be dodged.</desc>
+<desc id="d">WASD moves the vulnerable body. Mouse or arrow keys aim the safe horn. Click or Space releases rainbow tension as a Snap. C opens Controls where mouse gameplay input can be disabled. Gold kernels can be parried and cyan spikes must be dodged.</desc>
 <defs>
   <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#090611"/><stop offset=".55" stop-color="#180b27"/><stop offset="1" stop-color="#250f35"/></linearGradient>
   <radialGradient id="body"><stop stop-color="#fff"/><stop offset=".72" stop-color="#f8f1ff"/><stop offset="1" stop-color="#cbbbe2"/></radialGradient>
@@ -10,8 +10,6 @@
 <rect width="1200" height="620" rx="30" fill="url(#bg)"/>
 <text x="600" y="54" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="27" font-weight="800" text-anchor="middle" letter-spacing="2">ONE CREATURE · TWO CONTROL POINTS · ONE SPRING</text>
 <text x="600" y="86" fill="#bcaec9" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="600" text-anchor="middle" letter-spacing="1.5">PROTECT THE BODY · THROW THE HORN INTO DANGER · SNAP THE RAINBOW</text>
-
-<!-- vulnerable body -->
 <g transform="translate(92 132)" font-family="Inter,Arial,sans-serif" font-weight="800" text-anchor="middle">
   <rect x="50" y="0" width="46" height="42" rx="8" fill="#241a31" stroke="#ffcf67" stroke-width="2"/><text x="73" y="28" fill="#fff" font-size="18">W</text>
   <rect x="0" y="50" width="46" height="42" rx="8" fill="#241a31" stroke="#ffcf67" stroke-width="2"/><text x="23" y="78" fill="#fff" font-size="18">A</text>
@@ -25,8 +23,6 @@
 <circle cx="264" cy="314" r="8" fill="#fff" opacity=".55"/>
 <text x="286" y="423" fill="#ffcf67" font-family="Inter,Arial,sans-serif" font-size="19" font-weight="800" text-anchor="middle">♥ VULNERABLE</text>
 <text x="286" y="447" fill="#bcaec9" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="600" text-anchor="middle">POSITION · RETREAT · SURVIVE</text>
-
-<!-- rainbow spring -->
 <g fill="none" stroke-linecap="round" stroke-width="11" filter="url(#glow)">
   <path d="M351 309 C505 292 678 292 831 309" stroke="#ff5c8a"/>
   <path d="M351 320 C505 305 678 305 831 320" stroke="#ff9b45"/>
@@ -37,8 +33,6 @@
 </g>
 <text x="591" y="270" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="800" text-anchor="middle">PULL APART → STORE TENSION</text>
 <text x="591" y="393" fill="#cdbfd7" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="700" text-anchor="middle">SPRING · DASH · WEAPON · DODGE LINE</text>
-
-<!-- safe horn -->
 <ellipse cx="873" cy="336" rx="65" ry="55" fill="#9b7fc0" opacity=".24" filter="url(#glow)"/>
 <ellipse cx="870" cy="330" rx="61" ry="51" fill="url(#body)"/>
 <path d="M827 296 L803 270 L837 283Z" fill="#efe4fb"/><path d="M916 294 L932 267 L897 284Z" fill="#efe4fb"/>
@@ -47,8 +41,6 @@
 <circle cx="862" cy="325" r="6" fill="#17101f"/><circle cx="864" cy="323" r="2" fill="#fff"/>
 <text x="870" y="423" fill="#72d8ff" font-family="Inter,Arial,sans-serif" font-size="19" font-weight="800" text-anchor="middle">HORN SAFE</text>
 <text x="870" y="447" fill="#bcaec9" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="600" text-anchor="middle">AIM · PARRY · ATTACK</text>
-
-<!-- aim controls -->
 <g transform="translate(965 128)" font-family="Inter,Arial,sans-serif" text-anchor="middle" font-weight="800">
   <text x="72" y="0" fill="#72d8ff" font-size="15">MOUSE / ARROWS</text>
   <rect x="50" y="18" width="44" height="38" rx="8" fill="#241a31" stroke="#72d8ff" stroke-width="2"/><text x="72" y="45" fill="#fff" font-size="20">↑</text>
@@ -57,20 +49,15 @@
   <rect x="98" y="62" width="44" height="38" rx="8" fill="#241a31" stroke="#72d8ff" stroke-width="2"/><text x="120" y="89" fill="#fff" font-size="20">→</text>
   <text x="72" y="124" fill="#72d8ff" font-size="15">AIM HORN</text>
 </g>
-
-<!-- snap control -->
 <g transform="translate(400 470)" font-family="Inter,Arial,sans-serif" text-anchor="middle">
   <rect width="400" height="72" rx="15" fill="#23172f" stroke="#fff" stroke-width="2"/>
   <text x="200" y="31" fill="#fff" font-size="18" font-weight="800" letter-spacing="2">CLICK / SPACE</text>
   <text x="200" y="55" fill="#ffda6b" font-size="16" font-weight="800">RELEASE TENSION → RAINBOW SNAP</text>
 </g>
-
-<!-- projectile language -->
 <g font-family="Inter,Arial,sans-serif" font-weight="800">
   <g transform="translate(66 500)"><circle cx="22" cy="22" r="16" fill="#f5b52e" stroke="#ffe986" stroke-width="4"/><circle cx="17" cy="17" r="4" fill="#fff4bd"/><text x="49" y="19" fill="#ffe26b" font-size="15">GOLD KERNEL</text><text x="49" y="39" fill="#fff" font-size="14">GRAZE / PARRY ↩</text></g>
   <g transform="translate(952 500)"><path d="M22 3 L39 22 L22 41 L5 22Z" fill="#54d9ff" stroke="#baf3ff" stroke-width="3"/><text x="49" y="19" fill="#72e3ff" font-size="15">CYAN SPIKE</text><text x="49" y="39" fill="#fff" font-size="14">DODGE ONLY ↗</text></g>
 </g>
-
 <rect x="350" y="563" width="500" height="34" rx="17" fill="#120d1a" stroke="#4d3a5d"/>
-<text x="600" y="585" fill="#cbbbd2" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" text-anchor="middle">C → CONTROLS → MOUSE AIM + CLICK ON / OFF  ·  ARROWS + SPACE STAY ACTIVE</text>
+<text x="600" y="585" fill="#cbbbd2" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" text-anchor="middle">C → CONTROLS → MOUSE - ON / OFF · ARROWS + SPACE STAY ACTIVE</text>
 </svg>
