@@ -6,447 +6,251 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-A complete desktop arcade-action game packed into a **13,310 byte js13k ZIP**.
+**A complete desktop arcade-action game packed into a 13,310 byte js13k ZIP.**
 
-**Move the vulnerable body. Aim the safe horn. Stretch the rainbow. Snap through an army of corn.**
+Move the vulnerable body. Aim the safe horn. Stretch the rainbow. Release it as a weapon.
 
 Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
-[**Download the standalone HTML**](dist/stretchicorn-local.html) · [**Download the js13k submission ZIP**](dist/stretchicorn-js13k.zip) · [**Read the release process**](RELEASING.md)
+[**Play the standalone build**](dist/stretchicorn-local.html) · [**Download the 13 KB submission**](dist/stretchicorn-js13k.zip) · [**Release engineering**](RELEASING.md) · [**Play locally**](PLAY_LOCAL.md)
 
-**v0.39.0 submission candidate · 13 trials · 4 difficulties · 3 authored bosses · Impossible Encore · 13,310 / 13,312 bytes**
+**13 trials · 4 difficulties · 3 authored bosses · Impossible Encore · 0 external runtime assets · 13,310 / 13,312 bytes**
 
 </div>
 
 ---
 
-## What fits in 13 KB?
+## The pitch
 
-Stretchicorn is not a tech demo wrapped around one mechanic. The current submission contains a finite campaign, onboarding, progression, bosses, scoring, powerups, procedural graphics, synthesized music, accessibility controls, persistent preferences, pause/retry flows, a real ending, and a deterministic release/test pipeline.
+Stretchicorn is built around one unusual spatial rule: **the body and horn are controlled independently, while the rainbow between them behaves like a spring**.
 
-| System | Included in the competition build |
+That one relationship powers movement, charging, dashing, attacking, dodging, grazing, parrying, pickup routing, boss counterplay and high-score play. Instead of buying a separate button and subsystem for every verb, the game asks the player to draw a better line through danger.
+
+<div align="center">
+<img src="docs/stretchicorn-showcase.svg" alt="Stretchicorn gameplay showcase: control grammar, projectile language, campaign and Style results" width="1200">
+</div>
+
+### Why this project is interesting
+
+| Idea | What Stretchicorn does |
 |---|---|
-| **Campaign** | 13 authored trials with escalating enemy mixes and arena rules |
-| **Core movement** | independent vulnerable-body movement + safe horn aiming |
-| **Combat** | charge, Rainbow Snap, chained Double Rainbow, graze, parry, reflected shots, wall smashes |
-| **Bosses** | Hideaway Husk, Kernel Colonel, two-phase Cobtopus Prime |
-| **Expert finale** | Impossible Encore combining learned boss counterplay |
-| **Difficulty** | Easy, Normal, Hard, Impossible with mechanical differences rather than HP-only scaling |
-| **Enemies** | chase swarms, dashers, ranged shooters, curved-spread prisms, armored husks |
-| **Projectiles** | gold parry/graze kernels + cyan dodge-only piercing spikes |
-| **Arena** | static cover + temporary hay barriers that warn, harden, collide, then disappear |
-| **Powerups** | Heart, Husk Shield, Butter Boost, Prism power, Gold 2X, Lucky 13 rewards |
-| **Scoring** | Style score, combo multiplier, precision return tiers, per-difficulty Best |
-| **Run summary** | Style, Best, time, hearts, clear progression |
-| **Onboarding** | Field Guide + Easy First Flight inside the actual campaign |
-| **Controls** | keyboard, mouse aim/click, persistent laptop-safe pointer OFF toggle |
-| **Visuals** | fully procedural characters, corn, bosses, VFX, hay, terrain, UI, nested rainbow sky |
-| **Audio** | procedural Web Audio music, bass, percussion, chimes, hit and kernel-pop feedback |
-| **Persistence** | per-difficulty Best and control preference through guarded localStorage |
-| **Reliability** | deterministic packaging, offline checks, VM regressions, Chromium + Firefox tests |
-| **External runtime assets** | **0** |
-
-The shipping ZIP uses **99.985% of the 13,312 byte limit**. There are **2 bytes free**.
+| **Mechanic compression** | One body/horn/rainbow geometry becomes movement, weapon, defense and routing system. |
+| **Readable combat language** | Gold projectiles are opportunities to graze/parry/return; cyan projectiles are dodge-only threats. |
+| **Bosses as rule changes** | Hideaway Husk, Kernel Colonel and Cobtopus Prime each require a different learned counterplay grammar. |
+| **Constraint-driven art direction** | Canvas primitives are reused across characters, corn, bosses, hay, UI, VFX and the restoring rainbow sky. |
+| **Meaningful replay loop** | Winning restores the sky; **Style** measures mastery; per-difficulty Best persists locally. |
+| **Shipping discipline** | Deterministic packaging, exact artifact parity, VM regressions and Chromium/Firefox smoke tests defend a 99.985%-full ZIP. |
 
 ---
 
-# The game in one picture
+# One creature, two control points, one spring
 
 <div align="center">
 <img src="docs/stretchicorn-controls.svg" alt="Stretchicorn control model" width="1100">
 </div>
 
-Stretchicorn is one creature with two control points:
+- **WASD** moves the vulnerable heart-body.
+- **Mouse / Arrow Keys** aim the safe horn.
+- Pulling the two points apart stores rainbow tension.
+- **Click / Space** releases that tension as a **Rainbow Snap**.
+- Recharge and Snap again quickly to chain a stronger **Double Rainbow**.
 
-- the **heart-body** is vulnerable and controlled with **WASD**,
-- the **head/horn** is safe and aimed with **Mouse** or **Arrow Keys**,
-- the **rainbow between them** behaves like a spring, weapon, dash line and spatial resource,
-- **Click** or **Space** releases stored tension as a Rainbow Snap.
+The horn and rainbow can be thrown into danger. The body cannot. Good play is therefore less about steering a single avatar and more about managing the geometry between two points.
 
-That relationship is the entire design nucleus. There is no separate dash button, parry button, grapple button or special-move wheel. Most of the depth comes from drawing a better line through danger.
-
-> **Protect the body. Throw the horn into danger. Make the rainbow do several jobs at once.**
-
----
-
-# Controls
+### Controls
 
 | Input | Action |
 |---|---|
 | **W A S D** | Move the vulnerable body / heart |
 | **Mouse / Arrow Keys** | Aim the horn |
-| **Left Click** | Rainbow Snap |
-| **Space** | Rainbow Snap |
+| **Left Click / Space** | Rainbow Snap |
 | **1 / 2 / 3 / 4** | Start Easy / Normal / Hard / Impossible |
-| **Click difficulty card** | Start that difficulty from the title |
-| **Space / Enter on title** | Start Easy |
 | **P** | Pause / resume |
-| **F while paused** | Open / close the Field Guide |
+| **F while paused** | Open the Field Guide |
 | **C** | Open Controls from title or pause |
-| **M** | Return / back / menu depending on screen |
+| **M** | Back / menu |
 
-### Laptop-safe pointer controls
+### Laptop-safe pointer mode
 
-The Controls screen has a persistent **MOUSE - ON/OFF** preference. Mouse / Arrow Keys aim the horn, WASD moves the body, and Click / Space releases Rainbow Snap.
-
-When pointer gameplay is **OFF**:
-
-- touchpad or mouse movement cannot disturb horn aim,
-- accidental clicks cannot trigger a Snap,
-- Arrow Keys still aim,
-- Space still Snaps,
-- menu/UI clicks still work so the option can always be turned back on,
-- stale pointer state is cleared before re-enabling.
-
-The pointer setting is stored locally and defaults to **ON** when no current preference exists. Retired custom keybind and Music/SFX settings are intentionally not restored because those editing screens no longer ship.
+The Controls screen includes a persistent **MOUSE - ON / OFF** toggle. Turning mouse gameplay OFF prevents touchpad movement from stealing horn aim and blocks accidental click-to-Snap, while **Arrow Keys + Space remain active**. Menu clicks still work so the option can always be turned back on.
 
 ---
 
-# Stretch, Snap, repeat
+# Combat is a color language
 
-## 🌈 1. Stretch
+Stretchicorn deliberately makes projectiles mean different things instead of treating every bullet as the same hazard.
 
-Move the body away from the horn direction. Separation creates rainbow tension and charges the spring.
+### 🟡 Gold kernels: danger you can convert
 
-The stronger the charge, the more useful the next attack line becomes. Pulling farther is powerful, but it also makes your geometry harder to manage.
-
-## 💥 2. Snap
-
-Click or press Space to release the spring.
-
-A charged Rainbow Snap is simultaneously:
-
-- an attack,
-- a burst of traversal,
-- a dodge line,
-- a multi-target route,
-- a pickup collector,
-- a combo extender,
-- and a way to reposition the horn for the next decision.
-
-## 🌈🌈 3. Double Rainbow
-
-Recharge and Snap again quickly enough and the game chains into **Double Rainbow**.
-
-The chained attack hits harder, reaches farther and grants a brief defensive window. Expert play becomes a rhythm of deliberately rebuilding tension instead of simply mashing the attack button.
-
----
-
-# Gold is opportunity. Cyan is danger.
-
-Projectile color is a combat language.
-
-### 🟡 Gold kernels
-
-Gold round kernels can be:
+Gold kernels can be:
 
 - **grazed** near the vulnerable body for **+13 Style** and charge,
 - **parried** with the horn for **+25 Style** and charge,
 - **returned** into enemies and boss shields.
 
-Returned fire rewards distance:
+Longer reflected shots earn stronger precision returns: **RETURN x2 / x3 / x4**.
 
-| Return | Meaning |
-|---|---|
-| **RETURN x2** | close counter |
-| **RETURN x3** | medium counter |
-| **RETURN x4** | long precision counter |
+### 🔷 Cyan spikes: danger you must respect
 
-A cross-arena return is therefore more valuable than batting the nearest shot back.
-
-### 🔷 Cyan spikes
-
-Cyan spikes are intentionally different:
+Cyan spikes:
 
 - cannot be parried,
 - cannot be grazed for value,
 - pierce ordinary dash invulnerability,
 - must be dodged.
 
-Late Hard and Impossible force the player to classify projectiles while moving:
+Late Hard and Impossible therefore become a rapid classification problem:
 
-**parry gold · dodge cyan · preserve the next Snap line**.
+> **parry gold · dodge cyan · preserve the next Snap line**
 
----
+### Hay changes the geometry
 
-# Style is mastery, not victory
-
-You win by clearing the campaign and restoring the sky. **Style** measures how strongly you played while doing it.
-
-Style rewards:
-
-- charged Rainbow Snaps,
-- chained kills,
-- graze risk,
-- parries,
-- long-distance returns,
-- wall-smash opportunities,
-- Lucky 13 routing,
-- maintaining aggressive flow without getting flattened.
-
-The combo multiplier climbs toward **4×** while active play continues. Each difficulty also keeps its own **Best** score.
-
-Those Best scores are stored locally in the browser. Once a player has recorded a score, the title screen shows the highest saved **BEST STYLE** across Easy, Normal, Hard and Impossible. The four difficulty-specific records remain separate underneath that headline best. No account or network connection is required.
-
-The final result separates three ideas that used to be conflated:
-
-- **Victory**: did you restore the sky?
-- **Style**: how skillfully and boldly did you fight?
-- **Run quality**: how fast did you finish and how many hearts survived?
-
-The victory sequence keeps Stretchicorn in the final gameplay pose while the defeated Cobtopus erupts into **rainbow popcorn**, followed by Style, Best, time and hearts.
+Temporary procedural hay bales warn, harden into real collision/cover, then disappear. They can become shelter, route blockers, hazards or wall-smash opportunities depending on the current encounter.
 
 ---
 
-# Easy starts by teaching the real game
+# Thirteen trials teach one growing vocabulary
 
-Easy Trial 1 is **FIRST FLIGHT**.
+The campaign is designed around **recombination**, not thirteen unrelated gimmicks.
 
-Rather than sending a new player to a detached tutorial scene, the first trial introduces one target at a time and asks for five genuine charged Snap kills using the production movement/combat rules.
+| Phase | What changes |
+|---|---|
+| **Early** | movement, tension and direct Snap routing |
+| **Mid** | ranged kernels, parries, armor, static cover and denser formations |
+| **Late** | curved spreads, temporary hay, mixed gold/cyan pressure and tighter positioning |
+| **Trial 13** | nearly every learned verb is recombined inside Cobtopus Prime |
 
-That teaches the essential loop:
+Easy Trial 1 is **FIRST FLIGHT**: five real charged Snap kills, one target at a time, using the same production movement and combat rules as the rest of the game. There is no detached tutorial physics mode to learn and then discard.
 
-**pull away → aim → Snap → recharge → repeat**
-
-After the fifth target, the campaign simply becomes Trial 2. No separate tutorial physics, no fake practice move, no second version of the controls to maintain.
-
-The title and pause menus also expose a compact **Field Guide** covering:
-
-- the 13-trial objective,
-- vulnerable body vs safe horn/rainbow,
-- charge and Snap,
-- Double Rainbow,
-- gold vs cyan projectiles,
-- Style and run results,
-- powerups and Lucky 13,
-- enemy archetypes,
-- temporary hay,
-- boss counterplay,
-- Impossible Encore.
-
----
-
-# Thirteen trials, one growing vocabulary
-
-The campaign is built from recombination rather than thirteen unrelated gimmicks.
-
-### Early trials
-
-Learn movement, tension and direct Snap routing against readable enemy pressure.
-
-### Mid campaign
-
-Ranged kernels, parries, armored targets, static cover and denser formations ask the player to combine offense and positioning.
-
-### Late campaign
-
-Curved spreads, temporary hay barriers, mixed gold/cyan fire and stronger enemy combinations turn the arena into a moving geometry problem.
-
-### Trial 13
-
-Cobtopus Prime asks for nearly every learned verb at once, then changes the target structure for Phase II.
+The title and pause menus also expose a compact **Field Guide** covering the win condition, body/horn safety, charge + Snap, Double Rainbow, projectile language, Style, powerups, Lucky 13, hay, enemies, bosses and Impossible Encore.
 
 ---
 
 # Three bosses, three different questions
 
-The bosses are not normal enemies with larger HP bars. Each changes what good geometry means.
+<div align="center">
+<img src="docs/stretchicorn-boss-grammar.svg" alt="Stretchicorn boss counterplay grammar" width="1200">
+</div>
+
+The bosses are not normal enemies with larger health bars.
 
 | Trial | Boss | Core question |
 |---|---|---|
 | **5** | **Hideaway Husk** | Can you wait for the firing window and punish it? |
-| **9** | **Kernel Colonel** | Can you turn incoming fire into the key that opens the boss? |
+| **9** | **Kernel Colonel** | Can you reshape incoming fire into the key that opens the boss? |
 | **13** | **Cobtopus Prime** | Can you combine movement, returns, arena pressure and split targets? |
 
-## 🌽 Hideaway Husk
+**Hideaway Husk** closes behind a real shield, then exposes itself while firing. Its offense creates the punish window.
 
-Hideaway closes behind a real shield. Direct attacks do not leak through protected states.
+**Kernel Colonel** weaponizes the parry system. Reflected gold kernels are part of the shield-opening grammar, not merely bonus damage.
 
-Its offense creates its weakness: when Husk commits to firing, the shell opens and creates the punish window.
+**Cobtopus Prime** moves from protected/open Phase I windows into **two independent cores**, each with its own reflected-kernel gate. Three rapid successful hits can trigger a deterministic anti-pin **PHASE SHIFT**, preserving earned damage while forcing the player to construct a new attack line.
 
-## 🎖 Kernel Colonel
-
-Colonel weaponizes the parry system. Returned gold kernels are not merely bonus damage, they are part of the shield-opening grammar.
-
-The fight asks the player to receive an attack, reshape it, and send it back with intent.
-
-## 🐙 Cobtopus Prime
-
-Prime begins behind protected/open Phase I windows, then ruptures into **two independent cores**.
-
-Each split core owns its own reflected-kernel shield requirement:
-
-| Difficulty | Returns required per core |
-|---|---:|
-| Easy | 1 |
-| Normal | 2 |
-| Hard | 3 |
-| Impossible | 4 |
-
-Destroying one core does not finish the encounter. Both must be opened and defeated.
-
-### Anti-pin Phase Shift
-
-Three rapid successful direct hits can trigger a deterministic **PHASE SHIFT**. Damage already earned is preserved, but the boss relocates and the player must construct a new attack line.
-
-This breaks stationary pinning without using arbitrary invulnerability or giant health pools.
+On **Impossible**, the campaign continues into a finite **Encore** that recombines learned boss logic under expert anti-chain pressure.
 
 ---
 
-# Four difficulties that alter decisions
-
-Difficulty is not only a multiplier.
+# Four difficulties change decisions, not only numbers
 
 | Mode | Design intent |
 |---|---|
 | **Easy** | First Flight onboarding, forgiving pressure, retry failed trial |
 | **Normal** | intended campaign rhythm |
 | **Hard** | denser late encounters and stronger gold/cyan classification pressure |
-| **Impossible** | expert anti-chain pressure, reduced sustain, stricter boss return gates, Encore |
+| **Impossible** | expert anti-chain pressure, reduced sustain, stricter boss gates, Encore |
 
-A key playtest discovery shaped Impossible: simply adding more enemies can make Stretchicorn easier for skilled players because extra bodies become extra combo targets.
-
-Impossible therefore attacks the *player's conversion engine* instead of only increasing population. It adds more threats that cannot become free offense, makes sustain less generous, raises boss gates, accelerates hostile pressure and ends with a final recombination test.
-
-### Impossible Encore
-
-Clearing Trial 13 on Impossible is not quite the end.
-
-The Encore combines learned boss logic in one arena. Previously defeated targets stay defeated, the transition clears stale projectiles, and the player must finish the remaining threats without relying on a single rehearsed boss script.
+A useful playtest discovery shaped the hardest mode: **adding more enemies can make Stretchicorn easier for skilled players**, because extra bodies become extra combo targets. Impossible therefore attacks the player's conversion engine instead of simply flooding the arena with more fodder.
 
 ---
 
-# Powerups and Lucky 13
+# Style is mastery, not victory
 
-Five compact pickups reuse the game's existing corn/shape vocabulary:
+You win by clearing all 13 trials and restoring the sky. **Style** answers a different question: *how boldly and skillfully did you do it?*
 
-| Pickup | Effect |
-|---|---|
-| **♥ Heart Kernel** | restore one heart, capped at 13 |
-| **Husk Shield** | absorb the next ordinary body hit |
-| **Butter Boost** | temporary movement speed |
-| **Prism Cob** | powers the rainbow and makes charge easier to reach |
-| **Gold Cob** | 2× Style scoring for six seconds |
+Style rewards charged Snaps, chained kills, grazes, parries, long returns, wall-smash opportunities, Lucky 13 routing and maintaining aggressive flow. The combo multiplier climbs toward **4×** while pressure stays high.
 
-Every 13th kill triggers **Lucky 13**:
+The end of a run reports:
 
-- +130 Style,
-- immediate charge / ready state,
-- radial rainbow feedback,
-- on Easy through Hard, an extra heart and shield,
-- on Impossible, the sustain portion is deliberately withheld.
+- **STYLE**: mastery during this run,
+- **BEST**: persistent personal best for the selected difficulty,
+- **TIME**: completion speed,
+- **♥ remaining**: survival quality.
 
-The number 13 is therefore both competition theme and gameplay rhythm.
+Once a score has been recorded, the title screen also shows the highest saved **BEST STYLE** across the four difficulty-specific records. Persistence uses guarded browser `localStorage`; there is no account or network dependency.
+
+The victory sequence keeps Stretchicorn intact in its final gameplay pose while the defeated Cobtopus becomes the focal point and bursts into **rainbow popcorn**.
 
 ---
 
-# Hay that changes the arena
+# The visual system is generated, not imported
 
-Temporary barriers are rendered as procedural straw bales rather than generic collision rectangles.
-
-Their state is readable:
-
-1. **forming**: translucent warning geometry + progress cue,
-2. **solid**: real collision for player, enemies and projectiles,
-3. **gone**: route reopens.
-
-If a bale hardens over the vulnerable body, the game ejects the body and applies the appropriate hit rather than leaving the player embedded in geometry. Enemy overlap is resolved too.
-
-The same blocks can become cover, danger, route blockers or wall-smash opportunities depending on the current fight.
-
----
-
-# The sky is a progress meter
-
-The background is not a stack of imported level images.
-
-Progress restores a nested rainbow family using shared procedural geometry:
-
-### 🌈 Early: single rainbow
-One broad six-band arch appears.
-
-### 🌈🌈 Mid: double rainbow
-A second arch forms inside it.
-
-### 🌈🌈🌈 Late: triple rainbow
-A third nested arch completes the restored sky.
-
-All use natural radial order: **red outside, violet inside**. The title uses the same visual family, so menu, campaign and ending share one motif rather than paying for separate art directions.
-
----
-
-# Everything in the game is generated at runtime
-
-The competition archive contains:
+The competition build has **zero external runtime assets**:
 
 - no sprite sheets,
-- no raster game art,
+- no raster gameplay art,
 - no audio files,
 - no web fonts,
 - no CDN dependencies,
 - no fetch/XHR/WebSocket runtime,
 - no external resources.
 
-Characters and environments are assembled from Canvas primitives. The same shapes change jobs repeatedly:
+Everything is assembled at runtime from Canvas and Web Audio primitives.
 
-- ellipses become bodies, kernels, eyes, highlights and medals,
-- arcs become shields, telegraphs and rainbow skies,
-- curves become husks, tentacles, mane, tail and terrain,
-- the six-color palette becomes character detail, combat feedback and world restoration,
-- one corn grammar scales from tiny enemies to authored bosses.
+### Procedural visual language
 
-That reuse compresses well, but it also gives Stretchicorn a coherent visual language.
+The same small set of shapes repeatedly changes jobs:
 
----
+| Primitive / motif | Reused as |
+|---|---|
+| **Ellipses** | bodies, kernels, eyes, highlights, medals, pickup forms |
+| **Arcs** | shields, telegraphs, boss rings, nested rainbow sky |
+| **Curves** | husks, tentacles, mane, tail, terrain silhouettes |
+| **Six-color palette** | Stretchicorn, combat feedback, world restoration, finale VFX |
+| **Corn grammar** | swarm enemies, ranged threats, pickups, boss identity, audio motifs |
+| **Rainbow geometry** | character connection, charge feedback, attack line, progression, title motif |
 
-# Procedural audio: the corn has a synthesizer
+That reuse is not only compression. It is the art direction: enemies and bosses feel related because they literally share a drawing grammar.
 
-The entire soundtrack and feedback layer is generated with the Web Audio API.
+### The sky doubles as progression
 
-A small set of oscillator voices produces:
+Campaign progress restores a nested rainbow family:
 
-- rhythmic kick/snare-like hits,
-- pitched kernel pops,
-- melodic hooks,
-- bass/wobble accents,
-- Snap and hit feedback,
-- boss coloration,
-- victory chimes,
-- a heavier Impossible/Encore texture.
+- early game: **single rainbow**,
+- mid game: **double rainbow**,
+- late game: **triple rainbow**.
 
-Music and combat sounds deliberately share voices, so the soundtrack feels built from the same world rather than glued on as a separate asset pack.
+The title screen, gameplay and ending all reuse that same visual family, giving the project one coherent motif instead of paying for disconnected menu and level art systems.
 
----
+### Procedural audio
 
-# Why the 13 KB constraint improved the design
-
-The byte limit was treated as a design constraint, not a packaging problem.
-
-### One mechanic, many verbs
-
-The body/horn/rainbow relationship produces movement, aiming, charging, dashing, attacking, dodging, grazing, parrying, traversal and routing without buying a separate subsystem for each verb.
-
-### Recombination beats accumulation
-
-Bosses, late trials and difficulty modes mostly recombine rules already learned by the player. This increases depth faster than it increases code.
-
-### Shape reuse becomes art direction
-
-The same primitives that make the ZIP smaller also make the world feel related. Corn enemies and bosses look like they belong to one family because they literally share a rendering grammar.
-
-### Deletion is a feature
-
-Across development, weaker ideas were removed instead of endlessly preserved in the shipping composition: duplicate intro states, redundant world renderers, obsolete boss grammars, old grading language and several one-off visual systems.
-
-The question behind every byte became:
-
-> **Does this make the game more legible, more replayable or more fun?**
+A small Web Audio voice set generates rhythmic hits, pitched kernel pops, melodic hooks, bass/wobble accents, combat feedback, boss coloration and victory sounds. Music and combat intentionally share voices so the soundtrack feels built from the same corn-filled world.
 
 ---
 
-# 13,310 bytes, deterministically
+# What actually fits in 13 KB?
 
-The current competition artifact is:
+| System | Included in the shipping competition build |
+|---|---|
+| **Campaign** | 13 authored trials with escalating enemy mixes and arena rules |
+| **Core mechanic** | independent body movement + safe horn aiming + spring tension |
+| **Combat** | Rainbow Snap, Double Rainbow, graze, parry, returns, wall smashes |
+| **Bosses** | Hideaway Husk, Kernel Colonel, two-phase Cobtopus Prime |
+| **Expert finale** | Impossible Encore |
+| **Difficulty** | Easy, Normal, Hard, Impossible with mechanical differences |
+| **Enemies** | chase swarms, dashers, ranged shooters, prisms, armored husks |
+| **Projectiles** | gold parry/graze kernels + cyan dodge-only piercing spikes |
+| **Arena** | static cover + temporary hay barriers |
+| **Powerups** | Heart, Husk Shield, Butter Boost, Prism, Gold 2X, Lucky 13 |
+| **Scoring** | Style, combo multiplier, precision return tiers, per-difficulty Best |
+| **Onboarding** | First Flight + Field Guide |
+| **Usability** | pause/retry flow + persistent laptop-safe mouse toggle |
+| **Visuals** | procedural characters, bosses, VFX, hay, UI, terrain and rainbow sky |
+| **Audio** | procedural Web Audio music and feedback |
+| **Persistence** | local Best Style + pointer preference |
+| **Reliability** | deterministic packaging + regression/browser validation |
+| **External runtime assets** | **0** |
+
+The current shipping archive uses **99.985%** of the js13k limit:
 
 ```text
 dist/stretchicorn-js13k.zip
@@ -456,18 +260,34 @@ dist/stretchicorn-desktop-v0.39.0.zip
 SHA-256 ff8dc4532a654407be15d4b8f14f4c0a695b9cc712e13be56882c1347dd66912
 ```
 
-The stable and versioned ZIPs are byte-identical and contain exactly one file at archive root:
+---
 
-```text
-index.html
-```
+# 13 KB is part of the architecture
 
-The production path is:
+<div align="center">
+<img src="docs/stretchicorn-13k-architecture.svg" alt="Stretchicorn 13 KB systems and release architecture" width="1200">
+</div>
+
+The byte ceiling was treated as a design constraint, not a last-minute packaging problem.
+
+### One mechanic, many verbs
+
+The body/horn/rainbow relationship produces multiple player actions without paying for separate movement, dash, parry, grapple and special-attack systems.
+
+### Recombination beats accumulation
+
+Bosses, late trials and difficulty modes mostly recombine rules the player already knows. Depth grows faster than code size.
+
+### Deletion is a feature
+
+Development repeatedly removed weaker or duplicate ideas instead of preserving every experiment: redundant intro states, obsolete boss grammars, extra visual systems and configuration surfaces all lost their bytes when they stopped carrying enough game value.
+
+### Deterministic release pipeline
 
 ```text
 readable source modules
         ↓
-competition-only source slicing / override composition
+competition composition / source slicing
         ↓
 safe identifier golf
         ↓
@@ -480,86 +300,42 @@ Zopfli 0.4.3 deterministic ZIP
 one root-level index.html
 ```
 
-Roadroller is run twice and the outputs must match before packaging continues.
+Roadroller is run twice and must produce identical output before packaging continues. The stable and versioned ZIPs are byte-identical.
 
 ---
 
 # Release confidence
 
-Extreme byte golf makes regressions unusually easy to introduce, so the repository treats the final ZIP as a reproducible artifact and tests both readable behavior and transformed output.
+Extreme byte golf makes tiny edits capable of creating surprisingly large behavioral or compression changes, so the repository treats the final ZIP as a reproducible release artifact rather than a hand-built bundle.
 
-The canonical `npm run release:competition` path currently covers:
+The canonical release path validates, among other things:
 
-- legacy settings migration and persistent pointer preference,
-- pointer OFF blocking mouse aim and click while preserving Arrow + Space,
-- Controls opened from title and pause,
-- stale-pointer suppression when re-enabling,
-- deterministic multi-difficulty / boss soak with finite-state and entity-count bounds,
-- Easy First Flight target progression,
-- Field Guide contract,
-- pause authority,
-- retry/reset semantics,
-- per-difficulty Best persistence and storage failure fallback,
+- mouse OFF/ON input authority and stale-pointer suppression,
+- Controls and Field Guide round trips from title/pause,
+- Easy First Flight progression,
+- pause/retry semantics,
+- per-difficulty Best persistence and storage fallback,
 - reflected-projectile single-resolution authority,
-- boss open/closed shield authority,
-- Hideaway firing vulnerability,
-- Colonel return gate,
-- Prime two-phase / independent-core behavior,
-- difficulty-scaled return requirements,
-- precision `RETURN x2/x3/x4`,
-- anti-pin Phase Shift,
+- boss shield/open-state contracts,
+- Prime split-core and Phase Shift behavior,
+- difficulty-scaled boss return gates,
+- RETURN x2/x3/x4 precision scoring,
 - late-Hard / Impossible cyan pressure,
-- Impossible Encore defeat-order completion,
-- safe spawn invariants,
+- all Impossible Encore completion orders,
+- safe spawning and finite-state/entity-count soak bounds,
 - deterministic single → double → triple rainbow progression,
 - no external runtime references or network-capable APIs,
-- deterministic archive metadata/content,
+- deterministic archive content/metadata,
 - exact 13,312-byte ceiling,
-- release metadata and working-tree dist hygiene,
-- committed `dist/` parity with rebuilt source,
-- exact submitted ZIP in Chromium,
-- exact submitted ZIP in Firefox,
-- standalone `file://` playtest in Chromium,
-- standalone `file://` playtest in Firefox.
+- committed `dist/` parity with a clean rebuild,
+- exact submitted ZIP in **Chromium and Firefox**,
+- standalone `file://` playtest in **Chromium and Firefox**.
 
-The final release path is intentionally boring. That is a compliment.
+The release path is intentionally boring. For a 13 KB game balanced on two spare bytes, boring deployment is beautiful.
 
 ---
 
-# Repository map
-
-```text
-src/                      readable source modules
-scripts/
-  run-regressions.mjs    one manifest for the current VM regression chain
-  audit-release.mjs      release metadata + dist hygiene contract
-  build.mjs              source composition + standalone builder
-  pack-competition.mjs   deterministic Terser + Roadroller packer
-  package.py             deterministic Zopfli ZIP writer
-  test-v044.mjs          final storage/input + multi-difficulty soak audit
-  test-v043.mjs          persistent pointer-input authority
-  test-v042.mjs          rainbow-popcorn finale + Style result semantics
-  test-v041.mjs          Easy First Flight built-artifact tutorial
-  test-v040.mjs          Field Guide + mouse + hay regressions
-  test-v039.mjs          collision/pause/retry/Encore authority
-  browser-smoke.mjs      exact submitted ZIP browser interaction smoke
-  file-smoke.mjs         direct standalone file:// browser smoke
-dist/
-  index.html
-  stretchicorn-local.html
-  stretchicorn-js13k.zip
-  stretchicorn-desktop-v0.39.0.zip
-docs/
-  stretchicorn-hero.png
-  stretchicorn-controls.svg
-  release-v039.md
-```
-
-Historical release artifacts live in Git history rather than cluttering the current working tree.
-
----
-
-# Build it
+# Build and play
 
 Requirements:
 
@@ -567,13 +343,13 @@ Requirements:
 - Python 3.12+
 - `zopfli==0.4.3`
 
+Build, test, pack and audit the competition release:
+
 ```bash
 npm run release:competition
 ```
 
-That command rebuilds the game, runs the active VM regression manifest, packs the competition HTML, verifies offline behavior, creates deterministic ZIPs, audits release metadata and `dist/` hygiene, verifies archive identity and checks the hard byte ceiling.
-
-For direct local play:
+Run the standalone build locally:
 
 ```bash
 npm run play:local
@@ -585,14 +361,62 @@ or open:
 dist/stretchicorn-local.html
 ```
 
-See [`PLAY_LOCAL.md`](PLAY_LOCAL.md) and [`RELEASING.md`](RELEASING.md) for the complete paths.
+See [`PLAY_LOCAL.md`](PLAY_LOCAL.md) and [`RELEASING.md`](RELEASING.md) for the complete workflows.
+
+---
+
+# Repository map
+
+```text
+src/                       readable gameplay / rendering / UI modules
+scripts/
+  run-regressions.mjs     canonical VM regression manifest
+  audit-release.mjs       release metadata + dist hygiene contract
+  build.mjs               source composition + standalone builder
+  pack-competition.mjs    deterministic Terser + Roadroller packer
+  package.py              deterministic Zopfli ZIP writer
+  test-v044.mjs           final storage/input + difficulty/boss soak audit
+  test-v043.mjs           pointer-input + title Best Style authority
+  test-v042.mjs           rainbow-popcorn finale + Style semantics
+  test-v041.mjs           Easy First Flight tutorial contract
+  test-v040.mjs           Field Guide + mouse + hay regressions
+  test-v039.mjs           collision/pause/retry/Encore authority
+  browser-smoke.mjs       exact submitted ZIP browser smoke
+  file-smoke.mjs          direct standalone file:// smoke
+dist/
+  index.html
+  stretchicorn-local.html
+  stretchicorn-js13k.zip
+  stretchicorn-desktop-v0.39.0.zip
+docs/
+  stretchicorn-hero.png
+  stretchicorn-showcase.svg
+  stretchicorn-controls.svg
+  stretchicorn-boss-grammar.svg
+  stretchicorn-13k-architecture.svg
+```
+
+Historical binary candidates live in Git history rather than cluttering the current shipping tree.
+
+---
+
+# Design notes
+
+The repository keeps the deeper design and release history available without forcing the README to become a development diary:
+
+- [`docs/design-review-v039.md`](docs/design-review-v039.md) — final design review
+- [`docs/difficulty-modes.md`](docs/difficulty-modes.md) — difficulty philosophy and mechanics
+- [`docs/release-v039.md`](docs/release-v039.md) — current qualified release notes
+- [`docs/heavy-drop-boss-theatre-v0.22.md`](docs/heavy-drop-boss-theatre-v0.22.md) — boss presentation exploration
+- [`docs/rainbow-theatre-v0.22.md`](docs/rainbow-theatre-v0.22.md) — rainbow/world visual development
+- [`CHANGELOG.md`](CHANGELOG.md) — implementation history
 
 ---
 
 # Design principle
 
-> **Make every byte do more than one job.**
+> ## **Make every byte do more than one job.**
 
-Stretchicorn's rainbow is a weapon, movement system, dodge route, charge meter and compositional spine. Its corn kernels are enemies, projectiles, pickups, boss motifs and musical percussion. Its background is scenery and progression. Its difficulty modes are balance settings and different mastery tests.
+Stretchicorn's rainbow is a weapon, movement system, dodge route, charge meter and compositional spine. Corn kernels are enemies, projectiles, pickups, boss motifs and percussion. The sky is scenery and progression. Difficulty modes are balance settings and different mastery tests.
 
-That is the game.
+**That is the game, and that is the compression strategy.**
