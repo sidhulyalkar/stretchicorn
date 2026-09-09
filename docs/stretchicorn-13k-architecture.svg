@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+<title id="title">Stretchicorn 13 KB architecture</title>
+<desc id="desc">A systems diagram showing how shared mechanics and procedural primitives feed gameplay, presentation, persistence, testing, and the final deterministic 13,310 byte ZIP.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07050d"/><stop offset="1" stop-color="#20102f"/></linearGradient>
+  <linearGradient id="node" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1c1328"/><stop offset="1" stop-color="#0e0a15"/></linearGradient>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1400" height="760" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="31" font-weight="800" text-anchor="middle" letter-spacing="2">13 KB AS A DESIGN ARCHITECTURE</text>
+<text x="700" y="89" fill="#c0b0cc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="600" text-anchor="middle">SHARED PRIMITIVES DO MULTIPLE JOBS · RECOMBINATION CREATES DEPTH · THE FINAL ZIP IS REPRODUCIBLE</text>
+
+<!-- central mechanic -->
+<g transform="translate(485 132)">
+  <rect width="430" height="112" rx="24" fill="#17101f" stroke="#b28dff" stroke-width="2" filter="url(#glow)"/>
+  <text x="215" y="34" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="800" text-anchor="middle">BODY ↔ RAINBOW ↔ HORN</text>
+  <text x="215" y="61" fill="#d4c5dd" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" text-anchor="middle">one geometry powers the game's verbs</text>
+  <text x="215" y="88" fill="#ffcf67" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" font-weight="800" text-anchor="middle">MOVE · CHARGE · SNAP · DODGE · PARRY · ROUTE</text>
+</g>
+
+<!-- connectors -->
+<g stroke="#4b3658" stroke-width="3" fill="none"><path d="M700 244 V287 H243 V320"/><path d="M700 244 V320"/><path d="M700 244 V287 H1157 V320"/><path d="M243 478 V522 H700 V557"/><path d="M700 478 V557"/><path d="M1157 478 V522 H700 V557"/></g>
+
+<!-- gameplay -->
+<g transform="translate(55 320)">
+  <rect width="376" height="158" rx="20" fill="url(#node)" stroke="#5b765f" stroke-width="2"/>
+  <text x="24" y="34" fill="#6fe38a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="800">GAMEPLAY RECOMBINATION</text>
+  <text x="24" y="65" fill="#d9cfe1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13">13 trials · 4 difficulties · First Flight</text>
+  <text x="24" y="90" fill="#d9cfe1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13">graze · parry · returns · combo · powerups</text>
+  <text x="24" y="115" fill="#d9cfe1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13">3 authored bosses · Impossible Encore</text>
+  <text x="24" y="140" fill="#9fb0a3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11">depth grows by recombining learned rules</text>
+</g>
+
+<!-- presentation -->
+<g transform="translate(512 320)">
+  <rect width="376" height="158" rx="20" fill="url(#node)" stroke="#68528a" stroke-width="2"/>
+  <text x="24" y="34" fill="#b28dff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="800">PROCEDURAL PRESENTATION</text>
+  <text x="24" y="65" fill="#d9cfe1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13">Canvas characters · corn · bosses · hay · UI</text>
+  <text x="24" y="90" fill="#d9cfe1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13">nested rainbow sky · VFX · popcorn finale</text>
+  <text x="24" y="115" fill="#d9cfe1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13">Web Audio music · pops · bass · chimes</text>
+  <text x="24" y="140" fill="#a99bb3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11">0 sprite sheets · 0 audio files · 0 web fonts</text>
+</g>
+
+<!-- usability/reliability -->
+<g transform="translate(969 320)">
+  <rect width="376" height="158" rx="20" fill="url(#node)" stroke="#416a79" stroke-width="2"/>
+  <text x="24" y="34" fill="#61c8ff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="800">USABILITY + RELIABILITY</text>
+  <text x="24" y="65" fill="#d9cfe1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13">Field Guide · pause · retry · Controls</text>
+  <text x="24" y="90" fill="#d9cfe1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13">mouse OFF mode · local Best Style</text>
+  <text x="24" y="115" fill="#d9cfe1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13">VM regression chain · boss/difficulty soaks</text>
+  <text x="24" y="140" fill="#93aab2" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11">Chromium + Firefox · exact ZIP + file:// smoke</text>
+</g>
+
+<!-- pipeline -->
+<g transform="translate(280 557)">
+  <rect width="840" height="145" rx="24" fill="#0e0b14" stroke="#5b4369" stroke-width="2"/>
+  <text x="420" y="35" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="800" text-anchor="middle">READABLE SOURCE → DETERMINISTIC 13 KB ARTIFACT</text>
+  <g font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" font-weight="800" text-anchor="middle">
+    <rect x="28" y="62" width="128" height="42" rx="12" fill="#17131d" stroke="#493a54"/><text x="92" y="88" fill="#d8cedf">SOURCE</text>
+    <text x="174" y="88" fill="#6b5878">→</text>
+    <rect x="194" y="62" width="128" height="42" rx="12" fill="#17131d" stroke="#493a54"/><text x="258" y="88" fill="#d8cedf">TERSER</text>
+    <text x="340" y="88" fill="#6b5878">→</text>
+    <rect x="360" y="62" width="128" height="42" rx="12" fill="#17131d" stroke="#493a54"/><text x="424" y="88" fill="#d8cedf">ROADROLLER</text>
+    <text x="506" y="88" fill="#6b5878">→</text>
+    <rect x="526" y="62" width="128" height="42" rx="12" fill="#17131d" stroke="#493a54"/><text x="590" y="88" fill="#d8cedf">ZOPFLI</text>
+    <text x="672" y="88" fill="#6b5878">→</text>
+    <rect x="692" y="54" width="120" height="58" rx="14" fill="#21152b" stroke="#ffcf67" stroke-width="2" filter="url(#glow)"/><text x="752" y="79" fill="#ffcf67">13,310</text><text x="752" y="98" fill="#fff" font-size="10">/ 13,312 BYTES</text>
+  </g>
+  <text x="420" y="128" fill="#9c8ba7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11" text-anchor="middle">one root-level index.html · byte-identical stable/versioned ZIPs · exact rebuild parity</text>
+</g>
+</svg>
