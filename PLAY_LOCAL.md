@@ -63,9 +63,9 @@ Versioned twin:
 **[`dist/stretchicorn-desktop-v0.39.0.zip`](dist/stretchicorn-desktop-v0.39.0.zip)**
 
 ```text
-13,284 / 13,312 bytes
-28 bytes free
-SHA-256 d78c8a03bfb7d2aef4a89815bf56c87823847ad7853d23f9c8baec5972e174f2
+13,310 / 13,312 bytes
+2 bytes free
+SHA-256 ff8dc4532a654407be15d4b8f14f4c0a695b9cc712e13be56882c1347dd66912
 ```
 
 The stable and versioned ZIPs are byte-identical and each contains exactly one root-level `index.html`.

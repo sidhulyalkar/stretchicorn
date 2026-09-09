@@ -6,7 +6,7 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-A complete desktop arcade-action game packed into a **13,284 byte js13k ZIP**.
+A complete desktop arcade-action game packed into a **13,310 byte js13k ZIP**.
 
 **Move the vulnerable body. Aim the safe horn. Stretch the rainbow. Snap through an army of corn.**
 
@@ -14,7 +14,7 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 [**Download the standalone HTML**](dist/stretchicorn-local.html) · [**Download the js13k submission ZIP**](dist/stretchicorn-js13k.zip) · [**Read the release process**](RELEASING.md)
 
-**v0.39.0 submission candidate · 13 trials · 4 difficulties · 3 authored bosses · Impossible Encore · 13,284 / 13,312 bytes**
+**v0.39.0 submission candidate · 13 trials · 4 difficulties · 3 authored bosses · Impossible Encore · 13,310 / 13,312 bytes**
 
 </div>
 
@@ -46,7 +46,7 @@ Stretchicorn is not a tech demo wrapped around one mechanic. The current submiss
 | **Reliability** | deterministic packaging, offline checks, VM regressions, Chromium + Firefox tests |
 | **External runtime assets** | **0** |
 
-The shipping ZIP uses **99.790% of the 13,312 byte limit**. There are **28 bytes free**.
+The shipping ZIP uses **99.985% of the 13,312 byte limit**. There are **2 bytes free**.
 
 ---
 
@@ -74,8 +74,7 @@ That relationship is the entire design nucleus. There is no separate dash button
 | Input | Action |
 |---|---|
 | **W A S D** | Move the vulnerable body / heart |
-| **Mouse** | Aim the horn toward the pointer |
-| **Arrow Keys** | Aim the horn without mouse input |
+| **Mouse / Arrow Keys** | Aim the horn |
 | **Left Click** | Rainbow Snap |
 | **Space** | Rainbow Snap |
 | **1 / 2 / 3 / 4** | Start Easy / Normal / Hard / Impossible |
@@ -88,7 +87,7 @@ That relationship is the entire design nucleus. There is no separate dash button
 
 ### Laptop-safe pointer controls
 
-The Controls screen has a persistent **MOUSE AIM + CLICK ON/OFF** preference.
+The Controls screen has a persistent **MOUSE - ON/OFF** preference. Mouse / Arrow Keys aim the horn, WASD moves the body, and Click / Space releases Rainbow Snap.
 
 When pointer gameplay is **OFF**:
 
@@ -443,16 +442,16 @@ The question behind every byte became:
 
 ---
 
-# 13,284 bytes, deterministically
+# 13,310 bytes, deterministically
 
 The current competition artifact is:
 
 ```text
 dist/stretchicorn-js13k.zip
 dist/stretchicorn-desktop-v0.39.0.zip
-13,284 / 13,312 bytes
-28 bytes free
-SHA-256 d78c8a03bfb7d2aef4a89815bf56c87823847ad7853d23f9c8baec5972e174f2
+13,310 / 13,312 bytes
+2 bytes free
+SHA-256 ff8dc4532a654407be15d4b8f14f4c0a695b9cc712e13be56882c1347dd66912
 ```
 
 The stable and versioned ZIPs are byte-identical and contain exactly one file at archive root:
@@ -634,6 +633,6 @@ The actual competition ZIP contains only the generated root `index.html`, with a
 
 ## **STRETCH · SNAP · SHUCK.**
 
-**One vulnerable body. One safe horn. Thirteen trials. Twenty-eight spare bytes.** 🌈🌽
+**One vulnerable body. One safe horn. Thirteen trials. Two spare bytes.** 🌈🌽
 
 </div>

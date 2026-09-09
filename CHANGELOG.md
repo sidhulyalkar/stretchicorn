@@ -11,8 +11,8 @@
 - Retired loading/saving legacy custom-keybind and Music/SFX preferences after those editing screens left the shipping UI, preventing invisible old settings from trapping returning players. Current pointer preference migration remains supported.
 - Centralized the active VM regression manifest and added deterministic multi-difficulty boss soaks, exact-ZIP Chromium/Firefox interaction checks, standalone file:// checks, offline/network guards, deterministic archive verification and release metadata/dist hygiene auditing.
 - All shipping game graphics and audio remain procedural Canvas/Web Audio with zero external runtime assets.
-- Final competition ZIP: **13,284 / 13,312 bytes (28 bytes free)**.
-- Qualified SHA-256: `d78c8a03bfb7d2aef4a89815bf56c87823847ad7853d23f9c8baec5972e174f2`.
+- Final competition ZIP: **13,310 / 13,312 bytes (2 bytes free)**.
+- Qualified SHA-256: `ff8dc4532a654407be15d4b8f14f4c0a695b9cc712e13be56882c1347dd66912`.
 
 ## v0.28.0 - BOSS TRILOGY
 
@@ -191,7 +191,7 @@
 - Kept `M` and `P` reserved while rebinding controls so custom bindings cannot silently conflict with menu/pause shortcuts.
 - Removed the unused `nearest()` helper, reclaiming submission bytes without changing gameplay.
 - Preserved the complete HUSKSHIFT campaign, POP DROP audio, settings, custom controls and exact-artifact validation.
-- Final competition ZIP: **13,284 / 13,312 bytes (28 bytes free)**.
+- Final competition ZIP: **13,310 / 13,312 bytes (2 bytes free)**.
 
 ## v0.20.6 — HUSKSHIFT FIX
 

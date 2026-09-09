@@ -5,9 +5,9 @@
 This is the current js13kGames 2026 submission candidate.
 
 ```text
-13,284 / 13,312 bytes
-28 bytes free
-SHA-256 d78c8a03bfb7d2aef4a89815bf56c87823847ad7853d23f9c8baec5972e174f2
+13,310 / 13,312 bytes
+2 bytes free
+SHA-256 ff8dc4532a654407be15d4b8f14f4c0a695b9cc712e13be56882c1347dd66912
 ```
 
 ## What changed since the earlier boss-trilogy builds
@@ -28,6 +28,8 @@ The current game has converged on a finite 13-trial arcade campaign with direct 
 - **Procedural presentation**: all shipping game art and audio remain generated at runtime from Canvas and Web Audio primitives. No runtime images, audio files, fonts or external network resources are present in the competition ZIP.
 
 ## Final hardening pass
+
+The final UI pass moves control instructions off the title and into the translucent Controls panel, names the Field Guide explicitly, and shows the highest locally saved Style on the title after a player has recorded a score. Difficulty shortcuts now live directly on the four difficulty cards.
 
 The final cleanup also retires legacy keyboard-rebind and Music/SFX preference migration now that those editing screens no longer ship. Returning players therefore cannot be stranded on invisible old bindings or muted audio; the supported default keyboard/audio behavior is authoritative, while the current pointer ON/OFF preference still migrates and persists. This simplification reclaimed 26 compressed bytes.
 
