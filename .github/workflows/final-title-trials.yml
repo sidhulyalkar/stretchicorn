@@ -56,6 +56,13 @@ jobs:
           new="assert.equal(R(\"SN[0]\"),'EAR WE GO','Normal must restore authored Trial 1 name');assert.equal(R('JSON.stringify(SN)'),JSON.stringify(['EAR WE GO','KERNEL PANIC','STALK & LOAD','SHUCK & COVER','HIDEAWAY HUSK','GOLDEN GRAZE','HUSK TILL DAWN','CORN-FUSION','KERNEL COLONEL','BUTTER RUN','PRISM BREAK','CORN OF NO RETURN','COBTOPUS PRIME']),'all 13 authored trial names stay locked');"
           assert old in s
           p.write_text(s.replace(old,new))
+
+          p=Path('scripts/test-v043.mjs')
+          s=p.read_text()
+          old="assert(texts.includes('FIELD GUIDE  •  CONTROLS'),'title must name the Field Guide explicitly');"
+          new="assert(texts.includes('FIELD GUIDE')&&texts.includes('CONTROLS'),'title must render distinct Field Guide and Controls actions');"
+          assert old in s
+          p.write_text(s.replace(old,new))
           PY
       - name: Build and fully qualify competition artifact
         run: |
@@ -66,7 +73,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/03-title-v037.js src/00-core.js scripts/build.mjs scripts/test-v041.mjs dist/
+          git add src/03-title-v037.js src/00-core.js scripts/build.mjs scripts/test-v041.mjs scripts/test-v043.mjs dist/
           git status --short
           git commit -m "feat: make title actions obvious and rename trials"
           git push origin HEAD:docs/professional-showcase
