@@ -24,11 +24,11 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 Stretchicorn is built around one spatial relationship rather than a collection of unrelated action-game buttons. The body and horn are controlled independently, while the rainbow stretched between them behaves like a spring. That same geometry becomes your movement system, attack line, defensive tool, parry surface, positioning problem and route through the arena.
 
-The game then keeps asking new questions with that same vocabulary. Early trials teach tension and Snap routing. Mid-game encounters add ranged fire, armored enemies and temporary cover. Late trials mix gold projectiles that can be converted into offense with cyan projectiles that must be dodged. Bosses change the rules of good positioning instead of simply adding larger health bars.
+The campaign keeps asking new questions with that same vocabulary. Early trials teach tension and Snap routing. Mid-game encounters add ranged fire, armored enemies and temporary cover. Late trials mix gold projectiles that can be converted into offense with cyan projectiles that must be dodged. Bosses change the rules of good positioning instead of simply adding larger health bars.
 
 <div align="center">
 <img src="docs/screenshots/gameplay.png" alt="Actual Stretchicorn gameplay showing the player, procedural arena, enemies and HUD" width="960">
-<br><sub>Actual capture from the shipping standalone build. No mockup artwork or external game assets.</sub>
+<br><sub>Captured directly from the shipping standalone build. The screenshot uses the same runtime Canvas renderer as the 13 KB game.</sub>
 </div>
 
 ### The design in six lines
@@ -79,8 +79,8 @@ The Controls screen includes a persistent **MOUSE - ON / OFF** setting. Turning 
 <td width="50%"><img src="docs/screenshots/controls.png" alt="Stretchicorn Controls screen in the shipping build"></td>
 </tr>
 <tr>
-<td align="center"><b>Field Guide</b><br><sub>Rules and scoring remain available from the title and during a paused run.</sub></td>
-<td align="center"><b>Controls</b><br><sub>Mouse input can be disabled without sacrificing keyboard play.</sub></td>
+<td align="center"><b>Field Guide</b><br><sub>The objective, combat rules, scoring and boss language remain available from the title and during a paused run.</sub></td>
+<td align="center"><b>Controls</b><br><sub>Mouse gameplay can be disabled for laptop play without sacrificing keyboard aiming or Snap.</sub></td>
 </tr>
 </table>
 
@@ -169,7 +169,7 @@ Impossible was shaped by a useful playtest discovery: **adding more enemies can 
 
 # Three bosses, three different questions
 
-These screenshots are the bosses as they are rendered by the shipping game itself.
+These are direct captures of the three authored bosses from the shipping game.
 
 <table>
 <tr>
@@ -178,9 +178,9 @@ These screenshots are the bosses as they are rendered by the shipping game itsel
 <td width="33%"><img src="docs/screenshots/cobtopus-prime.png" alt="Cobtopus Prime boss in the shipping game"></td>
 </tr>
 <tr>
-<td align="center"><b>Trial 5 · Hideaway Husk</b></td>
-<td align="center"><b>Trial 9 · Kernel Colonel</b></td>
-<td align="center"><b>Trial 13 · Cobtopus Prime</b></td>
+<td align="center"><b>Trial 5 · Hideaway Husk</b><br><sub>Wait for the firing window.</sub></td>
+<td align="center"><b>Trial 9 · Kernel Colonel</b><br><sub>Turn incoming fire into the key.</sub></td>
+<td align="center"><b>Trial 13 · Cobtopus Prime</b><br><sub>Combine the full combat vocabulary.</sub></td>
 </tr>
 </table>
 
@@ -241,10 +241,10 @@ The result screen separates the run into understandable dimensions:
 
 <div align="center">
 <img src="docs/screenshots/rainbow-popcorn-finale.png" alt="Stretchicorn rainbow popcorn victory finale and Style result" width="960">
-<br><sub>Stretchicorn stays intact in the final gameplay pose while the defeated Cobtopus becomes the visual payoff.</sub>
+<br><sub>The player remains intact in the final gameplay pose while the defeated Cobtopus becomes the center of the celebration.</sub>
 </div>
 
-The final boss erupts into **rainbow popcorn**, moving the celebration away from the player character and toward the enemy that was just defeated.
+The final boss erupts into **rainbow popcorn**, moving the visual payoff toward the enemy that was just defeated and giving the run a clear, playful ending before the results settle in.
 
 ---
 
@@ -334,6 +334,8 @@ The shipping ZIP uses **99.985%** of the 13,312 byte limit. There are **2 bytes 
 <div align="center">
 <img src="docs/stretchicorn-13k-architecture.svg" alt="Stretchicorn 13 KB architecture: mechanic reuse, procedural presentation and deterministic release" width="1100">
 </div>
+
+This is the one explanatory diagram kept in the main README because it describes the engineering architecture rather than attempting to imitate the game's visual presentation.
 
 The size limit was treated as a design constraint rather than a packaging problem.
 
@@ -502,6 +504,6 @@ The repository keeps deeper design history outside the README so the front page 
 
 Stretchicorn's rainbow is a weapon, movement system, dodge route, charge meter and compositional spine. Its corn kernels are enemies, projectiles, pickups, boss motifs and percussion. Its background is scenery and progression. Its difficulty modes are balance settings and different mastery tests.
 
-**That is the point of the project: make a tiny game feel complete by making every system reinforce several others.**
+**The project is built around one principle: make a tiny game feel complete by designing every system to reinforce several others.**
 
 </div>
