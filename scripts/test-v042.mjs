@@ -1,12 +1,13 @@
 import{readFileSync}from'node:fs';import vm from'node:vm';
-const ui=readFileSync('src/04-ui-input.js','utf8'),guide=readFileSync('src/03-title-v037.js','utf8');let seen=[],pops=0,words=[],cards=[];
+const ui=readFileSync('src/04-ui-input.js','utf8'),guide=readFileSync('src/03-title-v037.js','utf8'),boss=readFileSync('src/03-bosses-v028.js','utf8'),core=readFileSync('src/00-core.js','utf8');let seen=[],pops=0,words=[],cards=[];
 const X=new Proxy({},{get:(o,k)=>o[k]||(o[k]=()=>{}),set:(o,k,v)=>(o[k]=v,true)}),c={console,Math,X,W:960,H:640,T:Math.PI*2,mode:0,winT:2.2,t:1,voidX:480,voidY:180,RC:['r','o','y','g','b','v'],queen:0,score:1234,runT:137,hearts:9,scene(){seen.push(c.mode)},cl:(v,a,b)=>v<a?a:v>b?b:v,pop(){pops++},oval(){},best31:()=>1600,txt:s=>words.push(s),requestAnimationFrame(){},A:{},P:{},charge:0,aim:0,wave:1,K:{},BK:['','','','','','','','',''],fire:0,D:1,sel:0,wake(){},reset(){},upd(){},uni(){}};vm.createContext(c);vm.runInContext(ui,c);c.mode=5;c.victory();
 if(seen[0]!==1||c.mode!==5)throw Error('victory must render the intact gameplay pose, then restore victory mode');
 if(pops!==28)throw Error('finale must center a 28-piece popcorn burst on the defeated boss');
-for(const q of['STYLE 1234 • BEST 1600','TIME 137s • ♥ 9/13','COBTOPUS BURSTS!'])if(!words.includes(q))throw Error('missing early finale summary: '+q);
+for(const q of['STYLE 1234 • BEST 1600','TIME 137s • ♥ 9/13',"CAP'N POPS!"])if(!words.includes(q))throw Error('missing early finale summary: '+q);
 words=[];pops=0;c.winT=.7;c.victory();if(pops!==28)throw Error('popcorn burst must persist through the restored-sky beat');
 for(const q of['SKY RESTORED!','RAINBOW POPCORN!'])if(!words.includes(q))throw Error('missing late finale beat: '+q);
 c.panel=(a,b)=>cards.push([a,b]);c.mode=4;c.draw();if(!cards[0]||!cards[0][1].includes('STYLE 1234 • BEST 1600'))throw Error('final result must persist after the animation');
 for(const q of['STYLE SCORE','Style = how boldly + skillfully you fight.','Win = restore sky. Style = mastery, not victory.','Best is per difficulty; Time + ♥ show speed/survival.'])if(!guide.includes(q))throw Error('missing Style/result explanation: '+q);
+if(!core.includes("CAP'N COBTOPUS")||!boss.includes("CAP'N COBTOPI"))throw Error('final boss naming contract missing');
 if(ui.includes('THE LAST RAINBOW LETS GO.'))throw Error('legacy Stretchicorn breakup finale survived');
 console.log('PASS: finale keeps Stretchicorn intact, bursts the defeated boss into rainbow popcorn, and the guide explains victory vs Style mastery, Best, time and hearts');
