@@ -32,7 +32,7 @@ jobs:
 
           p=Path('src/03-title-v037.js');s=p.read_text()
           old="txt('FIELD GUIDE  •  CONTROLS',W/2,535,11,'#fff','center');"
-          new="X.strokeRect(350,520,120,28);X.strokeRect(480,520,120,28);txt('FIELD GUIDE',410,539,10,'#fff','center');txt('CONTROLS',540,539,10,'#fff','center');"
+          new="['FIELD GUIDE','CONTROLS'].forEach((v,i)=>{let x=350+i*130;X.strokeRect(x,520,120,28);txt(v,x+60,539,10,'#fff','center')});"
           assert old in s;p.write_text(s.replace(old,new))
 
           p=Path('src/00-core.js');s=p.read_text()
@@ -57,7 +57,7 @@ jobs:
 
           p=Path('scripts/test-v037.mjs');s=p.read_text()
           old="'FIELD GUIDE  •  CONTROLS',"
-          new="'FIELD GUIDE','CONTROLS','strokeRect(350,520,120,28)','strokeRect(480,520,120,28)',"
+          new="'FIELD GUIDE','CONTROLS','strokeRect(x,520,120,28)',"
           assert old in s;p.write_text(s.replace(old,new))
           PY
       - name: Build and fully qualify competition artifact
