@@ -31,13 +31,15 @@ jobs:
           names=['EAR WE GO','KERNEL PANIC','STALK & LOAD','SHUCK & COVER','HIDEAWAY HUSK','GOLD RUSH','HUSK TIL DAWN','CORN-FUSION','KERNEL COLONEL','BUTTER UP','PRISM BREAK','LAST SHUCK','COBTOPUS PRIME']
 
           p=Path('src/03-title-v037.js');s=p.read_text()
+          shadow="txt('STRETCHICORN',W/2+3,91,52,'#32103f','center');"
           old="txt('FIELD GUIDE  •  CONTROLS',W/2,535,11,'#fff','center');"
-          new="X.strokeRect(360,520,110,28);X.strokeRect(490,520,110,28);txt('FIELD GUIDE  •  CONTROLS',W/2,539,11,'#fff','center');"
-          assert old in s;p.write_text(s.replace(old,new))
+          new="X.strokeRect(350,520,125,28);X.strokeRect(485,520,125,28);txt('FIELD GUIDE  •  CONTROLS',W/2,539,10,'#fff','center');"
+          assert shadow in s and old in s
+          p.write_text(s.replace(shadow,'').replace(old,new))
 
           p=Path('src/00-core.js');s=p.read_text()
           old="const SN=['THE DEAD FIELD','FIRST STIRRING','ASH FRONT','HUSK PASSAGE','THE MAIZE MONARCH','GOLDEN FEVER','THE SHELL FIELDS','BROKEN SPECTRUM','THE HUSK ARCHITECT','BLACK BUTTER','PRISM FIELD','THE LAST CROSSING','THE COBTOPUS'];"
-          new="const SN='EAR WE GO|KERNEL PANIC|STALK & LOAD|SHUCK & COVER|HIDEAWAY HUSK|GOLD RUSH|HUSK TIL DAWN|CORN-FUSION|KERNEL COLONEL|BUTTER UP|PRISM BREAK|LAST SHUCK|COBTOPUS PRIME'.split('|');"
+          new="const SN=['EAR WE GO','KERNEL PANIC','STALK & LOAD','SHUCK & COVER','HIDEAWAY HUSK','GOLD RUSH','HUSK TIL DAWN','CORN-FUSION','KERNEL COLONEL','BUTTER UP','PRISM BREAK','LAST SHUCK','COBTOPUS PRIME'];"
           assert old in s;p.write_text(s.replace(old,new))
 
           p=Path('scripts/build.mjs');s=p.read_text()
@@ -52,7 +54,7 @@ jobs:
 
           p=Path('scripts/test-v037.mjs');s=p.read_text()
           old="'FIELD GUIDE  •  CONTROLS',"
-          new="'FIELD GUIDE  •  CONTROLS','strokeRect(360,520,110,28)','strokeRect(490,520,110,28)',"
+          new="'FIELD GUIDE','CONTROLS','strokeRect(350,520,125,28)','strokeRect(485,520,125,28)',"
           assert old in s;p.write_text(s.replace(old,new))
           PY
       - name: Build and fully qualify competition artifact
