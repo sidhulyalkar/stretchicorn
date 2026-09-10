@@ -1,0 +1,72 @@
+name: Apply final title buttons and trial names
+
+on:
+  push:
+    branches: [docs/professional-showcase]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: docs/professional-showcase
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Apply source and regression changes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('src/03-title-v037.js')
+          s=p.read_text()
+          old="txt('FIELD GUIDE  •  CONTROLS',W/2,535,11,'#fff','center');"
+          new="X.strokeRect(350,520,120,28);X.strokeRect(480,520,120,28);txt('FIELD GUIDE',410,539,10,'#fff','center');txt('CONTROLS',540,539,10,'#fff','center');"
+          assert old in s
+          p.write_text(s.replace(old,new))
+
+          p=Path('src/00-core.js')
+          s=p.read_text()
+          old="const SN=['THE DEAD FIELD','FIRST STIRRING','ASH FRONT','HUSK PASSAGE','THE MAIZE MONARCH','GOLDEN FEVER','THE SHELL FIELDS','BROKEN SPECTRUM','THE HUSK ARCHITECT','BLACK BUTTER','PRISM FIELD','THE LAST CROSSING','THE COBTOPUS'];"
+          new="const SN=['EAR WE GO','KERNEL PANIC','STALK & LOAD','SHUCK & COVER','HIDEAWAY HUSK','GOLDEN GRAZE','HUSK TILL DAWN','CORN-FUSION','KERNEL COLONEL','BUTTER RUN','PRISM BREAK','CORN OF NO RETURN','COBTOPUS PRIME'];"
+          assert old in s
+          p.write_text(s.replace(old,new))
+
+          p=Path('scripts/build.mjs')
+          s=p.read_text()
+          old="if(wave==1)SN[0]=D<1?'FIRST FLIGHT':'THE DEAD FIELD';"
+          new="if(wave==1)SN[0]=D<1?'FIRST FLIGHT':'EAR WE GO';"
+          assert old in s
+          p.write_text(s.replace(old,new))
+
+          p=Path('scripts/test-v041.mjs')
+          s=p.read_text()
+          old="assert.equal(R(\"SN[0]\"),'THE DEAD FIELD','Normal must restore authored Trial 1 name');"
+          new="assert.equal(R(\"SN[0]\"),'EAR WE GO','Normal must restore authored Trial 1 name');assert.equal(R('JSON.stringify(SN)'),JSON.stringify(['EAR WE GO','KERNEL PANIC','STALK & LOAD','SHUCK & COVER','HIDEAWAY HUSK','GOLDEN GRAZE','HUSK TILL DAWN','CORN-FUSION','KERNEL COLONEL','BUTTER RUN','PRISM BREAK','CORN OF NO RETURN','COBTOPUS PRIME']),'all 13 authored trial names stay locked');"
+          assert old in s
+          p.write_text(s.replace(old,new))
+          PY
+      - name: Build and fully qualify competition artifact
+        run: |
+          python -m pip install --disable-pip-version-check zopfli==0.4.3
+          npm run release:competition
+      - name: Commit exact qualified source and artifacts
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/03-title-v037.js src/00-core.js scripts/build.mjs scripts/test-v041.mjs dist/
+          git status --short
+          git commit -m "feat: make title actions obvious and rename trials"
+          git push origin HEAD:docs/professional-showcase
