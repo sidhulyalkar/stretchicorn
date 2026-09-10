@@ -8,9 +8,9 @@ Stretchicorn treats the competition ZIP as a reproducible release artifact, not 
 version: 0.39.0
 dist/stretchicorn-js13k.zip
 dist/stretchicorn-desktop-v0.39.0.zip
-13,310 / 13,312 bytes
-2 bytes free
-SHA-256 ff8dc4532a654407be15d4b8f14f4c0a695b9cc712e13be56882c1347dd66912
+13,269 / 13,312 bytes
+43 bytes free
+SHA-256 daa32cb68ac8dc4c34c2e1bd436c67ee34cfe107c744c8dc91d0c5bad360e676
 ```
 
 The stable and versioned ZIPs are byte-identical.
@@ -71,7 +71,8 @@ The suite currently includes:
 - final legacy-settings / input-authority / deterministic soak audit,
 - pointer OFF/ON behavior,
 - victory/result semantics,
-- Easy First Flight,
+- Easy Morning Stretch,
+- final 13-trial naming contract,
 - Field Guide and hay integration,
 - pause/retry/storage/boss/Encore authority,
 - nested rainbow restoration,
@@ -122,7 +123,7 @@ Roadroller is run twice. The two packed outputs must be byte-identical or the re
 
 `scripts/check-size.mjs` prints the used/free byte count and fails above 13,312 bytes.
 
-At the current candidate there are only **2 free bytes**. Any source change should be treated as a release change and requalified from zero.
+At the current candidate there are only **43 bytes free**. Any source change should be treated as a release change and requalified from zero.
 
 ### 8. Audit release metadata and working-tree hygiene
 
@@ -192,7 +193,7 @@ Playwright is a developer/CI harness only and is never bundled into the submissi
 
 ## Source-change protocol
 
-Because the candidate has 2 bytes of headroom, do not treat even tiny gameplay copy edits as harmless.
+Because the candidate has 43 bytes of headroom, do not treat even tiny gameplay copy edits as harmless.
 
 For any change that can alter `dist/index.html`:
 
@@ -244,7 +245,7 @@ Before uploading `dist/stretchicorn-js13k.zip`, confirm all of the following:
 - [ ] manual title → Controls → Easy → boss sampling → result flow still feels correct
 - [ ] no manual unzip/re-zip step has touched the submission
 
-Do not manually re-compress the archive. At 2 bytes free, a different ZIP tool can easily move the candidate over the limit.
+Do not manually re-compress the archive. At 43 bytes free, a different ZIP tool can easily move the candidate over the limit.
 
 ## Wavedash isolation
 
