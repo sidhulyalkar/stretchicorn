@@ -8,9 +8,9 @@ Stretchicorn treats the competition ZIP as a reproducible release artifact, not 
 version: 0.39.0
 dist/stretchicorn-js13k.zip
 dist/stretchicorn-desktop-v0.39.0.zip
-13,300 / 13,312 bytes
-12 bytes free
-SHA-256 d16772273bc533bc6268125d3cce36bf5bb43d1df2169f50cc2f787ba8255cb1
+13,298 / 13,312 bytes
+14 bytes free
+SHA-256 899ddff0a35c87085cf62f0d4e451732f2c53e4cf7b57dcce60723f434c3d3ec
 ```
 
 The stable and versioned ZIPs are byte-identical.
@@ -131,7 +131,7 @@ Roadroller is run twice. The two packed outputs must be byte-identical or the re
 
 `scripts/check-size.mjs` prints the used/free byte count and fails above 13,312 bytes.
 
-The current candidate has **12 bytes free**. Any source change should be treated as a release change and requalified from zero.
+The current candidate has **14 bytes free**. Any source change should be treated as a release change and requalified from zero.
 
 ### 8. Audit release metadata and working-tree hygiene
 
@@ -203,7 +203,7 @@ Playwright is a developer/CI harness only and is never bundled into the submissi
 
 ## Source-change protocol
 
-Because the candidate has 11 bytes of headroom, do not treat even tiny gameplay copy edits as harmless.
+Because the candidate has 14 bytes of headroom, do not treat even tiny gameplay copy edits as harmless.
 
 For any change that can alter `dist/index.html`:
 
@@ -259,7 +259,7 @@ Before uploading `dist/stretchicorn-js13k.zip`, confirm all of the following:
 - [ ] manual title → Controls → Easy → pause → Guide/Back → boss sampling → result flow still feels correct
 - [ ] no manual unzip/re-zip step has touched the submission
 
-Do not manually re-compress the archive. At 12 bytes free, a different ZIP tool can easily move the candidate over the limit.
+Do not manually re-compress the archive. At 14 bytes free, a different ZIP tool can easily move the candidate over the limit.
 
 ## Wavedash isolation
 
