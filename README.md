@@ -317,28 +317,93 @@ It is the final statement of the campaign's core idea: **master the vocabulary, 
 
 # Style is mastery, not victory
 
-You win by clearing the campaign and restoring the sky. **Style** measures how strongly you played while doing it.
+You win by defeating the corn army. **Style** measures how strongly you played while doing it.
 
-Style rewards:
+The scoring system is deliberately separated into layers so difficulty can be rewarded without making exploits more valuable:
 
-- charged Rainbow Snaps,
-- chained kills,
-- graze risk,
-- parries,
-- long-distance returns,
-- wall-smash opportunities,
-- Lucky 13 routing,
-- maintaining aggressive flow without getting flattened.
+**skill event → anti-farm authority → combo / kill modifiers → raw Style → difficulty finalization → per-difficulty Best**
 
-The combo multiplier climbs toward **4×** while active play continues. Each difficulty keeps its own **Best** score. Boss encounters deliberately close infinite-score loops: summoned adds do not increase Style, combo or Lucky 13 count, while repeatable boss-stage grazes, parries, pickups and wall-smashes keep their tactical effects without adding Style. Finishing the boss, not stalling it, is therefore the scoring objective.
+That order matters. Impossible does not multiply every event as it happens. The game first decides whether an action is legitimate Style at all, builds one raw run score under the same combat rules, and only then applies the Impossible premium when the run terminates.
 
-Impossible also applies a **3× run-end Style premium**. The game keeps raw Style unchanged while the run is active, then multiplies the legitimate total when an Impossible run terminates and persists that value as Impossible Best. Hard and below keep their existing score scale, so a 120,000 Hard benchmark remains 120,000 while a 30,000 raw Impossible run resolves to 90,000. Boss-farming events are already worth zero before this premium is applied, so the multiplier rewards surviving Impossible rather than magnifying stalling.
+## What actually earns Style
 
-The final result separates three ideas:
+| Event | Style authority |
+|---|---:|
+| Regular enemy defeat | **10 base**, then kill bonuses / combo / Gold Cob can modify it |
+| Strong charged finish | **+15** kill bonus |
+| Highest charged finish | **+35** kill bonus |
+| Finish during the active Snap burst | **+10** kill bonus |
+| Gold-kernel graze | **+13** outside boss encounters |
+| Horn parry | **+25** outside boss encounters |
+| Powerup collection | **+15** outside boss encounters |
+| Charger wall smash | **+20** outside boss encounters, plus normal defeat Style if the crash is lethal |
+| `RETURN x2` | **26** |
+| `RETURN x3` | **39** |
+| `RETURN x4` | **52** |
+| Lucky 13 | **+130** |
 
-- **Victory**: did you defeat the corn army?
-- **Style**: how skillfully and boldly did you fight?
-- **Run quality**: how fast did you finish and how many hearts survived?
+Enemy-defeat Style is where the game's larger multipliers live. A kill starts from its base and charge/Snap bonuses, is multiplied by the active **combo (1× → 4×)**, and is doubled while **Gold Cob** is active. This makes a clean routed Snap through a dangerous formation much more valuable than slowly poking isolated targets.
+
+Returns are scored by demonstrated precision rather than difficulty label: x2 / x3 / x4 returns award `2×13`, `3×13`, or `4×13` Style. A lethal return can also earn the appropriate defeat bonus. The same return system is used to make real progress against shielded bosses.
+
+## Why boss farming is score-neutral
+
+A high score should measure **solving encounters**, not discovering which renewable enemy can be milked forever.
+
+Kernel Colonel exposed the important edge case. Its summoned Spitters and Prismcasters are intentionally renewable because they make the fight better, but renewable pressure cannot also be renewable score. During boss encounters:
+
+- summoned adds do **not** add Style,
+- summoned adds do **not** advance combo,
+- summoned adds do **not** advance Lucky 13,
+- repeatable boss-stage grazes, parries, pickups and wall-smashes remain mechanically useful but add **0 Style**,
+- returned kernels that actually damage or unlock the boss still score,
+- defeating the boss still scores.
+
+The result is a simple principle:
+
+> **Boss adds are pressure, not currency.**
+
+Hard and Impossible apply the same philosophy to sustain farming. Once an ordinary wave is reduced to one remaining enemy, new passive pickups stop spawning. Existing pickups are preserved and boss encounters retain survival pickups, so the rule blocks intentional stalling without deleting legitimate resources.
+
+## Difficulty-aware finalization
+
+Each difficulty stores its own Best because the modes create different scoring opportunities and different survival costs.
+
+| Difficulty | Raw Style during the run | Run-end finalization | Persistent Best bucket |
+|---|---:|---:|---|
+| Easy | normal scoring | **1×** | Easy |
+| Normal | normal scoring | **1×** | Normal |
+| Hard | normal scoring | **1×** | Hard |
+| Impossible | normal scoring | **3× at run end** | Impossible |
+
+Hard deliberately keeps its existing score scale. Its denser formations can produce longer Snap routes and more combo opportunities, so blindly multiplying Hard merely because it is harder would also multiply the extra scoring fuel created by density.
+
+Impossible is different. Ordinary population is capped at Hard density, while the mode adds a **2.4× hostile clock, +25% hostile simulation pressure, 1.5× regular HP, harsher cyan classification, strict return gates, campaign-reset stakes and Encore**. Those rules dramatically reduce how many safe scoring opportunities survive a run. The mode therefore receives its premium at the *finalization layer*, after legitimate raw Style has already been established.
+
+This was calibrated against actual play rather than chosen in isolation. Before the premium, strong Hard runs could finish around **120,000 Style** while meaningful Impossible attempts could compress toward roughly **30,000 raw Style** because so much more of the run is spent surviving rather than harvesting scoring opportunities. A 3× finalization narrows that mismatch without guaranteeing that selecting Impossible automatically beats a strong Hard performance.
+
+A concrete playtest example makes the contract visible:
+
+- **Hard:** 120,000 raw → **120,000 final**
+- **Impossible:** 40,010 raw → **120,030 final**
+
+The second score is not manufactured during combat. The 40,010 points still had to be earned under Impossible's harsher rules; the game recognizes the difficulty only when the run is over.
+
+## Why the multiplier cannot resurrect exploits
+
+The most important ordering invariant is:
+
+**invalid / renewable boss Style becomes zero before Impossible finalization.**
+
+If a Colonel summon is worth zero raw Style, Impossible computes `0 × 3 = 0`. The same is true for boss-stage graze, parry, pickup and wall-smash loops. Opening Controls also cannot trigger or stack the premium. The finalization step only runs when an Impossible run actually terminates and then persists the result to the Impossible-specific Best slot.
+
+That keeps the score interpretable:
+
+- **Victory** asks whether you defeated the corn army.
+- **Raw Style** measures the quality of the actions you successfully converted into offense.
+- **Difficulty finalization** recognizes the environment those actions survived.
+- **Best** compares the run only with prior runs from the same difficulty.
+- **Time + hearts** remain visible context for pace and survivability rather than being silently folded into Style.
 
 The victory sequence keeps Stretchicorn in the final gameplay pose while the defeated Cap'n Cobtopus erupts into **rainbow popcorn**, followed by Style, Best, time and hearts.
 
@@ -354,7 +419,7 @@ Five compact pickups reuse the game's existing corn/shape vocabulary:
 | **Husk Shield** | absorb the next ordinary body hit |
 | **Butter Boost** | temporary movement speed |
 | **Prism Cob Power** | seeds charge and lowers the practical charged-Snap threshold |
-| **Gold Cob** | 2× Style scoring for six seconds |
+| **Gold Cob** | 2× enemy-defeat Style for six seconds |
 
 Every 13th kill triggers **Lucky 13**:
 
