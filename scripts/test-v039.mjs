@@ -29,8 +29,9 @@ for (const mode of [0,2,3,4,5,6,7,8]) {
   assert.equal(r('JSON.stringify([bp,bt,R])'),before,`wall timers outside play, mode ${mode}`);
 }
 {
-  const r=game();r('mode=2;'+key('f'));assert.equal(r('mode==7&&sel==2'),true,'pause opens Field Guide with pause return target');
-  r(key('f'));assert.equal(r('mode'),2,'Field Guide returns to pause');r(key('p'));assert.equal(r('mode'),1,'pause resumes after guide round trip');
+  const r=game();r('mode=2;'+key('f'));assert.equal(r('mode'),2,'retired F shortcut must not open the Field Guide');
+  r(key('g'));assert.equal(r('mode==7&&sel==2'),true,'pause opens Field Guide with G and preserves pause return target');
+  r(key('g'));assert.equal(r('mode'),2,'G returns Field Guide to pause');r(key('p'));assert.equal(r('mode'),1,'pause resumes after guide round trip');
 }
 {
   const r=game();r(target+';'+shot+';mode=2');const before=r('t');
@@ -100,9 +101,9 @@ for (const order of [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]) {
 {
   const store={SV:'0,0'},r=game(store);
   for(const d of [.7,1,1.6,2.4])r(`D=${d};score=${Math.round(d*100)};save();score=0;save()`);
-  for(const d of [.7,1,1.6,2.4])assert.equal(r(`D=${d};best31()`),Math.round(d*100),'independent best per mode');
+  for(const d of [.7,1,1.6,2.4])assert.equal(r(`D=${d};best31()`),Math.round(d*100)*(d>2?3:1),'independent difficulty-weighted best per mode');
   const reload=game(store);assert.equal(reload('D=1.6;best31()'),160,'best survives reload');
   const denied=game(new Proxy({}, {get(){throw Error('storage disabled')},set(){throw Error('storage disabled')}}));
   denied('score=500;save();mode=3;draw();'+key(' '));assert.equal(denied('mode'),1,'blocked storage never blocks play');
 }
-console.log('PASS: v0.39 pause/Field Guide round trip, return authority, shield gates, terminal death, retry, per-mode best, and all six Encore victory orders');
+console.log('PASS: v0.39 pause/G-Guide round trip, return authority, shield gates, terminal death, retry, per-mode best, and all six Encore victory orders');

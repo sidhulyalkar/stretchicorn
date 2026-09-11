@@ -1,10 +1,10 @@
 import{readFileSync,existsSync}from'node:fs';
 const h=readFileSync('dist/index.html','utf8'),t=readFileSync('src/03-title-v037.js','utf8'),b=readFileSync('src/03-bosses-v028.js','utf8'),c=readFileSync('src/01-combat.js','utf8'),u=readFileSync('src/04-ui-input.js','utf8'),build=readFileSync('scripts/build.mjs','utf8');
 if(existsSync('src/03-story-v033.js')||build.includes("'03-story-v033.js'"))throw Error('retired intro story still ships');
-for(const q of['STRETCHICORN','STRETCH • SNAP • SHUCK.','FIELD GUIDE','CONTROLS','BEST STYLE ','demo(180,265,0,600,.82)','co31({x:p[0],y:p[1],type:0'])if(!t.includes(q))throw Error('missing procedural title contract: '+q);
+for(const q of['STRETCHICORN','STRETCH • SNAP • SHUCK.','FIELD GUIDE','CONTROLS','BEST STYLE ','demo(320,285,0,320,.65)','A.x=480;A.y=285','co31({x:p[0],y:p[1],type:0'])if(!t.includes(q))throw Error('missing procedural title contract: '+q);
 if(/\.png|\.jpg|\.webp|data:image/i.test(h))throw Error('title must remain procedural');
 for(const q of['THE SPLIT','STRETCHICORN FOUND A MAGICAL','THE LIVING SCAR','T TRAINING','RESTORED •','WASD BODY • MOUSE/ARROWS HORN • CLICK/SPACE SNAP'])if(h.includes(q))throw Error('retired intro/title copy shipped: '+q);
 if(c.includes('grade')||c.includes('RESTORED •'))throw Error('round grading was not removed');
 if(!b.includes('D>1&&wave>9')||!b.includes('b.team=1,b.r=8')||!b.includes('CYAN SPIKES CANNOT BE RETURNED • DODGE'))throw Error('late-Hard piercing kernel contract missing');
 if(!u.includes('mode=0;requestAnimationFrame(loop)')||u.includes('function practice(')||u.includes('function train(')||u.includes("k=='t'")||u.includes('mode==10'))throw Error('retired standalone intro/training route returned');
-console.log('PASS: v0.37 has no standalone intro scene, title exposes boxed Field Guide + Controls with persistent Best Style, and late-Hard cyan dodge-only kernels remain');
+console.log('PASS: v0.37 has no standalone intro scene, title keeps a compact centered mascot, inward-facing corn, boxed Field Guide + Controls and persistent Best Style, and late-Hard cyan dodge-only kernels remain');
