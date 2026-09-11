@@ -44,6 +44,16 @@ jobs:
       - name: Install deterministic compressor
         run: python -m pip install --disable-pip-version-check zopfli==0.4.3
 
+      - name: Build standalone playtest from current source
+        run: npm run build
+
+      - name: Upload current standalone playtest
+        uses: actions/upload-artifact@v4
+        with:
+          name: standalone-source-${{ github.sha }}
+          retention-days: 1
+          path: dist/stretchicorn-local.html
+
       - name: Rebuild and verify competition release
         run: npm run release:competition
 
