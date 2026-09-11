@@ -7,7 +7,7 @@ for(const q of['STYLE 1234 • BEST 1600','TIME 137s • ♥ 9/13',"CAP'N POPS!"
 words=[];pops=0;c.winT=.7;c.victory();if(pops!==28)throw Error('popcorn burst must persist through the restored-sky beat');
 for(const q of['CORN ARMY DEFEATED!','RAINBOW POPCORN!'])if(!words.includes(q))throw Error('missing late finale beat: '+q);
 c.panel=(a,b)=>cards.push([a,b]);c.mode=4;c.draw();if(!cards[0]||cards[0][0]!='CORN ARMY DEFEATED!'||!cards[0][1].includes('STYLE 1234   BEST 1600'))throw Error('final result must persist after the animation');
-for(const q of['STYLE SCORE','Style = bold, skillful play.','Beat corn. Style = mastery.','Best by difficulty. Time + ♥ show pace.'])if(!guide.includes(q))throw Error('missing Style/result explanation: '+q);
+for(const q of['STYLE SCORE','Higher difficulty = more Style.','Aggression + close grazes/parries = more Style.'])if(!guide.includes(q))throw Error('missing Style explanation: '+q);for(const q of['RUN RESULT','Beat corn. Style = mastery.','Best by difficulty. Time + ♥ show pace.'])if(guide.includes(q))throw Error('retired result copy survived in Field Guide: '+q);
 if(!core.includes("CAP'N COBTOPUS")||!boss.includes("CAP'N COBTOPI")||!readFileSync('src/03-render.js','utf8').includes("'DEFEAT THE COBTOP'+(final31>1?'I':'US')"))throw Error('final boss naming contract missing');
 if(ui.includes('THE LAST RAINBOW LETS GO.'))throw Error('legacy Stretchicorn breakup finale survived');
 console.log('PASS: finale keeps Stretchicorn intact, bursts the defeated boss into rainbow popcorn, and the boxed result screen preserves Style, Best, time and hearts');
