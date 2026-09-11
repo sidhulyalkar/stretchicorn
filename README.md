@@ -6,7 +6,7 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-A complete desktop arcade-action game packed into a **13,269 byte js13k ZIP**.
+A complete desktop arcade-action game packed into a **13,300 byte js13k ZIP**.
 
 Stretchicorn is a desktop arcade-action game built for js13kGames 2026. You control a unicorn split into two linked parts: a vulnerable body and a safe horn. Pull them apart to charge the rainbow between them, then release that tension as a Rainbow Snap to dash, attack, parry incoming fire, and fight through 13 trials of hostile corn.
 
@@ -14,7 +14,7 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 [**Download the standalone HTML**](dist/stretchicorn-local.html) · [**Download the js13k submission ZIP**](dist/stretchicorn-js13k.zip) · [**Read the release process**](RELEASING.md)
 
-**v0.39.0 submission candidate · 13 trials · 5 regular enemy archetypes · 3 authored bosses · 4 difficulties · Impossible Encore · 13,269 / 13,312 bytes**
+**v0.39.0 submission candidate · 13 trials · 5 regular enemy archetypes · 3 authored bosses · 4 difficulties · Impossible Encore · 13,300 / 13,312 bytes**
 
 </div>
 
@@ -68,13 +68,15 @@ The chained attack hits harder, reaches farther and grants a brief defensive win
 | **Click difficulty card** | Start that difficulty |
 | **Space / Enter on title** | Start Easy |
 | **P** | Pause / resume |
-| **F while paused** | Open / close the Field Guide |
+| **G** | Open / close the Field Guide |
 | **C** | Open Controls from title or pause |
 | **M** | Return / back / menu |
 
+Every visible menu action is also clickable. The title, pause screen, Field Guide, Controls, Game Over and result screen use separate boxed actions instead of separator-delimited text. **BACK** returns Field Guide or Controls to the exact screen that opened it, and clicks outside a visible action remain inert.
+
 ### Laptop-safe pointer controls
 
-The Controls screen has a persistent **MOUSE - ON/OFF** preference.
+The Controls screen centers the persistent **MOUSE ON/OFF** action above the control legend, with **BACK** centered at the bottom.
 
 When pointer gameplay is OFF, mouse movement cannot disturb horn aim and accidental clicks cannot Snap. Arrow Keys and Space remain authoritative, UI clicks still work, and stale pointer state is cleared before re-enabling. The preference is stored locally.
 
@@ -88,8 +90,8 @@ Projectile color is part of the combat grammar.
 
 Gold round kernels can be:
 
-- **grazed** near the vulnerable body for **+13 Style** and charge,
-- **parried** with the horn for **+25 Style** and charge,
+- **grazed** near the vulnerable body for charge and **+13 Style outside boss encounters**,
+- **parried** with the horn for charge and **+25 Style outside boss encounters**,
 - **returned** into enemies and boss shields.
 
 Returned fire rewards precision and distance:
@@ -100,7 +102,7 @@ Returned fire rewards precision and distance:
 | **RETURN x3** | medium counter |
 | **RETURN x4** | long precision counter |
 
-A dangerous projectile can therefore become charge, Style, defense and offense depending on how the player handles it.
+A dangerous projectile can therefore become charge, Style, defense and offense depending on how the player handles it. During boss encounters, repeatable survival loops stay mechanically useful but become **Style-neutral**: summoned adds, grazes, parries, pickups and wall-smashes cannot be farmed indefinitely. Returned kernels that advance boss state and defeating the boss still score.
 
 ### 🔷 Cyan spikes
 
@@ -205,7 +207,7 @@ Its offense creates its weakness: an opening tell leads into a firing window whe
 
 Colonel turns the parry system into encounter structure.
 
-Returned gold kernels are required to open its shield, while the boss also summons alternating Kernel Spitters and Prismcasters. The player has to manage adds, manufacture return angles and capitalize on the temporary opening.
+Returned gold kernels are required to open its shield, while the boss also summons alternating Kernel Spitters and Prismcasters. The player has to manage adds, manufacture return angles and capitalize on the temporary opening. Those summons remain dangerous and tactically useful, but killing them does not add Style, combo or Lucky 13 progress, so delaying the Colonel cannot inflate Best Style.
 
 ## 🐙 Cap'n Cobtopus
 
@@ -218,7 +220,7 @@ Phase I combines protected/open windows, temporary hay and radial returnable fir
 | Hard | 3 |
 | Impossible | 4 |
 
-Destroying one core does not finish the fight. Both must be opened and defeated.
+Destroying one core does not finish the fight. Both must be opened and defeated. The live objective follows the phase: **DEFEAT THE COBTOPUS** becomes **DEFEAT THE COBTOPI** the moment the shell splits.
 
 ### Anti-pin Phase Shift
 
@@ -239,10 +241,10 @@ Difficulty is not a single health multiplier. The game uses a shared pressure sc
 | Hostile attack clocks | slower | baseline | faster | much faster |
 | Hostile movement/projectiles | baseline | baseline | baseline | **+25% simulation pressure** |
 | Regular enemy HP | baseline | baseline | baseline | **1.5×** |
-| Pickups | most generous cadence | baseline | less frequent | least frequent |
+| Pickups | most generous cadence | baseline | less frequent | **Hard cadence + boss sustain** |
 | Late cyan pressure | none | none | introduced after Trial 9 | more frequent |
 | Failed run | retry current trial | restart campaign | restart campaign | restart campaign |
-| Lucky 13 sustain | heart + shield | heart + shield | heart + shield | **score/charge only** |
+| Lucky 13 sustain | heart + shield | heart + shield | heart + shield | **heart + shield** |
 | Colonel return gate | 1 | 1 | 2 | 3 |
 | Cobtopi return gate | 1/core | 2/core | 3/core | 4/core |
 | Final challenge | Trial 13 | Trial 13 | Trial 13 | **Trial 13 + Encore** |
@@ -281,7 +283,7 @@ Normal asks the player to graduate from simply clearing arenas to intentionally 
 
 Hard increases ordinary encounter density to roughly **1.6×** the Normal stage tables and advances hostile attack clocks faster.
 
-Selected ranged trials gain extra reinforcements, later encounters begin mixing cyan spikes into gold projectile fields, pickups become less frequent, and boss HP/return requirements rise.
+Selected ranged trials gain extra reinforcements, later encounters begin mixing cyan spikes into gold projectile fields, pickups become less frequent, and boss HP/return requirements rise. On Hard and Impossible, passive pickups stop spawning when only one regular enemy remains, so preserving a lone target cannot become a sustain farm.
 
 The central difficulty shift is **classification under crowding**: the player must distinguish returnable opportunity from dodge-only danger while several enemy archetypes compete for space.
 
@@ -295,13 +297,13 @@ Impossible keeps ordinary roster density at Hard's level, then changes the rules
 - hostile movement/projectile simulation is accelerated,
 - regular enemies gain **1.5× HP**,
 - projectile classification becomes harsher,
-- pickup cadence is reduced further,
-- Lucky 13 no longer supplies the heart/shield sustain package,
+- passive pickup cadence stays at **Hard's rate**, while boss encounters retain survival pickups,
+- Lucky 13 restores its **heart + shield** sustain package,
 - boss return gates become strictest,
 - temporary-bale pressure accelerates,
 - and defeating Cap'n Cobtopus unlocks one final **Impossible Encore**.
 
-The result is deliberately hostile to autopilot Snap chaining. More of the arena consists of threats that cannot simply be converted into free offense.
+The result is deliberately hostile to autopilot Snap chaining. More of the arena consists of threats that cannot simply be converted into free offense. The restored sustain is intentional: Impossible still attacks at 2.4 pressure with faster hostile motion, 1.5× regular HP, harsher cyan classification, strict boss gates and Encore, but a strong run now gets enough recovery opportunities to keep learning instead of simply starving out.
 
 ### Impossible Encore
 
@@ -328,11 +330,13 @@ Style rewards:
 - Lucky 13 routing,
 - maintaining aggressive flow without getting flattened.
 
-The combo multiplier climbs toward **4×** while active play continues. Each difficulty keeps its own **Best** score.
+The combo multiplier climbs toward **4×** while active play continues. Each difficulty keeps its own **Best** score. Boss encounters deliberately close infinite-score loops: summoned adds do not increase Style, combo or Lucky 13 count, while repeatable boss-stage grazes, parries, pickups and wall-smashes keep their tactical effects without adding Style. Finishing the boss, not stalling it, is therefore the scoring objective.
+
+Impossible also applies a **3× run-end Style premium**. The game keeps raw Style unchanged while the run is active, then multiplies the legitimate total when an Impossible run terminates and persists that value as Impossible Best. Hard and below keep their existing score scale, so a 120,000 Hard benchmark remains 120,000 while a 30,000 raw Impossible run resolves to 90,000. Boss-farming events are already worth zero before this premium is applied, so the multiplier rewards surviving Impossible rather than magnifying stalling.
 
 The final result separates three ideas:
 
-- **Victory**: did you restore the sky?
+- **Victory**: did you defeat the corn army?
 - **Style**: how skillfully and boldly did you fight?
 - **Run quality**: how fast did you finish and how many hearts survived?
 
@@ -357,8 +361,7 @@ Every 13th kill triggers **Lucky 13**:
 - +130 Style,
 - immediate charge / ready state,
 - radial rainbow feedback,
-- on Easy through Hard, an extra heart and shield,
-- on Impossible, the sustain portion is deliberately withheld.
+- an extra heart and shield on **all four difficulties**.
 
 The number 13 is therefore both competition theme and gameplay rhythm.
 
@@ -414,14 +417,14 @@ Stretchicorn is not a tech demo wrapped around one mechanic. The competition bui
 | **Difficulty** | four modes with density, timing, projectile, sustain, gate and retry differences |
 | **Arena** | static cover + temporary hay that warns, hardens, collides and disappears |
 | **Powerups** | Heart, Husk Shield, Butter Boost, Prism power, Gold 2X, Lucky 13 |
-| **Scoring** | Style, combo multiplier, precision return tiers, per-difficulty Best |
+| **Scoring** | Style, combo multiplier, precision returns, per-difficulty Best, Impossible 3× run-end premium |
 | **Visuals** | fully procedural characters, corn, bosses, VFX, hay, terrain, UI and rainbow sky |
 | **Audio** | procedural Web Audio music, bass, percussion, chimes and combat feedback |
 | **Persistence** | per-difficulty Best + pointer preference through guarded localStorage |
 | **Reliability** | deterministic packaging, VM regressions, offline checks, Chromium/Firefox/WebKit smoke |
 | **External runtime assets** | **0** |
 
-The shipping ZIP uses **99.677% of the 13,312 byte limit**. There are **43 bytes free**.
+The shipping ZIP uses **99.910% of the 13,312 byte limit**. There are **12 bytes free**.
 
 ---
 
@@ -569,16 +572,16 @@ The question behind every byte became:
 
 ---
 
-# 13,269 bytes, deterministically
+# 13,301 bytes, deterministically
 
 The current competition artifact is:
 
 ```text
 dist/stretchicorn-js13k.zip
 dist/stretchicorn-desktop-v0.39.0.zip
-13,269 / 13,312 bytes
-43 bytes free
-SHA-256 daa32cb68ac8dc4c34c2e1bd436c67ee34cfe107c744c8dc91d0c5bad360e676
+13,300 / 13,312 bytes
+12 bytes free
+SHA-256 d16772273bc533bc6268125d3cce36bf5bb43d1df2169f50cc2f787ba8255cb1
 ```
 
 The stable and versioned ZIPs are byte-identical and contain exactly one file at archive root:
@@ -586,6 +589,8 @@ The stable and versioned ZIPs are byte-identical and contain exactly one file at
 ```text
 index.html
 ```
+
+The final `dist/stretchicorn-local.html` is also byte-identical to that packed `index.html`, so direct `file://` qualification and exact-ZIP qualification exercise the same game payload through two browser launch paths.
 
 The production path is:
 
@@ -617,7 +622,10 @@ The canonical `npm run release:competition` path covers:
 
 - legacy settings migration and persistent pointer preference,
 - pointer OFF authority while preserving Arrow + Space,
-- title/pause Controls behavior and stale-pointer suppression,
+- independently centered title actions with no separator dot,
+- boxed title/pause/Guide/Controls/Game Over/result click authority,
+- **G** Field Guide shortcut plus exact return-to-origin behavior,
+- explicit Controls mouse toggle and inert empty-space clicks,
 - deterministic multi-difficulty/boss soak with finite-state and entity-count bounds,
 - Easy Morning Stretch progression,
 - the complete 13-trial naming contract,
@@ -642,7 +650,7 @@ The canonical `npm run release:competition` path covers:
 - release metadata and `dist/` hygiene,
 - committed `dist/` parity with rebuilt source,
 - exact submitted ZIP in Chromium, Firefox and WebKit,
-- standalone `file://` playtest in Chromium, Firefox and WebKit.
+- byte-identical standalone `file://` payload in Chromium, Firefox and WebKit.
 
 The final release path is intentionally boring. That is a compliment.
 
@@ -655,17 +663,17 @@ src/                      readable source modules
 scripts/
   run-regressions.mjs    current VM regression manifest
   audit-release.mjs      release metadata + dist hygiene contract
-  build.mjs              source composition + standalone builder
-  pack-competition.mjs   deterministic Terser + Roadroller packer
+  build.mjs              source composition + readable regression builder
+  pack-competition.mjs   deterministic packer + exact local-payload writer
   package.py             deterministic Zopfli ZIP writer
   test-v044.mjs          storage/input + multi-difficulty soak audit
-  test-v043.mjs          persistent pointer-input authority
+  test-v043.mjs          boxed menu click authority + pointer input
   test-v042.mjs          rainbow-popcorn finale + Style semantics
   test-v041.mjs          Easy Morning Stretch built-artifact tutorial
-  test-v040.mjs          Field Guide + mouse + hay regressions
-  test-v039.mjs          collision/pause/retry/Encore authority
-  browser-smoke.mjs      exact submitted ZIP browser interaction smoke
-  file-smoke.mjs         direct standalone file:// browser smoke
+  test-v040.mjs          Field Guide back + mouse + hay regressions
+  test-v039.mjs          collision/pause/G-Guide/retry/Encore authority
+  browser-smoke.mjs      exact submitted ZIP + boxed-menu browser smoke
+  file-smoke.mjs         byte-identical direct file:// browser smoke
 dist/
   index.html
   stretchicorn-local.html

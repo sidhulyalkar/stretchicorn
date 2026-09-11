@@ -8,9 +8,9 @@ Stretchicorn treats the competition ZIP as a reproducible release artifact, not 
 version: 0.39.0
 dist/stretchicorn-js13k.zip
 dist/stretchicorn-desktop-v0.39.0.zip
-13,269 / 13,312 bytes
-43 bytes free
-SHA-256 daa32cb68ac8dc4c34c2e1bd436c67ee34cfe107c744c8dc91d0c5bad360e676
+13,300 / 13,312 bytes
+12 bytes free
+SHA-256 d16772273bc533bc6268125d3cce36bf5bb43d1df2169f50cc2f787ba8255cb1
 ```
 
 The stable and versioned ZIPs are byte-identical.
@@ -19,8 +19,8 @@ The stable and versioned ZIPs are byte-identical.
 
 A release produces:
 
-- `dist/index.html`: generated competition HTML before ZIP packaging
-- `dist/stretchicorn-local.html`: readable standalone `file://` playtest
+- `dist/index.html`: exact packed competition HTML placed in the ZIP
+- `dist/stretchicorn-local.html`: byte-identical packed HTML for direct `file://` playtesting
 - `dist/stretchicorn-desktop-v<VERSION>.zip`: versioned competition artifact
 - `dist/stretchicorn-js13k.zip`: stable alias for the current submission
 
@@ -58,7 +58,7 @@ This is the release gate. It fails closed unless the full chain succeeds.
 
 ### 1. Build current source
 
-`scripts/build.mjs` composes the readable modules, removes explicitly retired seams from the competition composition, applies the safe identifier-golf map and writes both generated HTML forms.
+`scripts/build.mjs` composes the readable modules, removes explicitly retired seams from the competition composition, applies the safe identifier-golf map and writes the readable generated forms used by the VM regression chain.
 
 The readable repository can therefore retain historical context in versioned source modules without shipping duplicate runtime systems.
 
@@ -69,7 +69,13 @@ The readable repository can therefore retain historical context in versioned sou
 The suite currently includes:
 
 - final legacy-settings / input-authority / deterministic soak audit,
-- pointer OFF/ON behavior,
+- explicit boxed menu hitboxes and pointer OFF/ON behavior,
+- title/pause/Guide/Controls/Game Over/result click authority,
+- Guide **G** shortcut and exact return-to-origin behavior,
+- centered Controls action geometry,
+- boss anti-farm Style / combo / Lucky-count isolation,
+- Hard/Impossible last-enemy pickup gating and restored Impossible Lucky sustain,
+- Impossible **3× run-end Style premium**, Hard score-scale preservation and Controls-save isolation,
 - victory/result semantics,
 - Easy Morning Stretch,
 - final 13-trial naming contract,
@@ -93,9 +99,11 @@ Terser 5.50.0
 Roadroller 2.1.0 with a pinned model/configuration
       ↓
 packed dist/index.html
+      ↓
+byte-identical dist/stretchicorn-local.html
 ```
 
-Roadroller is run twice. The two packed outputs must be byte-identical or the release aborts.
+Roadroller is run twice. The two packed outputs must be byte-identical or the release aborts. Only after the readable VM regressions pass does the packer replace the final local-playtest file with the exact packed competition payload. This makes direct `file://` testing another launch path for the submitted bytes rather than a separate browser build.
 
 ### 4. Verify offline behavior
 
@@ -123,7 +131,7 @@ Roadroller is run twice. The two packed outputs must be byte-identical or the re
 
 `scripts/check-size.mjs` prints the used/free byte count and fails above 13,312 bytes.
 
-At the current candidate there are only **43 bytes free**. Any source change should be treated as a release change and requalified from zero.
+The current candidate has **12 bytes free**. Any source change should be treated as a release change and requalified from zero.
 
 ### 8. Audit release metadata and working-tree hygiene
 
@@ -140,7 +148,7 @@ This catches a different class of release bug: a perfectly valid game artifact a
 
 CI rebuilds the release and then checks `git status -- dist`.
 
-If rebuilding changes a tracked artifact or creates a missing artifact, CI fails. This prevents a source commit from silently carrying stale submission bytes.
+If rebuilding changes a tracked artifact or creates a missing artifact, CI fails. This prevents a source commit from silently carrying stale submission bytes. Because the final local playtest is now the packed payload, this parity check also requires `dist/stretchicorn-local.html` and `dist/index.html` to agree exactly.
 
 Expected failure message:
 
@@ -150,7 +158,7 @@ Generated artifacts are stale. Run: npm run release:competition
 
 ## Real-browser qualification
 
-After competition integrity succeeds, GitHub Actions tests the exact committed submission in both **Chromium** and **Firefox**.
+After competition integrity succeeds, GitHub Actions tests the exact committed submission in **Chromium, Firefox and WebKit**.
 
 For the ZIP path, CI:
 
@@ -168,15 +176,15 @@ For the ZIP path, CI:
 12. starts a non-default difficulty,
 13. fails on page errors, console errors or network attempts.
 
-CI then opens `dist/stretchicorn-local.html` directly through `file://` in the same browser and repeats the critical Controls/title/gameplay/pause path.
+CI then opens the **same packed payload** as `dist/stretchicorn-local.html` directly through `file://` in the same browser and repeats the critical Controls/title/gameplay/pause path. The two browser routes therefore differ in launch environment, not game bytes.
 
-This catches browser/runtime failures that a Node VM cannot.
+The VM suite separately verifies the complete boxed menu matrix, including Resume, Guide, Controls, Menu, Back, Retry, Replay and next-difficulty actions. This catches click-routing failures without relying only on browser smoke.
 
 ## Run the browser harness locally
 
 ```bash
 npm install --no-save --package-lock=false playwright@1.55.0
-npx playwright install chromium firefox
+npx playwright install chromium firefox webkit
 
 rm -rf .tmp-js13k
 mkdir .tmp-js13k
@@ -184,16 +192,18 @@ python3 -m zipfile -e dist/stretchicorn-js13k.zip .tmp-js13k
 
 BROWSER=chromium BROWSER_HTML=.tmp-js13k/index.html npm run browser:smoke
 BROWSER=firefox BROWSER_HTML=.tmp-js13k/index.html npm run browser:smoke
+BROWSER=webkit BROWSER_HTML=.tmp-js13k/index.html npm run browser:smoke
 
 BROWSER=chromium BROWSER_HTML=dist/stretchicorn-local.html npm run browser:file-smoke
 BROWSER=firefox BROWSER_HTML=dist/stretchicorn-local.html npm run browser:file-smoke
+BROWSER=webkit BROWSER_HTML=dist/stretchicorn-local.html npm run browser:file-smoke
 ```
 
 Playwright is a developer/CI harness only and is never bundled into the submission.
 
 ## Source-change protocol
 
-Because the candidate has 43 bytes of headroom, do not treat even tiny gameplay copy edits as harmless.
+Because the candidate has 11 bytes of headroom, do not treat even tiny gameplay copy edits as harmless.
 
 For any change that can alter `dist/index.html`:
 
@@ -205,8 +215,9 @@ For any change that can alter `dist/index.html`:
 6. wait for Competition integrity,
 7. wait for Chromium smoke,
 8. wait for Firefox smoke,
-9. wait for Wavedash isolation when relevant,
-10. perform one final human playtest before submission.
+9. wait for WebKit smoke,
+10. wait for Wavedash isolation when relevant,
+11. perform one final human playtest before submission.
 
 Documentation/test-only changes should still leave `dist/` byte-identical.
 
@@ -237,15 +248,18 @@ Before uploading `dist/stretchicorn-js13k.zip`, confirm all of the following:
 - [ ] `npm run release:competition` passes on the intended commit
 - [ ] `npm run audit:release` confirms metadata and `dist/` hygiene
 - [ ] committed `dist/` matches the rebuild
+- [ ] `dist/stretchicorn-local.html` is byte-identical to packed `dist/index.html`
 - [ ] Chromium exact-ZIP smoke is green
 - [ ] Firefox exact-ZIP smoke is green
+- [ ] WebKit exact-ZIP smoke is green
 - [ ] Chromium standalone `file://` smoke is green
 - [ ] Firefox standalone `file://` smoke is green
+- [ ] WebKit standalone `file://` smoke is green
 - [ ] Wavedash isolation is green when the publishing layer changed
-- [ ] manual title → Controls → Easy → boss sampling → result flow still feels correct
+- [ ] manual title → Controls → Easy → pause → Guide/Back → boss sampling → result flow still feels correct
 - [ ] no manual unzip/re-zip step has touched the submission
 
-Do not manually re-compress the archive. At 43 bytes free, a different ZIP tool can easily move the candidate over the limit.
+Do not manually re-compress the archive. At 12 bytes free, a different ZIP tool can easily move the candidate over the limit.
 
 ## Wavedash isolation
 
