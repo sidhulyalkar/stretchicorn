@@ -94,6 +94,6 @@ The release workflow checks the same packed payload in Chromium, Firefox and Web
 - title → gameplay,
 - pause rendering.
 
-The VM regression suite separately exercises combat authority, retries, safe spawns, boss gates, Encore completion, First Flight, Field Guide, boxed menu actions, pointer migration and deterministic soak coverage.
+The VM regression suite separately exercises combat authority, retries, safe spawns, boss gates, Encore completion, First Flight, Field Guide, boxed menu actions, pointer migration, dynamic-block containment (including large enemies and Husk splits), and deterministic multi-difficulty soak coverage.
 
 See [`README.md`](README.md) for the full game overview and [`RELEASING.md`](RELEASING.md) for the deterministic submission pipeline.
