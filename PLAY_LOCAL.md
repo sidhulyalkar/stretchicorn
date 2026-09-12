@@ -12,10 +12,10 @@ The final standalone file is the **exact packed competition HTML** also placed a
 
 The title screen lets you:
 
-- click **Easy / Normal / Hard / Impossible** or press `1`-`4`,
+- click **Easy / Normal / Hard / Impossible**,
 - press Space / Enter to begin Easy,
 - press `G` or click **Field Guide** for the complete combat vocabulary,
-- press `C` or click **Controls** to change pointer gameplay behavior.
+- press `C` or click **Controls** to change pointer or music behavior.
 
 Easy begins with **FIRST FLIGHT** inside Trial 1. Five practice targets appear one at a time and must be defeated with genuine charged Rainbow Snaps before the campaign advances to Trial 2.
 
@@ -26,7 +26,7 @@ There is no separate intro/tutorial physics mode. First Flight uses the producti
 - **WASD**: move the vulnerable heart/body
 - **Mouse or Arrow Keys**: aim the safe horn
 - **Left Click or Space**: Rainbow Snap
-- **P**: pause / resume
+- **P or Esc**: pause / resume
 - **G**: Field Guide / return from Field Guide
 - **C**: Controls
 - **M**: back / menu
@@ -35,11 +35,11 @@ Pause, Field Guide, Controls, Game Over and result actions are also presented as
 
 ### Laptop-safe mode
 
-The Controls screen centers **MOUSE ON/OFF** above the control legend and centers **BACK** at the bottom.
+The Controls screen centers **MOUSE ON/OFF** and **MUSIC ON/OFF** above the control legend and centers **BACK** at the bottom.
 
 Turning mouse gameplay OFF prevents touchpad movement from stealing horn aim and prevents accidental gameplay clicks from triggering Snap. Arrow Keys and Space remain active. Menu clicks remain active so pointer gameplay can always be switched back on.
 
-The setting persists through localStorage when available and fails safely when storage is unavailable.
+The pointer setting persists through localStorage when available and fails safely when storage is unavailable.
 
 ## What to playtest
 
