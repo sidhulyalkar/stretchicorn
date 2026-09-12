@@ -49,6 +49,7 @@ The most useful final checks are not only "can I beat it?" Pay attention to:
 - whether gold kernels read as parry/graze opportunities and cyan spikes read as dodge-only threats,
 - whether Double Rainbow feels discoverable and worth chaining,
 - whether temporary hay gives enough warning before becoming solid,
+- whether cobs cleanly escape if hay hardens around them, without jittering or getting trapped,
 - whether Hideaway, Colonel and Cap'n Cobtopus each communicate a distinct counterplay rule,
 - whether Trial 13 changes its live objective from **DEFEAT THE COBTOPUS** to **DEFEAT THE COBTOPI** immediately after the split,
 - whether **CORN ARMY DEFEATED!** reads as a stronger final result than the restored sky alone,
