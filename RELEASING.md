@@ -8,9 +8,9 @@ Stretchicorn treats the competition ZIP as a reproducible release artifact, not 
 version: 0.39.0
 dist/stretchicorn-js13k.zip
 dist/stretchicorn-desktop-v0.39.0.zip
-13,299 / 13,312 bytes
-13 bytes free
-SHA-256 d16b1ed524a9e4df36933b3c03e61cd91dc3186cb5955be938e2bbf1b7d00ac7
+13,312 / 13,312 bytes
+0 bytes free
+SHA-256 80f6d6aad7f3a7882992402b1bf638928c4130f65ef6eb224408564dc9bc81d1
 ```
 
 The stable and versioned ZIPs are byte-identical.
@@ -73,6 +73,7 @@ The suite currently includes:
 - title/pause/Guide/Controls/Game Over/result click authority,
 - Guide **G** shortcut and exact return-to-origin behavior,
 - centered Controls action geometry,
+- number-free title difficulty cards with retired **1–4** title shortcuts,
 - boss anti-farm Style / combo / Lucky-count isolation,
 - Hard/Impossible last-enemy pickup gating and restored Impossible Lucky sustain,
 - Impossible **3× run-end Style premium**, Hard score-scale preservation and Controls-save isolation,
@@ -131,7 +132,7 @@ Roadroller is run twice. The two packed outputs must be byte-identical or the re
 
 `scripts/check-size.mjs` prints the used/free byte count and fails above 13,312 bytes.
 
-The current candidate has **13 bytes free**. Any source change should be treated as a release change and requalified from zero.
+The current candidate is exactly **13,312 / 13,312 bytes** with **0 bytes free**. Any source change should be treated as a release change and requalified from zero.
 
 ### 8. Audit release metadata and working-tree hygiene
 
@@ -203,7 +204,7 @@ Playwright is a developer/CI harness only and is never bundled into the submissi
 
 ## Source-change protocol
 
-Because the candidate has 13 bytes of headroom, do not treat even tiny gameplay copy edits as harmless.
+Because the candidate has **0 bytes of headroom**, do not treat even tiny gameplay copy edits as harmless.
 
 For any change that can alter `dist/index.html`:
 
@@ -259,7 +260,7 @@ Before uploading `dist/stretchicorn-js13k.zip`, confirm all of the following:
 - [ ] manual title → Controls → Easy → pause → Guide/Back → boss sampling → result flow still feels correct
 - [ ] no manual unzip/re-zip step has touched the submission
 
-Do not manually re-compress the archive. At 13 bytes free, a different ZIP tool can easily move the candidate over the limit.
+Do not manually re-compress the archive. With **0 bytes free**, a different ZIP tool can move the candidate over the limit immediately.
 
 ## Wavedash isolation
 
