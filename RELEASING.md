@@ -10,7 +10,7 @@ dist/stretchicorn-js13k.zip
 dist/stretchicorn-desktop-v0.39.0.zip
 13,312 / 13,312 bytes
 0 bytes free
-SHA-256 80f6d6aad7f3a7882992402b1bf638928c4130f65ef6eb224408564dc9bc81d1
+SHA-256 71e64ddfedfb25a8e30db9f8886b25a4cd27255b81277ddf83e0c6c77e28ac12
 ```
 
 The stable and versioned ZIPs are byte-identical.

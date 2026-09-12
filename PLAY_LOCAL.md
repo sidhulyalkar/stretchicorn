@@ -12,10 +12,10 @@ The final standalone file is the **exact packed competition HTML** also placed a
 
 The title screen lets you:
 
-- click **Easy / Normal / Hard / Impossible** or press `1`-`4`,
+- click **Easy / Normal / Hard / Impossible**,
 - press Space / Enter to begin Easy,
 - press `G` or click **Field Guide** for the complete combat vocabulary,
-- press `C` or click **Controls** to change pointer gameplay behavior.
+- press `C` or click **Controls** to change pointer or music behavior.
 
 Easy begins with **FIRST FLIGHT** inside Trial 1. Five practice targets appear one at a time and must be defeated with genuine charged Rainbow Snaps before the campaign advances to Trial 2.
 
@@ -26,7 +26,7 @@ There is no separate intro/tutorial physics mode. First Flight uses the producti
 - **WASD**: move the vulnerable heart/body
 - **Mouse or Arrow Keys**: aim the safe horn
 - **Left Click or Space**: Rainbow Snap
-- **P**: pause / resume
+- **P or Esc**: pause / resume
 - **G**: Field Guide / return from Field Guide
 - **C**: Controls
 - **M**: back / menu
@@ -35,11 +35,11 @@ Pause, Field Guide, Controls, Game Over and result actions are also presented as
 
 ### Laptop-safe mode
 
-The Controls screen centers **MOUSE ON/OFF** above the control legend and centers **BACK** at the bottom.
+The Controls screen centers **MOUSE ON/OFF** and **MUSIC ON/OFF** above the control legend and centers **BACK** at the bottom.
 
 Turning mouse gameplay OFF prevents touchpad movement from stealing horn aim and prevents accidental gameplay clicks from triggering Snap. Arrow Keys and Space remain active. Menu clicks remain active so pointer gameplay can always be switched back on.
 
-The setting persists through localStorage when available and fails safely when storage is unavailable.
+The pointer setting persists through localStorage when available and fails safely when storage is unavailable.
 
 ## What to playtest
 
@@ -49,6 +49,7 @@ The most useful final checks are not only "can I beat it?" Pay attention to:
 - whether gold kernels read as parry/graze opportunities and cyan spikes read as dodge-only threats,
 - whether Double Rainbow feels discoverable and worth chaining,
 - whether temporary hay gives enough warning before becoming solid,
+- whether cobs cleanly escape if hay hardens around them, without jittering or getting trapped,
 - whether Hideaway, Colonel and Cap'n Cobtopus each communicate a distinct counterplay rule,
 - whether Trial 13 changes its live objective from **DEFEAT THE COBTOPUS** to **DEFEAT THE COBTOPI** immediately after the split,
 - whether **CORN ARMY DEFEATED!** reads as a stronger final result than the restored sky alone,
@@ -72,9 +73,9 @@ Versioned twin:
 **[`dist/stretchicorn-desktop-v0.39.0.zip`](dist/stretchicorn-desktop-v0.39.0.zip)**
 
 ```text
-13,299 / 13,312 bytes
-13 bytes free
-SHA-256 d16b1ed524a9e4df36933b3c03e61cd91dc3186cb5955be938e2bbf1b7d00ac7
+13,312 / 13,312 bytes
+0 bytes free
+SHA-256 71e64ddfedfb25a8e30db9f8886b25a4cd27255b81277ddf83e0c6c77e28ac12
 ```
 
 The stable and versioned ZIPs are byte-identical and each contains exactly one root-level `index.html`.
@@ -93,6 +94,6 @@ The release workflow checks the same packed payload in Chromium, Firefox and Web
 - title → gameplay,
 - pause rendering.
 
-The VM regression suite separately exercises combat authority, retries, safe spawns, boss gates, Encore completion, First Flight, Field Guide, boxed menu actions, pointer migration and deterministic soak coverage.
+The VM regression suite separately exercises combat authority, retries, safe spawns, boss gates, Encore completion, First Flight, Field Guide, boxed menu actions, pointer migration, dynamic-block containment (including large enemies and Husk splits), and deterministic multi-difficulty soak coverage.
 
 See [`README.md`](README.md) for the full game overview and [`RELEASING.md`](RELEASING.md) for the deterministic submission pipeline.
