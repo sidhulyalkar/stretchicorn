@@ -6,7 +6,7 @@
 
 ### **STRETCH · SNAP · SHUCK.**
 
-A complete desktop arcade-action game packed into a **13,312 byte js13k ZIP**.
+A complete desktop arcade-action game packed into a **13,309 byte js13k ZIP**.
 
 Stretchicorn is a desktop arcade-action game built for js13kGames 2026. You control a unicorn split into two linked parts: a vulnerable body and a safe horn. Pull them apart to charge the rainbow between them, then release that tension as a Rainbow Snap to dash, attack, parry incoming fire, and fight through 13 trials of hostile corn.
 
@@ -14,7 +14,7 @@ Built for **js13kGames 2026 · Unicorns & Rainbows**.
 
 [**Download the standalone HTML**](dist/stretchicorn-local.html) · [**Download the js13k submission ZIP**](dist/stretchicorn-js13k.zip) · [**Read the release process**](RELEASING.md)
 
-**v0.39.0 submission candidate · 13 trials · 5 regular enemy archetypes · 3 authored bosses · 4 difficulties · Impossible Encore · 13,312 / 13,312 bytes**
+**v0.39.0 submission candidate · 13 trials · 5 regular enemy archetypes · 3 authored bosses · 4 difficulties · Impossible Encore · 13,309 / 13,312 bytes**
 
 </div>
 
@@ -488,7 +488,7 @@ Stretchicorn is not a tech demo wrapped around one mechanic. The competition bui
 | **Reliability** | deterministic packaging, VM regressions, offline checks, Chromium/Firefox/WebKit smoke |
 | **External runtime assets** | **0** |
 
-The shipping ZIP uses **100% of the 13,312 byte limit**. There are **0 bytes free**.
+The shipping ZIP uses **99.977% of the 13,312 byte limit**. There are **3 bytes free**.
 
 ---
 
@@ -643,9 +643,9 @@ The current competition artifact is:
 ```text
 dist/stretchicorn-js13k.zip
 dist/stretchicorn-desktop-v0.39.0.zip
-13,312 / 13,312 bytes
-0 bytes free
-SHA-256 80f6d6aad7f3a7882992402b1bf638928c4130f65ef6eb224408564dc9bc81d1
+13,309 / 13,312 bytes
+3 bytes free
+SHA-256 371f627c1750e09edababa22d68909069b82697bfbd22d3756dd250392fc6f16
 ```
 
 The stable and versioned ZIPs are byte-identical and contain exactly one file at archive root:
