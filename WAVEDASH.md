@@ -1,27 +1,38 @@
-# Wavedash release branch
+# Wavedash SDK release branch
 
-Wavedash is now a first-class Stretchicorn platform target rather than a loader-only wrapper. Shared gameplay and the js13k competition artifact remain inherited from `main`, while all platform features live in `src/wavedash-platform.js` and are excluded from the 13KB ZIP.
+This branch is intentionally separate from `main` and exists only for the post-js13k Wavedash integration window.
 
-See [`wavedash/RAINBOW_LEAGUE.md`](wavedash/RAINBOW_LEAGUE.md) for the complete feature map, Developer Portal setup, and playtest checklist.
+George confirmed the rule directly: post-deadline work is allowed **as long as it is only SDK calls and not updates to gameplay itself**. This branch therefore treats the submitted game as frozen. Combat, movement, balance, rendering, level flow, RNG, collisions, scoring, controls, and win conditions are not changed.
 
-## Direct dashboard upload
+## Architecture
 
-The repository-root `index.html` loads the readable Stretchicorn source, then loads `src/wavedash-platform.js` after the final game renderer. That platform layer owns the Wavedash lifecycle:
+The repository-root `index.html`, `src/style.css`, and all gameplay/rendering source files remain byte-identical to the Wavedash release base.
 
-```js
-Wavedash.updateLoadProgressZeroToOne(1)
-Wavedash.init({ debug: false, deferEvents: true })
+`npm run wavedash:build` creates `wavedash-dist/` by copying those frozen files and replacing only the original one-line Wavedash init hook in the copied `index.html` with:
+
+```html
+<script src="src/wavedash-platform.js"></script>
 ```
 
-It then enables identity/presence, leaderboards, achievements/stats, cloud saves, leaderboard-attached ghost UGC, and host event synchronization.
+`src/wavedash-platform.js` then owns SDK initialization and passive platform telemetry. It may observe existing game state, but it must not write gameplay state or draw additional game UI.
 
-If `window.Wavedash` is absent, the platform layer returns immediately and the readable game still runs as a normal local browser build.
+## SDK integrations
 
-## Isolated Wavedash build
+The platform layer currently uses:
 
-`npm run wavedash:build` creates `wavedash-dist/` from the readable platform-aware source files. This is intentional: Wavedash does not impose the 13KB js13k payload ceiling, so the platform edition can use clear, auditable integration code and replay data without spending competition bytes.
+- player identity, friends, and presence
+- eight leaderboards: Style + Clear Time for each difficulty
+- thirteen achievements and persistent stats
+- cloud saves for existing settings and personal bests
+- `GAME_MANAGED` replay-trace UGC attached to new Style PB entries
+- backend reconnect events
+- stats persistence events
+- host mute/fullscreen state
+- a local Wavedash-filesystem retry queue for ranked runs interrupted by connectivity loss
 
-The normal `dist/index.html` js13k artifact is still generated and tested separately and must remain Wavedash-free.
+Only full campaigns that start from Trial 1 are leaderboard eligible. Existing checkpoint retries remain fully playable, but they never submit Style, Clear Time, replay UGC, or full-campaign clear achievements.
+
+## Build and verification
 
 ```bash
 npm run wavedash:build
@@ -30,15 +41,25 @@ npm run wavedash:dev
 npm run wavedash:push
 ```
 
-## One-time achievement/stat setup
+`npm run wavedash:test` deliberately does **not** rebuild or repack the js13k submission. It verifies that:
 
-Import `wavedash/achievements.json` in the Stretchicorn Developer Portal before the judged build. It defines thirteen themed achievements plus the stats consumed by the platform layer.
+- the generated Wavedash shell differs from the frozen root shell only at the SDK init hook,
+- all copied gameplay/rendering files are byte-identical,
+- the platform file contains no ghost renderer, title/victory renderer override, canvas overlay, or Wavedash-specific gameplay presentation,
+- SDK calls for identity/presence, leaderboards, stats/achievements, cloud storage, replay UGC, and lifecycle handling are present,
+- an executable SDK mock proves checkpoint fairness, PB replay attachment, cloud/stat behavior, and reconnect-safe leaderboard submission.
 
-The eight Style / Clear Time boards are created with `getOrCreateLeaderboard()`. Run one playtest while signed in as a member of the Stretchicorn Wavedash team so they are created as visible team-owned leaderboards, then verify visibility in the Leaderboards tab.
+The GitHub workflow also rejects any pull-request diff outside the explicit SDK/tooling/documentation allowlist. That CI rule is the mechanical guardrail around George's eligibility boundary.
+
+## Developer Portal setup
+
+Import `wavedash/achievements.json` under the Stretchicorn game's Achievements section. It defines the thirteen achievements plus the stat identifiers consumed by the SDK layer.
+
+The eight leaderboards are created with `getOrCreateLeaderboard()`. Run one sandbox/playtest while signed in as a member of the Stretchicorn Wavedash team, then verify all eight are Visible in the Leaderboards tab.
 
 ## Configuration
 
-Copy `wavedash.example.toml` to `wavedash.toml`, keep the real generated game ID locally, and use:
+Copy `wavedash.example.toml` to `wavedash.toml` and insert the real game ID:
 
 ```toml
 game_id = "YOUR_REAL_GAME_ID"
@@ -46,15 +67,17 @@ upload_dir = "./wavedash-dist"
 entrypoint = "index.html"
 ```
 
-`wavedash.toml` and `wavedash-dist/` are ignored so local publishing state and generated platform artifacts do not leak into source control.
+`wavedash.toml` and `wavedash-dist/` remain ignored so credentials/build output do not enter source control.
 
-## Release invariant
+## Live sandbox checklist
 
-Before publishing a Wavedash build, both should pass:
+Before publishing the judged build:
 
-```bash
-npm run verify
-npm run wavedash:test
-```
-
-`npm run verify` protects the exact js13k release and 13,312-byte ceiling. `npm run wavedash:test` builds and audits the richer Wavedash edition. The two targets intentionally share gameplay while keeping platform integration outside the competition payload.
+1. Run `npm run wavedash:test`.
+2. Run `npm run wavedash:dev`.
+3. Confirm all eight leaderboards exist with the expected sort/display rules.
+4. Trigger several achievements and verify stats persist after reload.
+5. Change the existing Music/SFX/Mouse settings, reload, and verify cloud restoration.
+6. Complete a Trial-1 campaign and verify Style + Clear Time submissions plus attached replay-trace UGC.
+7. Complete an Easy checkpoint retry and verify no ranked submission or full-campaign achievement is produced.
+8. Disconnect/reconnect during a full-run clear and verify the locally queued result submits exactly once after reconnection.
