@@ -21,7 +21,7 @@ const requiredApis=[
   'requestStats','setStat','setAchievement','storeStats',
   'remoteFileExists','writeLocalFile','uploadRemoteFile','downloadRemoteFile','readLocalFile',
   'createUGCItem','downloadUGCItem','deleteUGCItem',
-  'getUsername','getUserId','updateUserPresence',
+  'getUsername','getUserId','listFriends','updateUserPresence','toggleOverlay',
   'MUTE_CHANGED','FULLSCREEN_CHANGED','BACKEND_CONNECTED','BACKEND_DISCONNECTED',
 ];
 for(const api of requiredApis)if(!platformJs.includes(api))throw Error(`missing Wavedash integration seam: ${api}`);
@@ -32,4 +32,4 @@ if(manifest.achievements.length!==13)throw Error(`expected 13 Stretchicorn achie
 const achievementIds=new Set(manifest.achievements.map(a=>a.identifier));
 for(const id of ['FIRST_SNAP','DOUBLE_RAINBOW','LUCKY_13','KERNEL_PARRY','HUSK_CLEAR','COLONEL_CLEAR','MAX_COMBO','CAPN_CLEAR','EASY_CLEAR','NORMAL_CLEAR','HARD_CLEAR','IMPOSSIBLE_CLEAR','PERFECT_13'])if(!achievementIds.has(id))throw Error(`achievement manifest missing ${id}`);
 
-console.log('PASS: Wavedash Rainbow League ships identity/presence, 8 boards, 13 achievements, stats, cloud sync, attached ghost UGC, host events and responsive full-bleed presentation while the js13k artifact remains platform-free');
+console.log('PASS: Wavedash Rainbow League ships identity/friends/presence, 8 boards, 13 achievements, stats, cloud sync, attached ghost UGC, social overlay, host events and responsive full-bleed presentation while the js13k artifact remains platform-free');
