@@ -10,8 +10,12 @@ on:
     paths:
       - 'index.html'
       - 'package.json'
+      - 'src/style.css'
+      - 'src/wavedash-platform.js'
       - 'scripts/build-wavedash.mjs'
       - 'scripts/test-wavedash.mjs'
+      - 'scripts/test-wavedash-platform.mjs'
+      - 'wavedash/**'
       - 'wavedash.example.toml'
       - 'WAVEDASH.md'
       - '.github/workflows/verify-wavedash.yml'
@@ -26,6 +30,7 @@ concurrency:
 jobs:
   verify-wavedash:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check out candidate
         uses: actions/checkout@v5
