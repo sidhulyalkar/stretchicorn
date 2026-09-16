@@ -1,10 +1,23 @@
-import {readFileSync,writeFileSync,mkdirSync,rmSync} from 'node:fs';
+import {copyFileSync,mkdirSync,rmSync} from 'node:fs';
+import {dirname,join} from 'node:path';
 
-const input='dist/index.html',outDir='wavedash-dist',out=`${outDir}/index.html`;
-const html=readFileSync(input,'utf8');
-const hook='<script>if(window.Wavedash){Wavedash.updateLoadProgressZeroToOne(1);Wavedash.init({debug:false})}</script>';
+const outDir='wavedash-dist';
+const files=[
+  'index.html',
+  'src/style.css',
+  'src/00-core.js',
+  'src/01-combat.js',
+  'src/02-update.js',
+  'src/03-render.js',
+  'src/04-ui-input.js',
+  'src/03-keyart-v026.js',
+  'src/wavedash-platform.js',
+];
 
 rmSync(outDir,{recursive:true,force:true});
-mkdirSync(outDir,{recursive:true});
-writeFileSync(out,html+hook);
-console.log(`Wavedash build: ${out}`);
+for(const file of files){
+  const target=join(outDir,file);
+  mkdirSync(dirname(target),{recursive:true});
+  copyFileSync(file,target);
+}
+console.log(`Wavedash build: ${outDir}/ (${files.length} files, readable platform layer enabled)`);
