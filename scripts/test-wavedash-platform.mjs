@@ -5,7 +5,7 @@ import {TextEncoder,TextDecoder} from'node:util';
 
 const source=readFileSync('src/wavedash-platform.js','utf8');
 const raf=[],listeners={},events={},stats=new Map(),achievements=new Set(),boards=[],uploads=[],ugc=[],presence=[],files=new Map();
-let now=0,initCalls=0;
+let now=0,initCalls=0,overlayToggles=0;
 
 const noop=()=>{},gradient={addColorStop:noop};
 const gctx=new Proxy({beginPath:noop,clearRect:noop,moveTo:noop,lineTo:noop,stroke:noop,arc:noop,fill:noop,fillText:noop,save:noop,restore:noop},
@@ -29,7 +29,7 @@ const SDK={
   init:opts=>{initCalls++;assert.equal(opts.deferEvents,true);return true},
   on:(name,fn)=>events[name]=fn,readyForEvents:noop,
   getUsername:()=> 'tester',getUserId:()=> 'user-1',getUser:()=>({username:'tester',id:'user-1'}),
-  isMuted:()=>false,isFullscreen:()=>false,toggleOverlay:()=>true,
+  isMuted:()=>false,isFullscreen:()=>false,toggleOverlay:()=>{overlayToggles++;return true},
   listFriends:async()=>({success:true,data:[{isOnline:true},{isOnline:false}]}),
   updateUserPresence:async p=>(presence.push(p),{success:true}),
   requestStats:async()=>({success:true,data:true}),getStat:id=>stats.get(id)||0,setStat:(id,v)=>(stats.set(id,v),true),
@@ -88,6 +88,7 @@ assert.equal(stats.get('PARRIES'),1);assert(achievements.has('KERNEL_PARRY'));
 sandbox.killE({});
 assert.equal(stats.get('TOTAL_KILLS'),1,'eligible kill delta should be tracked');
 
+sandbox.window.__stretchicornWavedash.lastWave=5;
 sandbox.wave=6;
 sandbox.mode=1;
 assert(raf.length,'monitor RAF should be installed');
@@ -115,5 +116,6 @@ assert.equal(styleUpload.metadata.hearts,13);
 assert.equal(styleUpload.metadata.difficulty,'easy');
 
 listeners.keydown?.({key:'F2',repeat:false,preventDefault:noop});
+assert.equal(overlayToggles,1,'F2 should open the Wavedash overlay exactly once');
 assert.equal(storage.SV,'1,1,1','platform hooks must not corrupt numeric settings serialization');
-console.log('PASS: executable Wavedash mock covers lifecycle, 8 boards, identity/friends, presence, stats, achievements, cloud-safe settings, dual score upload and attached Rainbow Ghost UGC');
+console.log('PASS: executable Wavedash mock covers lifecycle, 8 boards, identity/friends, presence, stats, achievements, cloud-safe settings, dual score upload, attached Rainbow Ghost UGC and overlay access');
