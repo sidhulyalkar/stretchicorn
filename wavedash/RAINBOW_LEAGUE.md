@@ -61,6 +61,8 @@ Import `wavedash/achievements.json` in the Developer Portal. The platform layer 
 - `Cob Comeback`: reach the existing Impossible Encore
 - `Pure Spectrum`: complete all four zero-powerup difficulty challenges
 
+Only the player-facing titles changed during the final naming pass. Stable achievement identifiers remain unchanged so SDK wiring, saved achievement state, and portal references remain compatible.
+
 ### Long-tail return goals
 
 - `Popcorn Apprentice`: 1,300 eligible defeats
