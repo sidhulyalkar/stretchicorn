@@ -1,21 +1,27 @@
 # Wavedash release branch
 
-This branch is the Wavedash publishing layer for the current `main` Stretchicorn release. Shared gameplay, balance, tests, documentation, and the js13k competition artifact are inherited directly from `main`; Wavedash integration stays isolated outside the 13KB submission bundle.
+Wavedash is now a first-class Stretchicorn platform target rather than a loader-only wrapper. Shared gameplay and the js13k competition artifact remain inherited from `main`, while all platform features live in `src/wavedash-platform.js` and are excluded from the 13KB ZIP.
+
+See [`wavedash/RAINBOW_LEAGUE.md`](wavedash/RAINBOW_LEAGUE.md) for the complete feature map, Developer Portal setup, and playtest checklist.
 
 ## Direct dashboard upload
 
-The repository-root `index.html` loads the readable Stretchicorn source and, after all five game scripts have loaded, signals Wavedash readiness with:
+The repository-root `index.html` loads the readable Stretchicorn source, then loads `src/wavedash-platform.js` after the final game renderer. That platform layer owns the Wavedash lifecycle:
 
 ```js
 Wavedash.updateLoadProgressZeroToOne(1)
-Wavedash.init({debug:false})
+Wavedash.init({ debug: false, deferEvents: true })
 ```
 
-For a direct dashboard upload, upload the branch contents with the root `index.html` as the entrypoint.
+It then enables identity/presence, leaderboards, achievements/stats, cloud saves, leaderboard-attached ghost UGC, and host event synchronization.
+
+If `window.Wavedash` is absent, the platform layer returns immediately and the readable game still runs as a normal local browser build.
 
 ## Isolated Wavedash build
 
-The platform build uses the exact js13k `dist/index.html` generated from `main`, then writes a separate `wavedash-dist/index.html` with the Wavedash readiness hook appended. The competition artifact itself is never modified.
+`npm run wavedash:build` creates `wavedash-dist/` from the readable platform-aware source files. This is intentional: Wavedash does not impose the 13KB js13k payload ceiling, so the platform edition can use clear, auditable integration code and replay data without spending competition bytes.
+
+The normal `dist/index.html` js13k artifact is still generated and tested separately and must remain Wavedash-free.
 
 ```bash
 npm run wavedash:build
@@ -24,7 +30,11 @@ npm run wavedash:dev
 npm run wavedash:push
 ```
 
-`npm run wavedash:test` checks both supported Wavedash entrypoints and also verifies that the js13k competition artifact contains no Wavedash code.
+## One-time achievement/stat setup
+
+Import `wavedash/achievements.json` in the Stretchicorn Developer Portal before the judged build. It defines thirteen themed achievements plus the stats consumed by the platform layer.
+
+The eight Style / Clear Time boards are created with `getOrCreateLeaderboard()`. Run one playtest while signed in as a member of the Stretchicorn Wavedash team so they are created as visible team-owned leaderboards, then verify visibility in the Leaderboards tab.
 
 ## Configuration
 
@@ -40,11 +50,11 @@ entrypoint = "index.html"
 
 ## Release invariant
 
-Before publishing a Wavedash build, both of these should pass:
+Before publishing a Wavedash build, both should pass:
 
 ```bash
 npm run verify
 npm run wavedash:test
 ```
 
-The first command validates the exact js13k release artifact and 13,312-byte ceiling. The second validates the Wavedash-only publishing shell. This separation keeps platform integration from changing the competition submission.
+`npm run verify` protects the exact js13k release and 13,312-byte ceiling. `npm run wavedash:test` builds and audits the richer Wavedash edition. The two targets intentionally share gameplay while keeping platform integration outside the competition payload.
