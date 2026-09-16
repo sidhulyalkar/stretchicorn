@@ -9,7 +9,7 @@
   SDK integrations:
   - player identity, friends, and presence
   - 8 leaderboards (Style + clear time for each difficulty)
-  - 13 achievements + persistent stats
+  - 39 achievements + persistent stats
   - cloud save sync for settings and personal bests
   - GAME_MANAGED replay-trace UGC attached to Style PB entries
   - backend, stats-persistence, mute, and fullscreen lifecycle events
@@ -25,6 +25,19 @@
     { value: 1.6, key: 'hard', label: 'Hard' },
     { value: 2.4, key: 'impossible', label: 'Impossible' },
   ];
+  const POWERUP_MESSAGES = new Map([
+    ['HEART KERNEL +1', 1],
+    ['HUSK SHIELD', 2],
+    ['BUTTER BOOST', 4],
+    ['PRISM COB POWER', 8],
+    ['GOLD COB • 2X', 16],
+  ]);
+  const NO_POWER_ACHIEVEMENTS = {
+    easy: 'NO_POWER_EASY',
+    normal: 'NO_POWER_NORMAL',
+    hard: 'NO_POWER_HARD',
+    impossible: 'NO_POWER_IMPOSSIBLE',
+  };
   const SAVE_PATH = 'stretchicorn/profile-v1.json';
   const PENDING_PATH = 'stretchicorn/pending-ranked-runs-v1.json';
   const TRACE_RATE_HZ = 10;
@@ -66,6 +79,21 @@
     runSerial: 0,
     submittedRunSerial: -1,
     runEligible: true,
+    runGrazes: 0,
+    runParries: 0,
+    runDoubleRainbows: 0,
+    runPowerups: 0,
+    powerupMask: 0,
+    runWallSmashes: 0,
+    runHeartLost: false,
+    trialGrazes: 0,
+    trialHeartLost: false,
+    currentSlashKills: 0,
+    bestSlashKills: 0,
+    prismAtRunT: -Infinity,
+    x4Seconds: 0,
+    lastObservedRunT: typeof runT === 'number' ? runT : 0,
+    encoreSeen: false,
   };
   window.__stretchicornWavedash = platform;
 
@@ -131,6 +159,26 @@
     if (!SDK.getAchievement(id) && SDK.setAchievement(id, false)) scheduleStatsStore();
   }
 
+  function achievementKnown(id) {
+    return platform.pendingAchievements.has(id) || (platform.statsReady && !!SDK.getAchievement(id));
+  }
+
+  function statKnownAtLeast(id, threshold = 1) {
+    const remote = platform.statsReady ? Number(SDK.getStat(id) || 0) : 0;
+    const pending = Number(platform.pendingStatMax.get(id) || 0);
+    return Math.max(remote, pending) >= threshold;
+  }
+
+  function maybeUnlockPureSpectrum() {
+    if (Object.values(NO_POWER_ACHIEVEMENTS).every(achievementKnown)) unlock('PURE_SPECTRUM');
+  }
+
+  function markTimePbImproved(key) {
+    const id = `PB_IMPROVED_${key.toUpperCase()}`;
+    queueStatMax(id, 1);
+    if (DIFFICULTIES.every(d => statKnownAtLeast(`PB_IMPROVED_${d.key.toUpperCase()}`))) unlock('CORN_PRIX_CHAMPION');
+  }
+
   function flushQueuedStats() {
     if (!platform.statsReady) return;
     const adds = [...platform.pendingStatAdds];
@@ -163,6 +211,8 @@
     if (!response?.success) return false;
     platform.statsReady = true;
     flushQueuedStats();
+    maybeUnlockPureSpectrum();
+    if (DIFFICULTIES.every(d => statKnownAtLeast(`PB_IMPROVED_${d.key.toUpperCase()}`))) unlock('CORN_PRIX_CHAMPION');
     return true;
   }
 
@@ -310,6 +360,11 @@
       kills: snapshot.kills,
       maxCombo: snapshot.maxCombo,
       encore: snapshot.encore ? 1 : 0,
+      powerups: snapshot.powerups,
+      grazes: snapshot.grazes,
+      parries: snapshot.parries,
+      doubleRainbows: snapshot.doubleRainbows,
+      bestSlash: snapshot.bestSlash,
       trace: snapshot.trace,
       ugcId: null,
     };
@@ -338,15 +393,39 @@
     if (platform.online) drainPendingRuns();
   }
 
+  function runMetadata(record, includeTime = true) {
+    return {
+      difficulty: record.difficulty,
+      ...(includeTime ? { timeMs: record.timeMs } : { style: record.score }),
+      hearts: record.hearts,
+      kills: record.kills,
+      maxCombo: Number(Number(record.maxCombo || 1).toFixed(2)),
+      encore: record.encore ? 1 : 0,
+      powerups: Number(record.powerups || 0),
+      grazes: Number(record.grazes || 0),
+      parries: Number(record.parries || 0),
+      doubleRainbows: Number(record.doubleRainbows || 0),
+      bestSlash: Number(record.bestSlash || 0),
+      fullRun: 1,
+    };
+  }
+
   async function submitPendingRun(record) {
     const d = DIFFICULTIES.find(item => item.key === record.difficulty);
     if (!d) return true;
     const ids = await ensureBoards(d);
     if (!ids) return false;
 
-    const ownStyle = await safe('leaderboard-own-style', () => SDK.getMyLeaderboardEntries(ids.style));
-    if (!ownStyle?.success) return false;
+    const [ownStyle, ownTime] = await Promise.all([
+      safe('leaderboard-own-style', () => SDK.getMyLeaderboardEntries(ids.style)),
+      safe('leaderboard-own-time', () => SDK.getMyLeaderboardEntries(ids.time)),
+    ]);
+    if (!ownStyle?.success || !ownTime?.success) return false;
     const previous = ownStyle.data?.[0] || null;
+    const previousTime = ownTime.data?.[0] || null;
+    const styleImproved = !!previous && record.score > Number(previous.score || 0);
+    const timeImproved = !!previousTime && record.timeMs < Number(previousTime.score || 0);
+    const timeImprovementMs = timeImproved ? Number(previousTime.score) - record.timeMs : 0;
     let styleRank = previous?.globalRank || null;
     let submittedStyleRank = null;
     let stylePB = false;
@@ -356,21 +435,12 @@
         record.ugcId = await createReplayUGC(record) || null;
         if (record.ugcId) await persistPendingRuns();
       }
-      const metadata = {
-        difficulty: record.difficulty,
-        timeMs: record.timeMs,
-        hearts: record.hearts,
-        kills: record.kills,
-        maxCombo: Number(Number(record.maxCombo || 1).toFixed(2)),
-        encore: record.encore ? 1 : 0,
-        fullRun: 1,
-      };
       const styleResult = await safe('leaderboard-style-upload', () => SDK.uploadLeaderboardScore(
         ids.style,
         record.score,
         true,
         record.ugcId || undefined,
-        metadata,
+        runMetadata(record, true),
       ));
       if (!styleResult?.success) return false;
       styleRank = styleResult.data.globalRank;
@@ -390,23 +460,24 @@
       await persistPendingRuns();
     }
 
-    const timeMetadata = {
-      difficulty: record.difficulty,
-      style: record.score,
-      hearts: record.hearts,
-      kills: record.kills,
-      maxCombo: Number(Number(record.maxCombo || 1).toFixed(2)),
-      encore: record.encore ? 1 : 0,
-      fullRun: 1,
-    };
     const timeResult = await safe('leaderboard-time-upload', () => SDK.uploadLeaderboardScore(
       ids.time,
       record.timeMs,
       true,
       undefined,
-      timeMetadata,
+      runMetadata(record, false),
     ));
     if (!timeResult?.success) return false;
+    const timePB = !!timeResult.data.scoreChanged;
+
+    if (timePB && timeImprovementMs >= 13000) unlock('THIRTEEN_FASTER');
+    if (timePB && timeImproved) markTimePbImproved(record.difficulty);
+    if (stylePB && styleImproved && timePB && timeImproved) unlock('DUAL_PB');
+
+    if (d.key === 'impossible' && styleRank && styleRank <= 13) {
+      const top = await safe('leaderboard-impossible-top13', () => SDK.listLeaderboardEntries(ids.style, 0, 13, false));
+      if (top?.success && top.data.length >= 13) unlock('WORLDS_END');
+    }
 
     platform.lastResult = {
       styleRank,
@@ -414,7 +485,7 @@
       timeRank: timeResult.data.globalRank,
       submittedTimeRank: timeResult.data.submittedRank,
       stylePB,
-      timePB: !!timeResult.data.scoreChanged,
+      timePB,
     };
     setPresence(
       `Cleared ${d.label}`,
@@ -456,6 +527,11 @@
       kills: Math.max(0, Math.round(kills)),
       maxCombo: platform.currentMaxCombo || combo || 1,
       encore: D > 2 && queen === 3,
+      powerups: platform.runPowerups,
+      grazes: platform.runGrazes,
+      parries: platform.runParries,
+      doubleRainbows: platform.runDoubleRainbows,
+      bestSlash: platform.bestSlashKills,
       trace: platform.trace.slice(),
     };
   }
@@ -475,9 +551,13 @@
     queueStatMax(`BEST_STYLE_${key}`, snapshot.score);
     queueStatMin(`BEST_TIME_${key}_MS`, snapshot.timeMs);
     queueStatMax('MAX_COMBO', snapshot.maxCombo);
-    unlock('CAPN_CLEAR');
     unlock(`${key}_CLEAR`);
-    if (snapshot.hearts === 13) unlock('PERFECT_13');
+    if (snapshot.hearts === 13) unlock('FULL_HEARTS');
+    if (snapshot.powerups === 0) {
+      unlock(NO_POWER_ACHIEVEMENTS[snapshot.difficulty.key]);
+      maybeUnlockPureSpectrum();
+    }
+    if (snapshot.difficulty.key === 'hard' && !platform.runHeartLost) unlock('UNTOUCHED');
     flushStatsNow();
     uploadCloud();
     queueRankedRun(snapshot);
@@ -491,6 +571,21 @@
     platform.currentMaxCombo = 1;
     platform.lastResult = null;
     platform.lastWave = wave;
+    platform.runGrazes = 0;
+    platform.runParries = 0;
+    platform.runDoubleRainbows = 0;
+    platform.runPowerups = 0;
+    platform.powerupMask = 0;
+    platform.runWallSmashes = 0;
+    platform.runHeartLost = false;
+    platform.trialGrazes = 0;
+    platform.trialHeartLost = false;
+    platform.currentSlashKills = 0;
+    platform.bestSlashKills = 0;
+    platform.prismAtRunT = -Infinity;
+    platform.x4Seconds = 0;
+    platform.lastObservedRunT = runT;
+    platform.encoreSeen = false;
     queueStatAdd('RUNS_STARTED', 1);
     refreshPresence(true);
   }
@@ -529,12 +624,15 @@
   startKick = function (...args) {
     const beforeKick = kick;
     const result = baseStartKick.apply(this, args);
+    if (beforeKick <= 0 && kick > 0) platform.currentSlashKills = 0;
     if (beforeKick <= 0 && kick > 0 && snap > 0) {
       queueStatAdd('TOTAL_SNAPS', 1);
       unlock('FIRST_SNAP');
       if (snap === 2) {
+        platform.runDoubleRainbows++;
         queueStatAdd('DOUBLE_RAINBOWS', 1);
         unlock('DOUBLE_RAINBOW');
+        if (runT - platform.prismAtRunT <= 3) unlock('PRISM_BREAK');
       }
     }
     return result;
@@ -557,12 +655,58 @@
     return result;
   };
 
+  const baseKickCollisions = kickCollisions;
+  kickCollisions = function (...args) {
+    const before = kills;
+    const result = baseKickCollisions.apply(this, args);
+    const gained = Math.max(0, kills - before);
+    if (gained) {
+      platform.currentSlashKills += gained;
+      platform.bestSlashKills = Math.max(platform.bestSlashKills, platform.currentSlashKills);
+      queueStatMax('BEST_SLASH_KILLS', platform.bestSlashKills);
+      if (platform.currentSlashKills >= 5) unlock('CORN_COMBINE');
+    }
+    return result;
+  };
+
+  const baseHurt = hurt;
+  hurt = function (...args) {
+    const before = hearts;
+    const result = baseHurt.apply(this, args);
+    if (hearts < before) {
+      platform.runHeartLost = true;
+      platform.trialHeartLost = true;
+    }
+    return result;
+  };
+
   const baseSay = say;
   say = function (message, ...args) {
     const result = baseSay.call(this, message, ...args);
     if (message === 'PARRY!') {
+      platform.runParries++;
       queueStatAdd('PARRIES', 1);
       unlock('KERNEL_PARRY');
+      if (platform.runParries >= 13) unlock('RETURN_DEPARTMENT');
+    } else if (message === 'GRAZE!') {
+      platform.runGrazes++;
+      platform.trialGrazes++;
+      queueStatAdd('TOTAL_GRAZES', 1);
+      unlock('CLOSE_SHAVE');
+      if (platform.trialGrazes >= 13 && !platform.trialHeartLost) unlock('THREAD_NEEDLE');
+    } else if (message === 'WALL SMASH') {
+      platform.runWallSmashes++;
+      queueStatAdd('WALL_SMASHES', 1);
+      if (platform.runWallSmashes >= 5) unlock('WALL_TO_WALL');
+    }
+
+    const powerupBit = POWERUP_MESSAGES.get(message);
+    if (powerupBit) {
+      platform.runPowerups++;
+      platform.powerupMask |= powerupBit;
+      queueStatAdd('POWERUPS_COLLECTED', 1);
+      if (message === 'PRISM COB POWER') platform.prismAtRunT = runT;
+      if (platform.powerupMask === 31) unlock('FULL_PANTRY');
     }
     return result;
   };
@@ -576,6 +720,13 @@
 
   function monitor() {
     const nowMs = Math.round(runT * 1000);
+    const runDelta = mode === 1 ? Math.max(0, runT - platform.lastObservedRunT) : 0;
+    if (mode === 1 && combo >= 3.95 && runDelta > 0) {
+      platform.x4Seconds += runDelta;
+      if (platform.x4Seconds >= 13) unlock('FULL_SPECTRUM');
+    }
+    platform.lastObservedRunT = runT;
+
     if (mode === 1 && platform.runEligible && (platform.lastSampleMs < 0 || nowMs - platform.lastSampleMs >= 1000 / TRACE_RATE_HZ)) {
       platform.lastSampleMs = nowMs;
       if (platform.trace.length < 12000) platform.trace.push([nowMs, Math.round(A.x), Math.round(A.y), Math.round(P.x), Math.round(P.y)]);
@@ -587,9 +738,16 @@
       if (platform.currentMaxCombo >= 3.95) unlock('MAX_COMBO');
     }
 
+    if (platform.runEligible && mode === 1 && D > 2 && queen === 3 && !platform.encoreSeen) {
+      platform.encoreSeen = true;
+      unlock('ENCORE_REACHED');
+    }
+
     if (wave !== platform.lastWave) {
       const previous = platform.lastWave;
       platform.lastWave = wave;
+      platform.trialGrazes = 0;
+      platform.trialHeartLost = false;
       if (platform.runEligible && previous === 5 && wave > 5) unlock('HUSK_CLEAR');
       if (platform.runEligible && previous === 9 && wave > 9) unlock('COLONEL_CLEAR');
       refreshPresence(true);
