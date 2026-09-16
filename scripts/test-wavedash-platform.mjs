@@ -147,6 +147,6 @@ await settle();
 assert.equal(storage.SV,'1,1,1','SDK hooks must not corrupt numeric settings serialization');
 listeners.pagehide?.();
 await settle();
-assert.deepEqual(presence.at(-1),{},'pagehide should clear Wavedash presence without touching gameplay');
+assert.equal(Object.keys(presence.at(-1)).length,0,'pagehide should clear Wavedash presence without touching gameplay');
 
 console.log('PASS: executable Wavedash mock proves observer wrappers preserve game returns, checkpoint clears stay unranked, full runs submit dual leaderboards + replay UGC, cloud/stat calls persist, and offline ranked runs drain safely after reconnect');
