@@ -1,17 +1,15 @@
-name: Verify Wavedash layer
+name: Verify Wavedash SDK layer
 
 on:
   push:
     branches:
-      - platform/wavedash-v0.21.0
+      - feat/wavedash-rainbow-league
+      - platform/wavedash-v0.39.0
   pull_request:
     branches:
       - main
     paths:
-      - 'index.html'
       - 'package.json'
-      - 'src/style.css'
-      - 'src/wavedash.css'
       - 'src/wavedash-platform.js'
       - 'scripts/build-wavedash.mjs'
       - 'scripts/test-wavedash.mjs'
@@ -35,11 +33,27 @@ jobs:
     steps:
       - name: Check out candidate
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Enforce SDK-only post-deadline scope
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          base='${{ github.event.pull_request.base.sha }}'
+          changed="$(git diff --name-only "$base"...HEAD)"
+          echo "$changed"
+          forbidden="$(printf '%s\n' "$changed" | grep -Ev '^(\.github/workflows/verify-wavedash\.yml|WAVEDASH\.md|package\.json|scripts/build-wavedash\.mjs|scripts/test-wavedash\.mjs|scripts/test-wavedash-platform\.mjs|src/wavedash-platform\.js|wavedash/.*|wavedash\.example\.toml)$' || true)"
+          if [[ -n "$forbidden" ]]; then
+            echo 'Post-deadline Wavedash work must be SDK integration/tooling only. Forbidden diff:'
+            echo "$forbidden"
+            exit 1
+          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22'
 
-      - name: Verify isolated Wavedash build
+      - name: Verify isolated Wavedash SDK build
         run: npm run wavedash:test
