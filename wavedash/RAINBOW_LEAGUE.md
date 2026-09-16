@@ -24,12 +24,12 @@ Core boards:
 Long-tail challenge boards:
 
 - `Biggest Harvest`
-- `Purist Style - Hard`
-- `Purist Style - Impossible`
+- `Silky Style - Hard`
+- `Silky Style - Impossible`
 
 Style and challenge boards sort descending. Clear Time sorts ascending in milliseconds. Every submission uses `keepBest: true`.
 
-Challenge-board metadata records the already-completed run plus frozen-build provenance (`gameBuild` and `traceVersion`). `Biggest Harvest` submits the run's best observed single-slash eligible-defeat count. The two Purist boards submit only zero-powerup full campaigns on the named difficulty.
+Challenge-board metadata records the already-completed run plus frozen-build provenance (`gameBuild` and `traceVersion`). `Biggest Harvest` submits the run's best observed single-slash eligible-defeat count. The two Silky Style boards submit only zero-powerup full campaigns on the named difficulty.
 
 Only a campaign started from Trial 1 is rank eligible. Existing checkpoint retry behavior is untouched, and checkpoint completions never call either the core or challenge ranking paths.
 
@@ -39,13 +39,13 @@ Import `wavedash/achievements.json` in the Developer Portal. The platform layer 
 
 ### First-session discovery
 
-`First Snap`, `Double Rainbow`, `Lucky 13`, `Close Shave`, `Return to Sender`, `Rainbow Engine`, `Husk Cracked`, `Colonel Down`, the four difficulty clears, and `Full Hearts`.
+`First Snap`, `Double Rainbow`, `Lucky 13`, `Close Shave`, `Return to Sender`, `Rainbow Engine`, `Husk Cracked`, `Colonel Chop`, `Easy Pickings`, `Full Shuck`, `Hard Shuck`, `Rainbow Royalty`, and `Heart Hold'em`.
 
 ### One-run mastery
 
 - `Corn Combine`: five eligible defeats during one existing horn slash
-- `Thread the Needle`: thirteen grazes in one Trial before a heart loss
-- `Return Department`: thirteen parries in one run
+- `Great Grazer`: thirteen grazes in one Trial before a heart loss
+- `Parry Party`: thirteen parries in one run
 - `Full Spectrum`: thirteen cumulative seconds at x4 combo
 - `Wall to Wall`: five Wall Smashes in one run
 - `Prism Break`: Double Rainbow within three seconds of collecting Prism Cob
@@ -55,10 +55,10 @@ Import `wavedash/achievements.json` in the Developer Portal. The platform layer 
 
 - `Plain Corn`: Easy with zero powerups
 - `Dry Shuck`: Normal with zero powerups
-- `Bare Rainbow`: Hard with zero powerups
-- `Barely Possible`: Impossible with zero powerups
-- `Untouched`: Hard without ever losing a heart
-- `NOT YET.`: reach the existing Impossible Encore
+- `Raw Rainbow`: Hard with zero powerups
+- `Powerless Pony`: Impossible with zero powerups
+- `Pristine Prance`: Hard without ever losing a heart
+- `Cob Comeback`: reach the existing Impossible Encore
 - `Pure Spectrum`: complete all four zero-powerup difficulty challenges
 
 ### Long-tail return goals
@@ -87,9 +87,9 @@ The PB logic compares against the player's existing Wavedash entries before subm
 
 After import, mark these four Secret in Wavedash:
 
-- `NO_POWER_IMPOSSIBLE` — Barely Possible
-- `UNTOUCHED` — Untouched
-- `ENCORE_REACHED` — NOT YET.
+- `NO_POWER_IMPOSSIBLE` — Powerless Pony
+- `UNTOUCHED` — Pristine Prance
+- `ENCORE_REACHED` — Cob Comeback
 - `PURE_SPECTRUM` — Pure Spectrum
 
 ## 4. Cloud saves
@@ -141,10 +141,11 @@ The automated suite checks:
 - copied gameplay/rendering files are byte-identical
 - no custom Wavedash renderer/UI exists
 - exactly 11 leaderboard definitions and 39 achievements exist
+- final player-facing achievement names and Silky Style board names are locked in tests
 - long-tail thresholds are locked to the intended values
 - observer wrappers preserve frozen function returns
 - checkpoint clears cannot submit core or challenge records
-- slash/graze/parry/powerup/x4/purist/PB/Encore observers remain SDK-only
+- slash/graze/parry/powerup/x4/zero-powerup/PB/Encore observers remain SDK-only
 - core and challenge offline queues drain after reconnect
 - challenge metadata includes frozen-build provenance
 - `World's End` is reconciled on reconnect
