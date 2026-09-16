@@ -5,7 +5,8 @@ const outDir='wavedash-dist';
 const rootIndex=readFileSync('index.html','utf8');
 const legacyHook='<script>if(window.Wavedash){Wavedash.updateLoadProgressZeroToOne(1);Wavedash.init({debug:false})}</script>';
 if(!rootIndex.includes(legacyHook))throw Error('frozen root index no longer contains the expected Wavedash init hook');
-const platformIndex=rootIndex.replace(legacyHook,'<script src="src/wavedash-platform.js"></script>');
+const platformHook='<script src="src/wavedash-platform.js"></script><script src="wavedash/challenge-platform.js"></script>';
+const platformIndex=rootIndex.replace(legacyHook,platformHook);
 const files=[
   'src/style.css',
   'src/00-core.js',
@@ -15,6 +16,7 @@ const files=[
   'src/04-ui-input.js',
   'src/03-keyart-v026.js',
   'src/wavedash-platform.js',
+  'wavedash/challenge-platform.js',
 ];
 
 rmSync(outDir,{recursive:true,force:true});
