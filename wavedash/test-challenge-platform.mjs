@@ -45,13 +45,13 @@ await settle();
 const challenge=sandbox.window.__stretchicornWavedashChallenges;
 assert(challenge,'challenge extension should expose audit state');
 assert.equal(challenge.loaded,true,'challenge retry queue should load');
-for(const name of ['Biggest Harvest','Purist Style - Hard','Purist Style - Impossible'])assert(boards.some(b=>b.name===name),`missing challenge board ${name}`);
+for(const name of ['Biggest Harvest','Silky Style - Hard','Silky Style - Impossible'])assert(boards.some(b=>b.name===name),`missing challenge board ${name}`);
 
 platform.runSerial=1;platform.runEligible=true;platform.runPowerups=0;platform.bestSlashKills=7;platform.runGrazes=14;platform.runParries=13;platform.runDoubleRainbows=4;platform.currentMaxCombo=4;
 sandbox.D=1.6;sandbox.score=5000;sandbox.runT=321.5;sandbox.hearts=11;sandbox.kills=600;sandbox.combo=4;sandbox.mode=5;tick();await settle(24);
-assert.equal(uploads.length,2,'purist Hard clear should submit harvest + purist boards');
+assert.equal(uploads.length,2,'zero-powerup Hard clear should submit harvest + Silky Style boards');
 assert(uploads.some(u=>u.id==='lb-Biggest Harvest'&&u.score===7));
-assert(uploads.some(u=>u.id==='lb-Purist Style - Hard'&&u.score===5000));
+assert(uploads.some(u=>u.id==='lb-Silky Style - Hard'&&u.score===5000));
 for(const u of uploads){
   assert.equal(u.keepBest,true);assert.equal(u.metadata.fullRun,1);assert.equal(u.metadata.gameBuild,'eee2ac40c71070ddb1502e16362e3b9490d5ce61');assert.equal(u.metadata.traceVersion,1);
 }
@@ -65,14 +65,14 @@ assert.equal(uploads.length,2,'offline challenge clear must queue locally');
 assert.equal(challenge.pending.length,1);assert(files.has('stretchicorn/pending-challenge-runs-v1.json'));
 platform.online=true;trigger('connected');await settle(32);
 assert.equal(challenge.pending.length,0,'reconnect should drain challenge queue');
-assert.equal(uploads.length,4,'reconnect should submit queued harvest + purist result exactly once');
+assert.equal(uploads.length,4,'reconnect should submit queued harvest + Silky Style result exactly once');
 
 worldOwn={globalRank:8,score:9000};worldTop=Array.from({length:13},(_,i)=>({globalRank:i+1,score:10000-i}));
 trigger('connected');await runTimers();await settle();
 assert(achievements.has('WORLDS_END'),'startup/reconnect reconciliation should unlock Worlds End once Top 13 is populated');
 
 sandbox.mode=0;tick();platform.runSerial=4;platform.runEligible=true;platform.runPowerups=0;platform.bestSlashKills=9;platform.runGrazes=20;platform.runParries=18;platform.runDoubleRainbows=6;sandbox.D=2.4;sandbox.score=9000;sandbox.runT=280;sandbox.hearts=9;sandbox.kills=620;sandbox.mode=5;tick();await settle(32);
-assert(uploads.some(u=>u.id==='lb-Purist Style - Impossible'&&u.score===9000),'Impossible purist clear should submit its challenge board');
+assert(uploads.some(u=>u.id==='lb-Silky Style - Impossible'&&u.score===9000),'Impossible zero-powerup clear should submit its Silky Style board');
 assert(uploads.some(u=>u.id==='lb-Biggest Harvest'&&u.score===9),'Impossible clear should also compete on Biggest Harvest');
 
 console.log('PASS: Wavedash challenge extension creates 3 SDK-only boards, persists offline challenge clears, adds frozen-build provenance, preserves checkpoint fairness, and reconciles Worlds End on reconnect');
