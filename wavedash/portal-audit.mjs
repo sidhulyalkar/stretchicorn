@@ -17,6 +17,7 @@ let remote;
 try{remote=JSON.parse(run.stdout)}catch(error){
   console.error('Could not parse `wavedash achievement list --json` output:',error.message);process.exit(1);
 }
+const bool=v=>v===true||v===1||v==='true'||v==='1';
 const byId=new Map(remote.map(a=>[a.identifier,a]));
 const problems=[];
 for(const [id,a] of expected){
@@ -27,7 +28,7 @@ for(const [id,a] of expected){
   const secret=r.secret??r.isSecret??r.is_secret;
   if(title!=null&&title!==a.display_name)problems.push(`${id}: portal title ${JSON.stringify(title)} != ${JSON.stringify(a.display_name)}`);
   if(description!=null&&description!==a.description)problems.push(`${id}: portal description differs from manifest`);
-  if(secret!=null&&Boolean(secret)!==secretIds.has(id))problems.push(`${id}: secret=${Boolean(secret)} but expected ${secretIds.has(id)}`);
+  if(secret!=null&&bool(secret)!==secretIds.has(id))problems.push(`${id}: secret=${JSON.stringify(secret)} but expected ${secretIds.has(id)}`);
 }
 for(const id of byId.keys())if(!expected.has(id))problems.push(`obsolete/unexpected portal achievement ${id}`);
 if(remote.length!==39)problems.push(`portal has ${remote.length} achievements; expected exactly 39`);
