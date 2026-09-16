@@ -40,7 +40,8 @@ const requiredApis=[
 for(const api of requiredApis)if(!allSdkJs.includes(api))throw Error(`missing Wavedash integration seam: ${api}`);
 
 if(!/Style - \$\{d\.label\}/.test(platformJs)||!/Clear Time - \$\{d\.label\}/.test(platformJs))throw Error('per-difficulty Style + clear-time boards are not configured');
-for(const name of ['Biggest Harvest','Purist Style - Hard','Purist Style - Impossible'])if(!challengeJs.includes(name))throw Error(`challenge leaderboard missing: ${name}`);
+for(const name of ['Biggest Harvest','Silky Style - Hard','Silky Style - Impossible'])if(!challengeJs.includes(name))throw Error(`challenge leaderboard missing: ${name}`);
+if(/Purist Style/.test(challengeJs))throw Error('stale Purist Style leaderboard name remains in challenge layer');
 if(!/pending-challenge-runs-v1\.json/.test(challengeJs)||!/drainPending/.test(challengeJs))throw Error('challenge leaderboards do not have reconnect-safe submission');
 if(!/eee2ac40c71070ddb1502e16362e3b9490d5ce61/.test(challengeJs)||!/traceVersion/.test(challengeJs))throw Error('challenge leaderboard provenance is missing');
 if(!/WORLDS_END/.test(challengeJs)||!/worlds-end-own-entry/.test(challengeJs))throw Error('Worlds End startup/reconnect reconciliation is missing');
@@ -65,6 +66,18 @@ assert.equal(achievementIds.size,39,'achievement identifiers must be unique');
 const statIds=new Set(manifest.stats.map(s=>s.identifier));
 for(const id of ['TOTAL_KILLS','TOTAL_SNAPS','DOUBLE_RAINBOWS','PARRIES','TOTAL_GRAZES','WALL_SMASHES','POWERUPS_COLLECTED','RUNS_CLEARED','BEST_SLASH_KILLS','PB_IMPROVED_EASY','PB_IMPROVED_NORMAL','PB_IMPROVED_HARD','PB_IMPROVED_IMPOSSIBLE'])if(!statIds.has(id))throw Error(`achievement manifest missing stat ${id}`);
 const byId=Object.fromEntries(manifest.achievements.map(a=>[a.identifier,a]));
+const finalNames={
+  COLONEL_CLEAR:'Colonel Chop',
+  IMPOSSIBLE_CLEAR:'Rainbow Royalty',
+  FULL_HEARTS:"Heart Hold'em",
+  THREAD_NEEDLE:'Great Grazer',
+  RETURN_DEPARTMENT:'Parry Party',
+  NO_POWER_HARD:'Raw Rainbow',
+  NO_POWER_IMPOSSIBLE:'Powerless Pony',
+  UNTOUCHED:'Pristine Prance',
+  ENCORE_REACHED:'Cob Comeback',
+};
+for(const [id,name] of Object.entries(finalNames))assert.equal(byId[id].display_name,name,`${id} display name drifted`);
 assert.deepEqual(byId.POPCORN_APPRENTICE.stat_requirement,{stat:'TOTAL_KILLS',threshold:1300});
 assert.deepEqual(byId.CORN_REAPER.stat_requirement,{stat:'TOTAL_KILLS',threshold:13000});
 assert.deepEqual(byId.MAIZE_MASTER.stat_requirement,{stat:'TOTAL_KILLS',threshold:130000});
