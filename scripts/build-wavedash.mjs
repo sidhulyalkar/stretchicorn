@@ -5,6 +5,7 @@ const outDir='wavedash-dist';
 const files=[
   'index.html',
   'src/style.css',
+  'src/wavedash.css',
   'src/00-core.js',
   'src/01-combat.js',
   'src/02-update.js',
