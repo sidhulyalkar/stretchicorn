@@ -7,13 +7,13 @@
   the js13k release remains byte-for-byte independent.
 
   Features:
-  - Wavedash identity + presence
-  - 8 competitive leaderboards (Style + clear time for each difficulty)
-  - achievements + persistent stats
-  - cloud sync for settings and per-difficulty personal bests
-  - leaderboard-attached GAME_MANAGED ghost replays
-  - translucent world-#1 ghost racing overlay
-  - host mute/fullscreen/connection awareness
+  - player identity, friends and live presence
+  - 8 leaderboards (Style + clear time for each difficulty)
+  - 13 achievements + persistent stats
+  - cloud sync for settings and personal bests
+  - leaderboard-attached GAME_MANAGED ghost UGC
+  - translucent world-#1 Rainbow Ghost racing overlay
+  - Wavedash overlay shortcut and host connection/mute/fullscreen awareness
 */
 (() => {
   const SDK = window.Wavedash;
@@ -35,6 +35,7 @@
   const platform = {
     username: 'PLAYER',
     userId: '',
+    friendsOnline: 0,
     online: true,
     muted: false,
     fullscreen: false,
@@ -49,6 +50,7 @@
     ghost: null,
     ghostName: '',
     ghostRank: 0,
+    ghostScore: 0,
     ghostDifficulty: '',
     lastSampleMs: -1,
     lastMode: typeof mode === 'number' ? mode : 0,
@@ -56,6 +58,7 @@
     lastPresence: '',
     lastPresenceAt: 0,
     lastResult: null,
+    currentMaxCombo: 1,
     runSerial: 0,
     submittedRunSerial: -1,
     toast: '',
@@ -180,12 +183,14 @@
     if (uploaded?.success) toast('WAVEDASH CLOUD SAVED', 1.6);
   }
 
-  function applyCloudProfile(payload) {
+  function applyCloudProfile(payload, preserveLocalSettings = false) {
     if (!payload || payload.version !== 1) return;
-    if (typeof payload.settings === 'string' && payload.settings) {
-      localStorage.SV = payload.settings;
+    if (!preserveLocalSettings && typeof payload.settings === 'string' && payload.settings) {
       const values = payload.settings.split(',').map(Number);
-      if (values.length >= 2) V = [values[0] > 0, values[1] > 0, values.length > 2 ? values[2] > 0 : true];
+      if (values.length >= 2 && values.slice(0, 2).every(Number.isFinite)) {
+        V = [values[0] > 0 ? 1 : 0, values[1] > 0 ? 1 : 0, values.length > 2 && Number.isFinite(values[2]) ? (values[2] > 0 ? 1 : 0) : 1];
+        localStorage.SV = V.join(',');
+      }
     }
     for (const d of DIFFICULTIES) {
       const key = `SB${d.value.toFixed(1)}`;
@@ -203,7 +208,7 @@
         const bytes = await safe('cloud-read', () => SDK.readLocalFile(SAVE_PATH));
         if (bytes) {
           try {
-            applyCloudProfile(JSON.parse(decoder.decode(bytes.data || bytes)));
+            applyCloudProfile(JSON.parse(decoder.decode(bytes.data || bytes)), platform.cloudDirty);
             toast('WAVEDASH CLOUD SYNCED', 1.8);
           } catch (error) {
             console.warn('[Wavedash:cloud-parse]', error);
@@ -235,6 +240,11 @@
 
   async function initBoards() {
     await Promise.all(DIFFICULTIES.map(ensureBoards));
+  }
+
+  async function initFriends() {
+    const response = await safe('friends', () => SDK.listFriends());
+    if (response?.success) platform.friendsOnline = response.data.filter(friend => friend.isOnline).length;
   }
 
   function ghostPayload(snapshot) {
@@ -272,6 +282,7 @@
     platform.ghost = null;
     platform.ghostName = '';
     platform.ghostRank = 0;
+    platform.ghostScore = 0;
     platform.ghostDifficulty = d.key;
     if (!entry?.ugcId) return;
     const path = `ghosts/${d.key}-${entry.userId}.json`;
@@ -285,6 +296,7 @@
       platform.ghost = data;
       platform.ghostName = entry.username || 'WORLD #1';
       platform.ghostRank = entry.globalRank || 1;
+      platform.ghostScore = Number(entry.score || 0);
       toast(`GHOST LOADED • #${platform.ghostRank} ${platform.ghostName}`, 2.2);
     } catch (error) {
       console.warn('[Wavedash:ghost-parse]', error);
@@ -323,6 +335,8 @@
       { ...metadata, style: snapshot.score },
     ));
 
+    if (ugcId && (!styleResult?.success || !styleResult.data.scoreChanged)) safe('ghost-delete-unused', () => SDK.deleteUGCItem(ugcId));
+
     if (styleResult?.success) {
       platform.lastResult = {
         styleRank: styleResult.data.globalRank,
@@ -338,18 +352,10 @@
       ].filter(Boolean).join(' • ');
       toast(`WAVEDASH • ${flags}`, 5);
 
-      if (styleResult.data.scoreChanged && previous?.ugcId && previous.ugcId !== ugcId) {
+      if (ugcId && styleResult.data.scoreChanged && previous?.ugcId && previous.ugcId !== ugcId) {
         safe('ghost-delete-old', () => SDK.deleteUGCItem(previous.ugcId));
       }
     }
-
-    await safe('friends-nearby', async () => {
-      const friends = await SDK.listLeaderboardEntriesAroundUser(ids.style, 2, 2, true);
-      if (friends?.success && friends.data?.length) {
-        const me = friends.data.find(e => e.userId === platform.userId);
-        if (me) platform.lastResult.friendRank = me.globalRank;
-      }
-    });
   }
 
   function snapshotRun() {
@@ -424,9 +430,9 @@
 
   const baseStartKick = startKick;
   startKick = function (...args) {
-    const before = snap;
+    const beforeKick = kick;
     const result = baseStartKick.apply(this, args);
-    if (snap && snap !== before) {
+    if (beforeKick <= 0 && kick > 0 && snap > 0) {
       queueStatAdd('TOTAL_SNAPS', 1);
       unlock('FIRST_SNAP');
       if (snap === 2) {
@@ -470,18 +476,39 @@
     return result;
   };
 
-  // Add platform identity to the title without changing the competition renderer.
+  // Add platform identity to the final title renderer without touching js13k.
   const baseTitle = title;
   title = function (...args) {
     const result = baseTitle.apply(this, args);
-    const ghost = platform.ghostName ? ` • GHOST #${platform.ghostRank || 1} ${platform.ghostName}` : '';
-    txt(`WAVEDASH • ${platform.username}${ghost}`, W - 18, H - 14, 10, platform.online ? '#9abbb2' : '#ff8f8f', 'right');
-    if (platform.muted) txt('HOST MUTED', 18, H - 14, 10, '#ffcf69');
+    const friends = platform.friendsOnline ? ` • ${platform.friendsOnline} FRIEND${platform.friendsOnline === 1 ? '' : 'S'} ONLINE` : '';
+    const ghost = platform.ghostName ? ` • GHOST #${platform.ghostRank || 1} ${platform.ghostName} ${platform.ghostScore}` : '';
+    txt(`WAVEDASH • ${platform.username}${friends}${ghost}`, W - 18, H - 14, 10, platform.online ? '#9abbb2' : '#ff8f8f', 'right');
+    txt('F2 WAVEDASH', 18, H - 14, 10, '#7d91a0');
+    if (platform.muted) txt('HOST MUTED', 18, H - 30, 10, '#ffcf69');
     return result;
   };
 
-  // Ghost canvas is intentionally separate from the game canvas: it never changes
-  // collision, replay determinism, screenshot tests, or the competition renderer.
+  const baseVictory = victory;
+  victory = function (...args) {
+    const result = baseVictory.apply(this, args);
+    if (platform.lastResult) {
+      const ranks = [`STYLE #${platform.lastResult.styleRank}`];
+      if (platform.lastResult.timeRank) ranks.push(`TIME #${platform.lastResult.timeRank}`);
+      if (platform.lastResult.stylePB) ranks.push('NEW PB');
+      txt(`WAVEDASH • ${ranks.join(' • ')}`, W / 2, H / 2 + 120, 12, '#9bffca', 'center');
+    }
+    return result;
+  };
+
+  addEventListener('keydown', event => {
+    if (event.key === 'F2' && !event.repeat) {
+      event.preventDefault();
+      SDK.toggleOverlay?.();
+    }
+  });
+
+  // Ghost canvas is separate from the game canvas. It never changes collision,
+  // scoring, RNG, screenshot contracts or the competition renderer.
   const ghostCanvas = document.createElement('canvas');
   ghostCanvas.width = W;
   ghostCanvas.height = H;
@@ -503,12 +530,22 @@
     ghostCanvas.style.height = `${rect.height}px`;
   }
 
+  function ghostFrameIndex(frames, targetMs) {
+    let lo = 0, hi = frames.length - 1;
+    while (lo < hi) {
+      const mid = Math.ceil((lo + hi) / 2);
+      if ((frames[mid]?.[0] ?? Infinity) <= targetMs) lo = mid;
+      else hi = mid - 1;
+    }
+    return lo;
+  }
+
   function drawGhost() {
     syncGhostCanvas();
     GX.clearRect(0, 0, W, H);
     if (mode !== 1 || !platform.ghost?.frames?.length || platform.ghostDifficulty !== difficulty().key) return;
     const frames = platform.ghost.frames;
-    const index = Math.min(frames.length - 1, Math.max(0, Math.round(runT * (platform.ghost.rate || GHOST_RATE_HZ))));
+    const index = ghostFrameIndex(frames, Math.round(runT * 1000));
     const frame = frames[index];
     if (!frame || frame.length < 5) return;
     const [, ax, ay, px, py] = frame;
@@ -552,9 +589,12 @@
   }
 
   function drawToast() {
-    if (!platform.toast || performance.now() > platform.toastUntil) return;
-    const rect = C.getBoundingClientRect();
     let el = document.querySelector('#wavedash-toast');
+    if (!platform.toast || performance.now() > platform.toastUntil) {
+      if (el) el.style.display = 'none';
+      return;
+    }
+    const rect = C.getBoundingClientRect();
     if (!el) {
       el = document.createElement('div');
       el.id = 'wavedash-toast';
@@ -578,11 +618,6 @@
     el.style.top = `${rect.top + 12}px`;
   }
 
-  function hideExpiredToast() {
-    const el = document.querySelector('#wavedash-toast');
-    if (el && performance.now() > platform.toastUntil) el.style.display = 'none';
-  }
-
   function monitor() {
     const nowMs = Math.round(runT * 1000);
     if (mode === 1 && (platform.lastSampleMs < 0 || nowMs - platform.lastSampleMs >= 1000 / GHOST_RATE_HZ)) {
@@ -590,8 +625,8 @@
       if (platform.trace.length < 12000) platform.trace.push([nowMs, Math.round(A.x), Math.round(A.y), Math.round(P.x), Math.round(P.y)]);
     }
 
-    if (mode === 1) {
-      platform.currentMaxCombo = Math.max(platform.currentMaxCombo || 1, combo || 1);
+    if (mode === 1 && combo > platform.currentMaxCombo) {
+      platform.currentMaxCombo = combo;
       queueStatMax('MAX_COMBO', platform.currentMaxCombo);
       if (platform.currentMaxCombo >= 3.95) unlock('MAX_COMBO');
     }
@@ -618,7 +653,6 @@
     if (performance.now() - platform.lastPresenceAt > 12000) refreshPresence();
     drawGhost();
     drawToast();
-    hideExpiredToast();
     requestAnimationFrame(monitor);
   }
 
@@ -653,6 +687,7 @@
   refreshPresence();
   initStats();
   initCloud();
-  initBoards().then(() => loadTopGhost(difficulty()));
+  initFriends();
+  initBoards();
   requestAnimationFrame(monitor);
 })();
