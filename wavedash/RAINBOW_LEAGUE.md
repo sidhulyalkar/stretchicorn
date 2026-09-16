@@ -1,13 +1,14 @@
 # Stretchicorn Rainbow League — Wavedash integration
 
-The Wavedash build intentionally uses a readable, platform-specific layer outside the 13KB competition artifact. The js13k ZIP remains unchanged and contains no Wavedash code.
+The Wavedash build intentionally uses a readable, platform-specific layer outside the 13KB competition artifact. The js13k ZIP remains unchanged and contains no Wavedash code. Wavedash-only full-bleed presentation also lives in `src/wavedash.css`, so platform polish cannot silently alter the submitted competition artifact.
 
 ## What the Wavedash edition adds
 
-1. **Player identity + presence**
-   - Shows the signed-in Wavedash username on the title screen.
+1. **Player identity + social presence**
+   - Shows the signed-in Wavedash username and online-friend count on the title screen.
    - Publishes live presence for title, Trial progress, pause, game over and campaign clear.
    - Tracks backend connectivity and host mute/fullscreen state.
+   - `F2` opens the native Wavedash overlay without adding a competing in-game social shell.
 
 2. **Eight competitive leaderboards**
    - `Style - Easy`
@@ -21,6 +22,8 @@ The Wavedash build intentionally uses a readable, platform-specific layer outsid
 
    Style sorts descending. Clear time sorts ascending and uses milliseconds. Both keep each player's personal best. Entries include compact run metadata: difficulty, time, hearts, kills, max combo, Style and Encore state.
 
+   **Fairness boundary:** only runs started from Trial 1 are rank-eligible. Easy mode's legitimate current-Trial retry remains available, but a checkpoint clear is explicitly marked `UNRANKED` and cannot submit Style, clear time, personal-best leaderboard stats or ghost UGC. This prevents a partial-campaign retry from competing against full runs.
+
 3. **Thirteen achievements + persistent stats**
    - Import `wavedash/achievements.json` once in the Developer Portal.
    - Achievements are tied to actual Stretchicorn mechanics: Rainbow Snap, Double Rainbow, Lucky 13, parry mastery, boss clears, maximum combo, difficulty clears and a 13-heart perfect clear.
@@ -32,9 +35,10 @@ The Wavedash build intentionally uses a readable, platform-specific layer outsid
    - Saves queue safely if the player changes a setting before initial cloud hydration finishes.
 
 5. **Rainbow Ghost UGC**
-   - Every run records a compact 10 Hz body/head trace without affecting simulation state.
+   - Every rank-eligible run records a compact 10 Hz body/head trace without affecting simulation state.
    - A new personal-best Style run is uploaded as `GAME_MANAGED` UGC and attached directly to that leaderboard entry.
-   - The current world-#1 Style ghost for the selected difficulty downloads automatically and appears as a translucent rainbow rival during the next run.
+   - On the next full run, the client examines the leading Style entries and downloads the **highest-ranked available entry with attached ghost UGC**. This gracefully handles legacy/high-ranked scores created before ghost integration.
+   - The selected rival appears as a translucent rainbow trajectory labeled with rank and player name.
    - Superseded personal-best ghost UGC is deleted after a better attached entry is accepted, preventing orphaned replay accumulation.
    - Ghost data is visualization-only: it never participates in collision, scoring, RNG or game state.
 
@@ -61,10 +65,11 @@ npm run wavedash:dev
 
 `npm run wavedash:test` first regenerates the normal js13k artifact, then builds a separate readable `wavedash-dist/` folder and checks that:
 
-- the 13KB competition artifact has no Wavedash code,
-- full-bleed Wavedash presentation remains intact,
+- the 13KB competition artifact has no Wavedash code or Wavedash-only presentation,
+- the submitted competition CSS stays canonical while `src/wavedash.css` supplies the full-bleed platform skin,
 - the platform layer owns SDK initialization,
-- identity/presence, leaderboards, stats, achievements, cloud saves, UGC and host events are all wired,
+- identity/friends/presence, leaderboards, stats, achievements, cloud saves, UGC, overlay access and host events are wired,
+- checkpoint retries cannot contaminate full-run leaderboards or ghost UGC,
 - exactly thirteen achievement definitions are present.
 
 When the sandbox playtest is clean:
@@ -78,13 +83,15 @@ npm run wavedash:push
 Run at least one short test per lane before publishing a judged build:
 
 - Title shows `WAVEDASH • <username>` and no gray gutter.
+- `F2` opens/closes the Wavedash overlay and the title reports online friends when present.
 - Wavedash host mute toggles do not break the in-game Music/SFX settings.
-- Start a run and confirm presence reports the current Trial/difficulty.
+- Start a Trial-1 run and confirm presence reports the current Trial/difficulty.
 - Trigger Rainbow Snap, Double Rainbow, Lucky 13 and a parry; verify stats/achievements in Playtest data.
 - Change Mouse/Music/SFX settings, reload on Wavedash and verify cloud restoration.
-- Clear a campaign and verify both Style and Clear Time entries.
+- Clear a full campaign and verify both Style and Clear Time entries.
 - Improve a Style PB and confirm the leaderboard entry has attached UGC.
-- Start the same difficulty again and verify the #1 Rainbow Ghost is visible but cannot affect gameplay.
+- Start the same difficulty again and verify the highest-ranked available Rainbow Ghost is visible but cannot affect gameplay.
+- On Easy, deliberately die after Trial 1, retry the current Trial, finish that checkpoint run and confirm the result says `UNRANKED` with no new leaderboard or ghost entry.
 - Verify Impossible only submits after the Encore is actually finished.
 - Confirm the game continues locally if the Wavedash backend disconnects mid-run.
 
