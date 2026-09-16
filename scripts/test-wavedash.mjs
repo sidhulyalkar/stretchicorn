@@ -6,24 +6,27 @@ const style=readFileSync('src/style.css','utf8');
 const competition=readFileSync('dist/index.html','utf8');
 const platformIndex=readFileSync('wavedash-dist/index.html','utf8');
 const platformJs=readFileSync('wavedash-dist/src/wavedash-platform.js','utf8');
+const challengeJs=readFileSync('wavedash-dist/wavedash/challenge-platform.js','utf8');
+const allSdkJs=platformJs+'\n'+challengeJs;
 const manifest=JSON.parse(readFileSync('wavedash/achievements.json','utf8'));
 const legacyHook='<script>if(window.Wavedash){Wavedash.updateLoadProgressZeroToOne(1);Wavedash.init({debug:false})}</script>';
-const platformHook='<script src="src/wavedash-platform.js"></script>';
+const platformHook='<script src="src/wavedash-platform.js"></script><script src="wavedash/challenge-platform.js"></script>';
 
 if(!root.includes(legacyHook))throw Error('root game shell no longer matches the frozen Wavedash-init seam');
-if(/wavedash-platform|wavedash\.css/.test(root))throw Error('root game shell contains post-deadline Wavedash presentation or platform code');
+if(/wavedash-platform|challenge-platform|wavedash\.css/.test(root))throw Error('root game shell contains post-deadline Wavedash presentation or platform code');
 assert.equal(platformIndex,root.replace(legacyHook,platformHook),'Wavedash index must differ from the frozen root shell only by replacing the SDK init hook');
 if(/wavedash\.css/.test(platformIndex))throw Error('Wavedash build must not add a presentation stylesheet');
 if(!/background:#090610/.test(style)||!/width:min\(100vw,150vh\)/.test(style))throw Error('frozen game stylesheet changed');
-if(/wavedash-platform/.test(competition))throw Error('competition artifact contaminated by Wavedash platform code');
+if(/wavedash-platform|challenge-platform/.test(competition))throw Error('competition artifact contaminated by Wavedash platform code');
 
 for(const file of ['src/style.css','src/00-core.js','src/01-combat.js','src/02-update.js','src/03-render.js','src/04-ui-input.js','src/03-keyart-v026.js']){
   assert.equal(readFileSync(`wavedash-dist/${file}`,'utf8'),readFileSync(file,'utf8'),`${file} changed while assembling the Wavedash build`);
 }
+assert.equal(challengeJs,readFileSync('wavedash/challenge-platform.js','utf8'),'challenge SDK extension changed while assembling Wavedash build');
 
 if(!/updateLoadProgressZeroToOne\(1\)[\s\S]*SDK\.init\(\{ debug: false, deferEvents: true \}\)/.test(platformJs))throw Error('platform layer does not own the Wavedash load/init lifecycle');
 for(const forbidden of ['drawGhost','getContext(\'2d\')','baseTitle','baseVictory','appendChild(ghostCanvas)','CHECKPOINT CLEAR • LEADERBOARDS']){
-  if(platformJs.includes(forbidden))throw Error(`SDK-only layer contains post-deadline presentation/gameplay seam: ${forbidden}`);
+  if(allSdkJs.includes(forbidden))throw Error(`SDK-only layer contains post-deadline presentation/gameplay seam: ${forbidden}`);
 }
 
 const requiredApis=[
@@ -34,16 +37,19 @@ const requiredApis=[
   'getUsername','getUserId','listFriends','updateUserPresence',
   'STATS_STORED','MUTE_CHANGED','FULLSCREEN_CHANGED','BACKEND_CONNECTED','BACKEND_DISCONNECTED','BACKEND_RECONNECTING',
 ];
-for(const api of requiredApis)if(!platformJs.includes(api))throw Error(`missing Wavedash integration seam: ${api}`);
+for(const api of requiredApis)if(!allSdkJs.includes(api))throw Error(`missing Wavedash integration seam: ${api}`);
 
 if(!/Style - \$\{d\.label\}/.test(platformJs)||!/Clear Time - \$\{d\.label\}/.test(platformJs))throw Error('per-difficulty Style + clear-time boards are not configured');
+for(const name of ['Biggest Harvest','Purist Style - Hard','Purist Style - Impossible'])if(!challengeJs.includes(name))throw Error(`challenge leaderboard missing: ${name}`);
+if(!/pending-challenge-runs-v1\.json/.test(challengeJs)||!/drainPending/.test(challengeJs))throw Error('challenge leaderboards do not have reconnect-safe submission');
+if(!/eee2ac40c71070ddb1502e16362e3b9490d5ce61/.test(challengeJs)||!/traceVersion/.test(challengeJs))throw Error('challenge leaderboard provenance is missing');
+if(!/WORLDS_END/.test(challengeJs)||!/worlds-end-own-entry/.test(challengeJs))throw Error('Worlds End startup/reconnect reconciliation is missing');
 if(!/UGCType\.GAME_MANAGED/.test(platformJs)||!/PB Replay Trace/.test(platformJs))throw Error('leaderboard-attached replay-trace UGC lane is missing');
 if(!/pending-ranked-runs-v1\.json/.test(platformJs)||!/drainPendingRuns/.test(platformJs))throw Error('connectivity-safe ranked submission queue is missing');
 if(!/runEligible = startWave === 1/.test(platformJs))throw Error('ranked submissions are not constrained to Trial-1 full campaigns');
 if(!/BEST_SLASH_KILLS/.test(platformJs)||!/CORN_COMBINE/.test(platformJs))throw Error('single-slash mastery tracking is missing');
 if(!/NO_POWER_ACHIEVEMENTS/.test(platformJs)||!/PURE_SPECTRUM/.test(platformJs))throw Error('zero-powerup challenge tracking is missing');
 if(!/THIRTEEN_FASTER/.test(platformJs)||!/CORN_PRIX_CHAMPION/.test(platformJs))throw Error('personal-best achievement tracking is missing');
-if(!/WORLDS_END/.test(platformJs)||!/leaderboard-impossible-top13/.test(platformJs))throw Error('global Top-13 achievement tracking is missing');
 
 if(manifest.achievements.length!==39)throw Error(`expected 39 Stretchicorn achievements, got ${manifest.achievements.length}`);
 const achievementIds=new Set(manifest.achievements.map(a=>a.identifier));
@@ -68,4 +74,4 @@ assert.deepEqual(byId.RETURN_CENTER.stat_requirement,{stat:'PARRIES',threshold:1
 assert.deepEqual(byId.SEEING_DOUBLE.stat_requirement,{stat:'DOUBLE_RAINBOWS',threshold:130});
 assert.deepEqual(byId.COB_COMPOSTER.stat_requirement,{stat:'RUNS_CLEARED',threshold:13});
 
-console.log('PASS: Wavedash build replaces only the frozen SDK init hook; gameplay/rendering files remain byte-identical while identity/presence, 8 boards, 39 achievements, stats, cloud saves, replay UGC and reconnect-safe submission calls stay isolated in the platform layer');
+console.log('PASS: Wavedash build replaces only the frozen SDK init hook; gameplay/rendering files remain byte-identical while identity/presence, 11 boards, 39 achievements, stats, cloud saves, replay UGC and reconnect-safe submission calls stay isolated in SDK-only layers');
