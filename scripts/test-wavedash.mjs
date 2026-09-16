@@ -27,7 +27,7 @@ for(const forbidden of ['drawGhost','getContext(\'2d\')','baseTitle','baseVictor
 }
 
 const requiredApis=[
-  'getOrCreateLeaderboard','uploadLeaderboardScore','getMyLeaderboardEntries',
+  'getOrCreateLeaderboard','uploadLeaderboardScore','getMyLeaderboardEntries','listLeaderboardEntries',
   'requestStats','getStat','setStat','getAchievement','setAchievement','storeStats',
   'remoteFileExists','writeLocalFile','uploadRemoteFile','downloadRemoteFile','readLocalFile',
   'createUGCItem','deleteUGCItem',
@@ -40,8 +40,32 @@ if(!/Style - \$\{d\.label\}/.test(platformJs)||!/Clear Time - \$\{d\.label\}/.te
 if(!/UGCType\.GAME_MANAGED/.test(platformJs)||!/PB Replay Trace/.test(platformJs))throw Error('leaderboard-attached replay-trace UGC lane is missing');
 if(!/pending-ranked-runs-v1\.json/.test(platformJs)||!/drainPendingRuns/.test(platformJs))throw Error('connectivity-safe ranked submission queue is missing');
 if(!/runEligible = startWave === 1/.test(platformJs))throw Error('ranked submissions are not constrained to Trial-1 full campaigns');
-if(manifest.achievements.length!==13)throw Error(`expected 13 Stretchicorn achievements, got ${manifest.achievements.length}`);
-const achievementIds=new Set(manifest.achievements.map(a=>a.identifier));
-for(const id of ['FIRST_SNAP','DOUBLE_RAINBOW','LUCKY_13','KERNEL_PARRY','HUSK_CLEAR','COLONEL_CLEAR','MAX_COMBO','CAPN_CLEAR','EASY_CLEAR','NORMAL_CLEAR','HARD_CLEAR','IMPOSSIBLE_CLEAR','PERFECT_13'])if(!achievementIds.has(id))throw Error(`achievement manifest missing ${id}`);
+if(!/BEST_SLASH_KILLS/.test(platformJs)||!/CORN_COMBINE/.test(platformJs))throw Error('single-slash mastery tracking is missing');
+if(!/NO_POWER_ACHIEVEMENTS/.test(platformJs)||!/PURE_SPECTRUM/.test(platformJs))throw Error('zero-powerup challenge tracking is missing');
+if(!/THIRTEEN_FASTER/.test(platformJs)||!/CORN_PRIX_CHAMPION/.test(platformJs))throw Error('personal-best achievement tracking is missing');
+if(!/WORLDS_END/.test(platformJs)||!/leaderboard-impossible-top13/.test(platformJs))throw Error('global Top-13 achievement tracking is missing');
 
-console.log('PASS: Wavedash build replaces only the frozen SDK init hook; gameplay/rendering files remain byte-identical while identity/presence, 8 boards, 13 achievements, stats, cloud saves, replay UGC and reconnect-safe submission calls stay isolated in the platform layer');
+if(manifest.achievements.length!==39)throw Error(`expected 39 Stretchicorn achievements, got ${manifest.achievements.length}`);
+const achievementIds=new Set(manifest.achievements.map(a=>a.identifier));
+const expectedAchievements=[
+  'FIRST_SNAP','DOUBLE_RAINBOW','LUCKY_13','CLOSE_SHAVE','KERNEL_PARRY','MAX_COMBO','HUSK_CLEAR','COLONEL_CLEAR',
+  'EASY_CLEAR','NORMAL_CLEAR','HARD_CLEAR','IMPOSSIBLE_CLEAR','FULL_HEARTS','CORN_COMBINE','THREAD_NEEDLE','RETURN_DEPARTMENT',
+  'FULL_SPECTRUM','WALL_TO_WALL','PRISM_BREAK','FULL_PANTRY','NO_POWER_EASY','NO_POWER_NORMAL','NO_POWER_HARD','NO_POWER_IMPOSSIBLE',
+  'UNTOUCHED','ENCORE_REACHED','POPCORN_APPRENTICE','CORN_REAPER','MAIZE_MASTER','SERIAL_SNAPPER','GRAZE_CRAZE','RETURN_CENTER',
+  'SEEING_DOUBLE','COB_COMPOSTER','THIRTEEN_FASTER','DUAL_PB','CORN_PRIX_CHAMPION','WORLDS_END','PURE_SPECTRUM',
+];
+for(const id of expectedAchievements)if(!achievementIds.has(id))throw Error(`achievement manifest missing ${id}`);
+assert.equal(achievementIds.size,39,'achievement identifiers must be unique');
+const statIds=new Set(manifest.stats.map(s=>s.identifier));
+for(const id of ['TOTAL_KILLS','TOTAL_SNAPS','DOUBLE_RAINBOWS','PARRIES','TOTAL_GRAZES','WALL_SMASHES','POWERUPS_COLLECTED','RUNS_CLEARED','BEST_SLASH_KILLS','PB_IMPROVED_EASY','PB_IMPROVED_NORMAL','PB_IMPROVED_HARD','PB_IMPROVED_IMPOSSIBLE'])if(!statIds.has(id))throw Error(`achievement manifest missing stat ${id}`);
+const byId=Object.fromEntries(manifest.achievements.map(a=>[a.identifier,a]));
+assert.deepEqual(byId.POPCORN_APPRENTICE.stat_requirement,{stat:'TOTAL_KILLS',threshold:1300});
+assert.deepEqual(byId.CORN_REAPER.stat_requirement,{stat:'TOTAL_KILLS',threshold:13000});
+assert.deepEqual(byId.MAIZE_MASTER.stat_requirement,{stat:'TOTAL_KILLS',threshold:130000});
+assert.deepEqual(byId.SERIAL_SNAPPER.stat_requirement,{stat:'TOTAL_SNAPS',threshold:1300});
+assert.deepEqual(byId.GRAZE_CRAZE.stat_requirement,{stat:'TOTAL_GRAZES',threshold:1300});
+assert.deepEqual(byId.RETURN_CENTER.stat_requirement,{stat:'PARRIES',threshold:1300});
+assert.deepEqual(byId.SEEING_DOUBLE.stat_requirement,{stat:'DOUBLE_RAINBOWS',threshold:130});
+assert.deepEqual(byId.COB_COMPOSTER.stat_requirement,{stat:'RUNS_CLEARED',threshold:13});
+
+console.log('PASS: Wavedash build replaces only the frozen SDK init hook; gameplay/rendering files remain byte-identical while identity/presence, 8 boards, 39 achievements, stats, cloud saves, replay UGC and reconnect-safe submission calls stay isolated in the platform layer');
