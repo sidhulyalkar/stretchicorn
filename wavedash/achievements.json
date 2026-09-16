@@ -1,0 +1,100 @@
+{
+  "achievements": [
+    {
+      "identifier": "FIRST_SNAP",
+      "display_name": "First Snap",
+      "description": "Land your first charged Rainbow Snap.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "DOUBLE_RAINBOW",
+      "display_name": "Double Rainbow",
+      "description": "Chain two charged Snaps quickly enough to trigger Double Rainbow.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "LUCKY_13",
+      "display_name": "Lucky 13",
+      "description": "Trigger the Lucky 13 reward after thirteen eligible defeats.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "KERNEL_PARRY",
+      "display_name": "Return to Sender",
+      "description": "Parry a gold kernel with the horn.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "HUSK_CLEAR",
+      "display_name": "Husk Cracked",
+      "description": "Defeat Hideaway Husk and clear Trial 5.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "COLONEL_CLEAR",
+      "display_name": "Colonel Down",
+      "description": "Defeat Kernel Colonel and clear Trial 9.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "MAX_COMBO",
+      "display_name": "Rainbow Engine",
+      "description": "Reach the maximum x4 combat combo.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "CAPN_CLEAR",
+      "display_name": "Cap'n Pops",
+      "description": "Defeat Cap'n Cobtopus and finish a campaign.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "EASY_CLEAR",
+      "display_name": "Easy Pickings",
+      "description": "Clear all thirteen trials on Easy.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "NORMAL_CLEAR",
+      "display_name": "Full Shuck",
+      "description": "Clear all thirteen trials on Normal.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "HARD_CLEAR",
+      "display_name": "Hard Shuck",
+      "description": "Clear all thirteen trials on Hard.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "IMPOSSIBLE_CLEAR",
+      "display_name": "Impossible!",
+      "description": "Clear Impossible and survive its Encore.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "PERFECT_13",
+      "display_name": "Perfect 13",
+      "description": "Finish a full campaign with all thirteen hearts intact.",
+      "stat_requirement": null
+    }
+  ],
+  "stats": [
+    { "identifier": "TOTAL_KILLS", "display_name": "Eligible enemies defeated" },
+    { "identifier": "TOTAL_SNAPS", "display_name": "Rainbow Snaps" },
+    { "identifier": "DOUBLE_RAINBOWS", "display_name": "Double Rainbows" },
+    { "identifier": "LUCKY_13S", "display_name": "Lucky 13 triggers" },
+    { "identifier": "PARRIES", "display_name": "Kernel parries" },
+    { "identifier": "RUNS_STARTED", "display_name": "Runs started" },
+    { "identifier": "RUNS_CLEARED", "display_name": "Campaigns cleared" },
+    { "identifier": "MAX_COMBO", "display_name": "Best combo multiplier" },
+    { "identifier": "BEST_STYLE_EASY", "display_name": "Best Easy Style" },
+    { "identifier": "BEST_STYLE_NORMAL", "display_name": "Best Normal Style" },
+    { "identifier": "BEST_STYLE_HARD", "display_name": "Best Hard Style" },
+    { "identifier": "BEST_STYLE_IMPOSSIBLE", "display_name": "Best Impossible Style" },
+    { "identifier": "BEST_TIME_EASY_MS", "display_name": "Best Easy clear time (ms)" },
+    { "identifier": "BEST_TIME_NORMAL_MS", "display_name": "Best Normal clear time (ms)" },
+    { "identifier": "BEST_TIME_HARD_MS", "display_name": "Best Hard clear time (ms)" },
+    { "identifier": "BEST_TIME_IMPOSSIBLE_MS", "display_name": "Best Impossible clear time (ms)" }
+  ]
+}
