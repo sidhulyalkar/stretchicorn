@@ -34,7 +34,7 @@ const SDK={
   updateUserPresence:async p=>(presence.push(p),{success:true}),
   requestStats:async()=>({success:true,data:true}),getStat:id=>stats.get(id)||0,setStat:(id,v)=>(stats.set(id,v),true),
   getAchievement:id=>achievements.has(id),setAchievement:id=>(achievements.add(id),true),storeStats:()=>true,
-  remoteFileExists:async()=>({success:true,data:false}),writeLocalFile:async(path,bytes)=>(files.set(path,bytes),{success:true,data:path}),
+  remoteFileExists:async()=>({success:true,data:false}),writeLocalFile:async(path,bytes)=>(files.set(path,bytes),true),
   uploadRemoteFile:async()=>({success:true}),downloadRemoteFile:async()=>({success:false}),readLocalFile:async path=>files.get(path),
   getOrCreateLeaderboard:async(name,sort,display)=>(boards.push({name,sort,display}),{success:true,data:{id:'lb-'+name,name}}),
   listLeaderboardEntries:async()=>({success:true,data:[]}),getMyLeaderboardEntries:async()=>({success:true,data:[]}),
@@ -70,6 +70,7 @@ sandbox.D=.7;
 sandbox.reset();
 await new Promise(resolve=>setImmediate(resolve));
 assert.equal(stats.get('RUNS_STARTED'),1,'reset hook should count a started run');
+assert.equal(sandbox.window.__stretchicornWavedash.runEligible,true,'Trial 1 start must be rank eligible');
 assert.match(presence.at(-1).status,/Trial 1\/13/,'run start should publish Trial presence');
 
 sandbox.nextSnap=1;sandbox.kick=0;sandbox.startKick();
@@ -115,7 +116,20 @@ assert.equal(timeUpload.score,123456);
 assert.equal(styleUpload.metadata.hearts,13);
 assert.equal(styleUpload.metadata.difficulty,'easy');
 
+// Easy can retry its current trial. That is a valid campaign completion, but it
+// must never become a partial-run Style/time leaderboard exploit.
+const rankedUploads=uploads.length,rankedGhosts=ugc.length;
+sandbox.reset(6);
+assert.equal(platform.runEligible,false,'mid-campaign retry must be marked unranked');
+tick=raf.shift();now+=16;tick(now);
+sandbox.score=999999;sandbox.runT=.25;sandbox.wave=13;sandbox.mode=5;
+tick=raf.shift();now+=16;tick(now);
+for(let i=0;i<8;i++)await new Promise(resolve=>setImmediate(resolve));
+assert.equal(uploads.length,rankedUploads,'checkpoint clear must not submit a partial Style/time score');
+assert.equal(ugc.length,rankedGhosts,'checkpoint clear must not create a leaderboard ghost');
+assert.equal(stats.get('RUNS_CLEARED'),2,'checkpoint completion should still count as a campaign clear');
+
 listeners.keydown?.({key:'F2',repeat:false,preventDefault:noop});
 assert.equal(overlayToggles,1,'F2 should open the Wavedash overlay exactly once');
 assert.equal(storage.SV,'1,1,1','platform hooks must not corrupt numeric settings serialization');
-console.log('PASS: executable Wavedash mock covers lifecycle, 8 boards, identity/friends, presence, stats, achievements, cloud-safe settings, dual score upload, attached Rainbow Ghost UGC and overlay access');
+console.log('PASS: executable Wavedash mock covers lifecycle, 8 boards, identity/friends, presence, real cloud-write semantics, stats, achievements, ranked-run fairness, dual score upload, attached Rainbow Ghost UGC and overlay access');
