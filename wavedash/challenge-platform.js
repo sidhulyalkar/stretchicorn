@@ -45,8 +45,8 @@
     if (!platform.online) return null;
     const defs = [
       ['harvest', 'Biggest Harvest'],
-      ['puristHard', 'Purist Style - Hard'],
-      ['puristImpossible', 'Purist Style - Impossible'],
+      ['silkyHard', 'Silky Style - Hard'],
+      ['silkyImpossible', 'Silky Style - Impossible'],
     ];
     const responses = await Promise.all(defs.map(([, name]) => safe(`board-${name}`, () =>
       SDK.getOrCreateLeaderboard(name, SDK.LeaderboardSortOrder.DESC, SDK.LeaderboardDisplayType.NUMERIC)
@@ -129,17 +129,17 @@
     }
 
     if (record.powerups === 0 && record.difficulty === 'hard') {
-      const purist = await safe('leaderboard-purist-hard', () =>
-        SDK.uploadLeaderboardScore(boards.puristHard, record.score, true, undefined, metadata)
+      const silky = await safe('leaderboard-silky-hard', () =>
+        SDK.uploadLeaderboardScore(boards.silkyHard, record.score, true, undefined, metadata)
       );
-      if (!purist?.success) return false;
+      if (!silky?.success) return false;
     }
 
     if (record.powerups === 0 && record.difficulty === 'impossible') {
-      const purist = await safe('leaderboard-purist-impossible', () =>
-        SDK.uploadLeaderboardScore(boards.puristImpossible, record.score, true, undefined, metadata)
+      const silky = await safe('leaderboard-silky-impossible', () =>
+        SDK.uploadLeaderboardScore(boards.silkyImpossible, record.score, true, undefined, metadata)
       );
-      if (!purist?.success) return false;
+      if (!silky?.success) return false;
     }
 
     if (record.difficulty === 'impossible') scheduleWorldsEndCheck(250);
