@@ -12,7 +12,7 @@
   - 13 achievements + persistent stats
   - cloud sync for settings and personal bests
   - leaderboard-attached GAME_MANAGED ghost UGC
-  - translucent world-#1 Rainbow Ghost racing overlay
+  - highest-ranked available Rainbow Ghost racing overlay
   - Wavedash overlay shortcut and host connection/mute/fullscreen awareness
 */
 (() => {
@@ -61,6 +61,7 @@
     currentMaxCombo: 1,
     runSerial: 0,
     submittedRunSerial: -1,
+    runEligible: true,
     toast: '',
     toastUntil: 0,
   };
@@ -178,7 +179,7 @@
     platform.cloudDirty = false;
     const payload = profileSnapshot();
     const wrote = await safe('cloud-write', () => SDK.writeLocalFile(SAVE_PATH, encoder.encode(JSON.stringify(payload))));
-    if (wrote?.success === false) return;
+    if (!wrote) return;
     const uploaded = await safe('cloud-upload', () => SDK.uploadRemoteFile(SAVE_PATH));
     if (uploaded?.success) toast('WAVEDASH CLOUD SAVED', 1.6);
   }
@@ -208,7 +209,7 @@
         const bytes = await safe('cloud-read', () => SDK.readLocalFile(SAVE_PATH));
         if (bytes) {
           try {
-            applyCloudProfile(JSON.parse(decoder.decode(bytes.data || bytes)), platform.cloudDirty);
+            applyCloudProfile(JSON.parse(decoder.decode(bytes)), platform.cloudDirty);
             toast('WAVEDASH CLOUD SYNCED', 1.8);
           } catch (error) {
             console.warn('[Wavedash:cloud-parse]', error);
@@ -263,7 +264,7 @@
     if (snapshot.trace.length < GHOST_RATE_HZ * 2) return undefined;
     const path = `replays/stretchicorn-${snapshot.difficulty.key}-${Date.now()}.json`;
     const wrote = await safe('ghost-write', () => SDK.writeLocalFile(path, encoder.encode(JSON.stringify(ghostPayload(snapshot)))));
-    if (wrote?.success === false) return undefined;
+    if (!wrote) return undefined;
     const response = await safe('ghost-create', () => SDK.createUGCItem(
       SDK.UGCType.GAME_MANAGED,
       `${snapshot.difficulty.label} Rainbow Ghost`,
@@ -277,8 +278,8 @@
   async function loadTopGhost(d = difficulty()) {
     const ids = await ensureBoards(d);
     if (!ids) return;
-    const response = await safe('ghost-top', () => SDK.listLeaderboardEntries(ids.style, 0, 1, false));
-    const entry = response?.success ? response.data?.[0] : null;
+    const response = await safe('ghost-top', () => SDK.listLeaderboardEntries(ids.style, 0, 10, false));
+    const entry = response?.success ? response.data?.find(candidate => candidate.ugcId) : null;
     platform.ghost = null;
     platform.ghostName = '';
     platform.ghostRank = 0;
@@ -291,10 +292,10 @@
     const bytes = await safe('ghost-read', () => SDK.readLocalFile(path));
     if (!bytes) return;
     try {
-      const data = JSON.parse(decoder.decode(bytes.data || bytes));
+      const data = JSON.parse(decoder.decode(bytes));
       if (data.version !== GHOST_VERSION || data.difficulty !== d.key || !Array.isArray(data.frames)) return;
       platform.ghost = data;
-      platform.ghostName = entry.username || 'WORLD #1';
+      platform.ghostName = entry.username || 'RIVAL';
       platform.ghostRank = entry.globalRank || 1;
       platform.ghostScore = Number(entry.score || 0);
       toast(`GHOST LOADED • #${platform.ghostRank} ${platform.ghostName}`, 2.2);
@@ -378,19 +379,28 @@
     const snapshot = snapshotRun();
     const key = snapshot.difficulty.key.toUpperCase();
     queueStatAdd('RUNS_CLEARED', 1);
-    queueStatMax(`BEST_STYLE_${key}`, snapshot.score);
-    queueStatMin(`BEST_TIME_${key}_MS`, snapshot.timeMs);
-    queueStatMax('MAX_COMBO', snapshot.maxCombo);
     unlock('CAPN_CLEAR');
     unlock(`${key}_CLEAR`);
     if (snapshot.hearts === 13) unlock('PERFECT_13');
+
+    if (!platform.runEligible) {
+      flushStats();
+      uploadCloud();
+      toast('CHECKPOINT CLEAR • LEADERBOARDS REQUIRE TRIAL 1', 4.5);
+      return;
+    }
+
+    queueStatMax(`BEST_STYLE_${key}`, snapshot.score);
+    queueStatMin(`BEST_TIME_${key}_MS`, snapshot.timeMs);
+    queueStatMax('MAX_COMBO', snapshot.maxCombo);
     flushStats();
     uploadCloud();
     submitRun(snapshot);
   }
 
-  function startRun() {
+  function startRun(startWave = 1) {
     platform.runSerial++;
+    platform.runEligible = startWave === 1;
     platform.trace = [];
     platform.lastSampleMs = -1;
     platform.currentMaxCombo = 1;
@@ -398,8 +408,15 @@
     platform.lastWave = wave;
     queueStatAdd('RUNS_STARTED', 1);
     const d = difficulty();
-    setPresence(`Trial ${wave}/13 • ${d.label}`, 'Stretching a rainbow');
-    loadTopGhost(d);
+    setPresence(`Trial ${wave}/13 • ${d.label}`, platform.runEligible ? 'Stretching a rainbow' : 'Checkpoint retry • unranked');
+    if (platform.runEligible) loadTopGhost(d);
+    else {
+      platform.ghost = null;
+      platform.ghostName = '';
+      platform.ghostRank = 0;
+      platform.ghostScore = 0;
+      platform.ghostDifficulty = d.key;
+    }
   }
 
   function setPresence(status, details = '') {
@@ -413,7 +430,7 @@
 
   function refreshPresence() {
     const d = difficulty();
-    if (mode === 1) setPresence(`Trial ${wave}/13 • ${d.label}`, `Style ${Math.round(score)} • ♥ ${hearts}/13`);
+    if (mode === 1) setPresence(`Trial ${wave}/13 • ${d.label}`, `Style ${Math.round(score)} • ♥ ${hearts}/13${platform.runEligible ? '' : ' • UNRANKED'}`);
     else if (mode === 2) setPresence(`Paused • Trial ${wave}/13`, d.label);
     else if (mode === 3) setPresence('Run flattened', `${d.label} • Style ${Math.round(score)}`);
     else if (mode === 5 || mode === 4) setPresence('Corn army defeated!', `${d.label} • Style ${Math.round(score)}`);
@@ -423,8 +440,9 @@
   // Wrap gameplay seams rather than spending js13k bytes on platform hooks.
   const baseReset = reset;
   reset = function (...args) {
+    const startWave = Number(args[0] ?? 1);
     const result = baseReset.apply(this, args);
-    startRun();
+    startRun(startWave);
     return result;
   };
 
@@ -496,6 +514,8 @@
       if (platform.lastResult.timeRank) ranks.push(`TIME #${platform.lastResult.timeRank}`);
       if (platform.lastResult.stylePB) ranks.push('NEW PB');
       txt(`WAVEDASH • ${ranks.join(' • ')}`, W / 2, H / 2 + 120, 12, '#9bffca', 'center');
+    } else if (!platform.runEligible && (mode === 5 || mode === 4)) {
+      txt('WAVEDASH • CHECKPOINT CLEAR • UNRANKED', W / 2, H / 2 + 120, 12, '#ffd37a', 'center');
     }
     return result;
   };
@@ -620,7 +640,7 @@
 
   function monitor() {
     const nowMs = Math.round(runT * 1000);
-    if (mode === 1 && (platform.lastSampleMs < 0 || nowMs - platform.lastSampleMs >= 1000 / GHOST_RATE_HZ)) {
+    if (mode === 1 && platform.runEligible && (platform.lastSampleMs < 0 || nowMs - platform.lastSampleMs >= 1000 / GHOST_RATE_HZ)) {
       platform.lastSampleMs = nowMs;
       if (platform.trace.length < 12000) platform.trace.push([nowMs, Math.round(A.x), Math.round(A.y), Math.round(P.x), Math.round(P.y)]);
     }
