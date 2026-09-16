@@ -44,7 +44,7 @@
     },
     {
       "identifier": "COLONEL_CLEAR",
-      "display_name": "Colonel Down",
+      "display_name": "Colonel Chop",
       "description": "Defeat Kernel Colonel and clear Trial 9 during a full campaign.",
       "stat_requirement": null
     },
@@ -68,13 +68,13 @@
     },
     {
       "identifier": "IMPOSSIBLE_CLEAR",
-      "display_name": "Impossible!",
+      "display_name": "Rainbow Royalty",
       "description": "Clear Impossible and survive its Encore.",
       "stat_requirement": null
     },
     {
       "identifier": "FULL_HEARTS",
-      "display_name": "Full Hearts",
+      "display_name": "Heart Hold'em",
       "description": "Finish a full campaign with all thirteen hearts.",
       "stat_requirement": null
     },
@@ -86,13 +86,13 @@
     },
     {
       "identifier": "THREAD_NEEDLE",
-      "display_name": "Thread the Needle",
+      "display_name": "Great Grazer",
       "description": "Graze thirteen kernels in one Trial before losing a heart.",
       "stat_requirement": null
     },
     {
       "identifier": "RETURN_DEPARTMENT",
-      "display_name": "Return Department",
+      "display_name": "Parry Party",
       "description": "Parry thirteen kernels in one run.",
       "stat_requirement": null
     },
@@ -134,25 +134,25 @@
     },
     {
       "identifier": "NO_POWER_HARD",
-      "display_name": "Bare Rainbow",
+      "display_name": "Raw Rainbow",
       "description": "Clear Hard without collecting a powerup.",
       "stat_requirement": null
     },
     {
       "identifier": "NO_POWER_IMPOSSIBLE",
-      "display_name": "Barely Possible",
+      "display_name": "Powerless Pony",
       "description": "Clear Impossible without collecting a powerup.",
       "stat_requirement": null
     },
     {
       "identifier": "UNTOUCHED",
-      "display_name": "Untouched",
+      "display_name": "Pristine Prance",
       "description": "Clear Hard without ever losing a heart.",
       "stat_requirement": null
     },
     {
       "identifier": "ENCORE_REACHED",
-      "display_name": "NOT YET.",
+      "display_name": "Cob Comeback",
       "description": "Reach the hidden Impossible Encore during a full campaign.",
       "stat_requirement": null
     },
