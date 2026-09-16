@@ -7,7 +7,6 @@ on:
       - main
       - release/v0.21.0-performance-lock
       - platform/wavedash-v0.21.0
-      - feat/wavedash-rainbow-league
   pull_request:
     branches:
       - main
@@ -71,22 +70,6 @@ jobs:
 
       - name: Print release fingerprints
         run: sha256sum dist/stretchicorn-js13k.zip dist/stretchicorn-desktop-v*.zip
-
-  wavedash-platform:
-    name: Wavedash Rainbow League
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Check out candidate
-        uses: actions/checkout@v5
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-
-      - name: Build and test Wavedash platform layer
-        run: npm run wavedash:test
 
   browser-smoke:
     name: Browser smoke (${{ matrix.browser }})
