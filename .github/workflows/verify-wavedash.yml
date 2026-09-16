@@ -11,6 +11,7 @@ on:
       - 'index.html'
       - 'package.json'
       - 'src/style.css'
+      - 'src/wavedash.css'
       - 'src/wavedash-platform.js'
       - 'scripts/build-wavedash.mjs'
       - 'scripts/test-wavedash.mjs'
