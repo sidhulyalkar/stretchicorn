@@ -88,6 +88,8 @@ Final themed names for the renamed achievements are:
 - `UNTOUCHED` — `Pristine Prance`
 - `ENCORE_REACHED` — `Cob Comeback`
 
+The underlying stable achievement identifiers are intentionally unchanged. Only player-facing titles changed, which avoids invalidating SDK wiring, saved achievement state, or portal references.
+
 Long-tail stat-triggered achievements:
 
 - `Popcorn Apprentice`: 1,300 eligible defeats
@@ -166,7 +168,7 @@ The judged upload must use `wavedash-dist/`. Serving the repository root intenti
 
 Before publishing the judged build:
 
-1. Import/reconcile `wavedash/achievements.json`, mark the four documented achievements Secret, and make `npm run wavedash:audit` pass.
+1. Import/reconcile `wavedash/achievements.json`, apply the final themed titles, mark the four documented achievements Secret, and make `npm run wavedash:audit` pass.
 2. Run `npm run wavedash:test`.
 3. Run `npm run wavedash:dev`.
 4. Confirm all eleven leaderboards are Visible with the expected sort/display rules, including `Silky Style - Hard` and `Silky Style - Impossible`.
