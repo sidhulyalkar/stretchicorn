@@ -35,7 +35,7 @@ if(remote.length!==39)problems.push(`portal has ${remote.length} achievements; e
 if(problems.length){
   console.error('Wavedash portal audit failed:');
   for(const problem of problems)console.error(` - ${problem}`);
-  console.error('\nBulk import skips existing identifiers. Update/delete stale portal entries and mark the four documented achievements Secret, then rerun.');
+  console.error('\nBulk import skips existing identifiers. Update/delete stale portal entries, apply the final themed titles from wavedash/achievements.json, and mark the four documented achievements Secret, then rerun.');
   process.exit(1);
 }
-console.log('PASS: Wavedash portal contains exactly the intended 39 achievements with matching names/descriptions and secret flags');
+console.log('PASS: Wavedash portal contains exactly the intended 39 achievements with matching final names/descriptions and secret flags');
