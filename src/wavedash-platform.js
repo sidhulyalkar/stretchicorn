@@ -1,19 +1,19 @@
 'use strict';
 /*
-  WAVEDASH PLATFORM LAYER
-  -----------------------
-  Loaded only by the readable/Wavedash build. It intentionally lives outside
-  the 13KB competition artifact so platform features can stay expressive while
-  the js13k release remains byte-for-byte independent.
+  WAVEDASH SDK LAYER
+  ------------------
+  This file is loaded only by the Wavedash build. It observes the frozen
+  Stretchicorn game and calls Wavedash APIs without changing combat, movement,
+  balance, rendering, level flow, RNG, collisions, scoring, or win conditions.
 
-  Features:
-  - player identity, friends and live presence
+  SDK integrations:
+  - player identity, friends, and presence
   - 8 leaderboards (Style + clear time for each difficulty)
   - 13 achievements + persistent stats
-  - cloud sync for settings and personal bests
-  - leaderboard-attached GAME_MANAGED ghost UGC
-  - highest-ranked available Rainbow Ghost racing overlay
-  - Wavedash overlay shortcut and host connection/mute/fullscreen awareness
+  - cloud save sync for settings and personal bests
+  - GAME_MANAGED replay-trace UGC attached to Style PB entries
+  - backend, stats-persistence, mute, and fullscreen lifecycle events
+  - local retry queue for ranked submissions interrupted by connectivity loss
 */
 (() => {
   const SDK = window.Wavedash;
@@ -26,8 +26,10 @@
     { value: 2.4, key: 'impossible', label: 'Impossible' },
   ];
   const SAVE_PATH = 'stretchicorn/profile-v1.json';
-  const GHOST_RATE_HZ = 10;
-  const GHOST_VERSION = 1;
+  const PENDING_PATH = 'stretchicorn/pending-ranked-runs-v1.json';
+  const TRACE_RATE_HZ = 10;
+  const TRACE_VERSION = 1;
+  const MAX_PENDING_RUNS = 8;
   const BOARDS = new Map();
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
@@ -36,34 +38,34 @@
     username: 'PLAYER',
     userId: '',
     friendsOnline: 0,
-    online: true,
+    online: false,
     muted: false,
     fullscreen: false,
     statsReady: false,
+    statsDirty: false,
+    statsTimer: null,
     cloudReady: false,
     cloudDirty: false,
+    cloudInit: null,
     pendingStatAdds: new Map(),
     pendingStatMax: new Map(),
     pendingStatMin: new Map(),
     pendingAchievements: new Set(),
+    pendingRuns: [],
+    pendingLoaded: false,
+    drainingRuns: false,
     trace: [],
-    ghost: null,
-    ghostName: '',
-    ghostRank: 0,
-    ghostScore: 0,
-    ghostDifficulty: '',
     lastSampleMs: -1,
     lastMode: typeof mode === 'number' ? mode : 0,
     lastWave: typeof wave === 'number' ? wave : 1,
     lastPresence: '',
     lastPresenceAt: 0,
+    desiredPresence: { status: 'Choosing a difficulty', details: 'Stretchicorn' },
     lastResult: null,
     currentMaxCombo: 1,
     runSerial: 0,
     submittedRunSerial: -1,
     runEligible: true,
-    toast: '',
-    toastUntil: 0,
   };
   window.__stretchicornWavedash = platform;
 
@@ -79,26 +81,16 @@
     }
   };
 
-  const toast = (text, seconds = 3) => {
-    platform.toast = text;
-    platform.toastUntil = performance.now() + seconds * 1000;
-  };
-
-  const achievementNames = {
-    FIRST_SNAP: 'FIRST SNAP',
-    DOUBLE_RAINBOW: 'DOUBLE RAINBOW',
-    LUCKY_13: 'LUCKY 13',
-    KERNEL_PARRY: 'RETURN TO SENDER',
-    HUSK_CLEAR: 'HUSK CRACKED',
-    COLONEL_CLEAR: 'COLONEL DOWN',
-    MAX_COMBO: 'RAINBOW ENGINE',
-    CAPN_CLEAR: "CAP'N POPS",
-    EASY_CLEAR: 'EASY PICKINGS',
-    NORMAL_CLEAR: 'FULL SHUCK',
-    HARD_CLEAR: 'HARD SHUCK',
-    IMPOSSIBLE_CLEAR: 'IMPOSSIBLE!',
-    PERFECT_13: 'PERFECT 13',
-  };
+  function scheduleStatsStore(delay = 1200) {
+    platform.statsDirty = true;
+    if (!platform.statsReady || platform.statsTimer) return;
+    platform.statsTimer = setTimeout(() => {
+      platform.statsTimer = null;
+      if (!platform.statsDirty) return;
+      const accepted = SDK.storeStats();
+      if (accepted === false) scheduleStatsStore(2500);
+    }, delay);
+  }
 
   function queueStatAdd(id, amount = 1) {
     if (!amount) return;
@@ -107,7 +99,7 @@
       return;
     }
     const current = Number(SDK.getStat(id) || 0);
-    SDK.setStat(id, current + amount, false);
+    if (SDK.setStat(id, current + amount, false)) scheduleStatsStore();
   }
 
   function queueStatMax(id, value) {
@@ -117,7 +109,7 @@
       return;
     }
     const current = Number(SDK.getStat(id) || 0);
-    if (value > current) SDK.setStat(id, value, false);
+    if (value > current && SDK.setStat(id, value, false)) scheduleStatsStore();
   }
 
   function queueStatMin(id, value) {
@@ -128,7 +120,7 @@
       return;
     }
     const current = Number(SDK.getStat(id) || 0);
-    if (!current || value < current) SDK.setStat(id, value, false);
+    if ((!current || value < current) && SDK.setStat(id, value, false)) scheduleStatsStore();
   }
 
   function unlock(id) {
@@ -136,28 +128,42 @@
       platform.pendingAchievements.add(id);
       return;
     }
-    if (SDK.getAchievement(id)) return;
-    if (SDK.setAchievement(id, false)) toast(`ACHIEVEMENT • ${achievementNames[id] || id}`, 3.2);
+    if (!SDK.getAchievement(id) && SDK.setAchievement(id, false)) scheduleStatsStore();
   }
 
-  function flushStats() {
+  function flushQueuedStats() {
     if (!platform.statsReady) return;
-    for (const [id, amount] of platform.pendingStatAdds) queueStatAdd(id, amount);
-    for (const [id, value] of platform.pendingStatMax) queueStatMax(id, value);
-    for (const [id, value] of platform.pendingStatMin) queueStatMin(id, value);
-    for (const id of platform.pendingAchievements) unlock(id);
+    const adds = [...platform.pendingStatAdds];
+    const maxes = [...platform.pendingStatMax];
+    const mins = [...platform.pendingStatMin];
+    const achievements = [...platform.pendingAchievements];
     platform.pendingStatAdds.clear();
     platform.pendingStatMax.clear();
     platform.pendingStatMin.clear();
     platform.pendingAchievements.clear();
-    SDK.storeStats();
+    for (const [id, amount] of adds) queueStatAdd(id, amount);
+    for (const [id, value] of maxes) queueStatMax(id, value);
+    for (const [id, value] of mins) queueStatMin(id, value);
+    for (const id of achievements) unlock(id);
+  }
+
+  function flushStatsNow() {
+    if (!platform.statsReady || !platform.statsDirty) return;
+    if (platform.statsTimer) {
+      clearTimeout(platform.statsTimer);
+      platform.statsTimer = null;
+    }
+    const accepted = SDK.storeStats();
+    if (accepted === false) scheduleStatsStore(2500);
   }
 
   async function initStats() {
+    if (platform.statsReady) return true;
     const response = await safe('stats-load', () => SDK.requestStats());
-    if (!response?.success) return;
+    if (!response?.success) return false;
     platform.statsReady = true;
-    flushStats();
+    flushQueuedStats();
+    return true;
   }
 
   function profileSnapshot() {
@@ -172,20 +178,24 @@
   }
 
   async function uploadCloud() {
-    if (!platform.cloudReady) {
+    if (!platform.cloudReady || !platform.online) {
       platform.cloudDirty = true;
-      return;
+      return false;
     }
-    platform.cloudDirty = false;
     const payload = profileSnapshot();
     const wrote = await safe('cloud-write', () => SDK.writeLocalFile(SAVE_PATH, encoder.encode(JSON.stringify(payload))));
-    if (!wrote) return;
+    if (!wrote) {
+      platform.cloudDirty = true;
+      return false;
+    }
     const uploaded = await safe('cloud-upload', () => SDK.uploadRemoteFile(SAVE_PATH));
-    if (uploaded?.success) toast('WAVEDASH CLOUD SAVED', 1.6);
+    platform.cloudDirty = !uploaded?.success;
+    return !!uploaded?.success;
   }
 
   function applyCloudProfile(payload, preserveLocalSettings = false) {
-    if (!payload || payload.version !== 1) return;
+    if (!payload || payload.version !== 1) return false;
+    let needsUpload = preserveLocalSettings;
     if (!preserveLocalSettings && typeof payload.settings === 'string' && payload.settings) {
       const values = payload.settings.split(',').map(Number);
       if (values.length >= 2 && values.slice(0, 2).every(Number.isFinite)) {
@@ -198,27 +208,38 @@
       const localBest = Number(localStorage[key] || 0);
       const remoteBest = Number(payload.best?.[d.key] || 0);
       if (remoteBest > localBest) localStorage[key] = String(remoteBest);
+      else if (localBest > remoteBest) needsUpload = true;
     }
+    return needsUpload;
   }
 
   async function initCloud() {
-    const exists = await safe('cloud-exists', () => SDK.remoteFileExists(SAVE_PATH));
-    if (exists?.success && exists.data) {
-      const downloaded = await safe('cloud-download', () => SDK.downloadRemoteFile(SAVE_PATH));
-      if (downloaded?.success) {
+    if (platform.cloudReady) return true;
+    if (platform.cloudInit) return platform.cloudInit;
+    platform.cloudInit = (async () => {
+      const exists = await safe('cloud-exists', () => SDK.remoteFileExists(SAVE_PATH));
+      if (!exists?.success) return false;
+      let needsUpload = !exists.data;
+      if (exists.data) {
+        const downloaded = await safe('cloud-download', () => SDK.downloadRemoteFile(SAVE_PATH));
+        if (!downloaded?.success) return false;
         const bytes = await safe('cloud-read', () => SDK.readLocalFile(SAVE_PATH));
         if (bytes) {
           try {
-            applyCloudProfile(JSON.parse(decoder.decode(bytes)), platform.cloudDirty);
-            toast('WAVEDASH CLOUD SYNCED', 1.8);
+            needsUpload = applyCloudProfile(JSON.parse(decoder.decode(bytes)), platform.cloudDirty) || needsUpload;
           } catch (error) {
             console.warn('[Wavedash:cloud-parse]', error);
+            needsUpload = true;
           }
         }
       }
-    }
-    platform.cloudReady = true;
-    if (platform.cloudDirty || !exists?.data) uploadCloud();
+      platform.cloudReady = true;
+      if (platform.cloudDirty || needsUpload) await uploadCloud();
+      return true;
+    })();
+    const result = await platform.cloudInit;
+    platform.cloudInit = null;
+    return result;
   }
 
   async function ensureBoards(d = difficulty()) {
@@ -240,129 +261,195 @@
   }
 
   async function initBoards() {
-    await Promise.all(DIFFICULTIES.map(ensureBoards));
+    const results = await Promise.all(DIFFICULTIES.map(ensureBoards));
+    return results.every(Boolean);
   }
 
   async function initFriends() {
     const response = await safe('friends', () => SDK.listFriends());
-    if (response?.success) platform.friendsOnline = response.data.filter(friend => friend.isOnline).length;
+    if (!response?.success) return false;
+    platform.friendsOnline = response.data.filter(friend => friend.isOnline).length;
+    return true;
   }
 
-  function ghostPayload(snapshot) {
+  function replayPayload(record) {
     return {
-      version: GHOST_VERSION,
-      rate: GHOST_RATE_HZ,
-      difficulty: snapshot.difficulty.key,
+      version: TRACE_VERSION,
+      rate: TRACE_RATE_HZ,
+      difficulty: record.difficulty,
       username: platform.username,
-      style: snapshot.score,
-      timeMs: snapshot.timeMs,
-      frames: snapshot.trace,
+      style: record.score,
+      timeMs: record.timeMs,
+      frames: record.trace,
     };
   }
 
-  async function createGhostUGC(snapshot) {
-    if (snapshot.trace.length < GHOST_RATE_HZ * 2) return undefined;
-    const path = `replays/stretchicorn-${snapshot.difficulty.key}-${Date.now()}.json`;
-    const wrote = await safe('ghost-write', () => SDK.writeLocalFile(path, encoder.encode(JSON.stringify(ghostPayload(snapshot)))));
+  async function createReplayUGC(record) {
+    if (!Array.isArray(record.trace) || record.trace.length < TRACE_RATE_HZ * 2) return undefined;
+    const path = `replays/stretchicorn-${record.id}.json`;
+    const wrote = await safe('replay-write', () => SDK.writeLocalFile(path, encoder.encode(JSON.stringify(replayPayload(record)))));
     if (!wrote) return undefined;
-    const response = await safe('ghost-create', () => SDK.createUGCItem(
+    const d = DIFFICULTIES.find(item => item.key === record.difficulty) || DIFFICULTIES[1];
+    const response = await safe('replay-create', () => SDK.createUGCItem(
       SDK.UGCType.GAME_MANAGED,
-      `${snapshot.difficulty.label} Rainbow Ghost`,
-      `${platform.username} • Style ${snapshot.score} • ${(snapshot.timeMs / 1000).toFixed(1)}s`,
+      `${d.label} PB Replay Trace`,
+      `${platform.username} • Style ${record.score} • ${(record.timeMs / 1000).toFixed(1)}s`,
       SDK.UGCVisibility.PUBLIC,
       path,
     ));
     return response?.success ? response.data : undefined;
   }
 
-  async function loadTopGhost(d = difficulty()) {
-    const ids = await ensureBoards(d);
-    if (!ids) return;
-    const response = await safe('ghost-top', () => SDK.listLeaderboardEntries(ids.style, 0, 10, false));
-    const entry = response?.success ? response.data?.find(candidate => candidate.ugcId) : null;
-    platform.ghost = null;
-    platform.ghostName = '';
-    platform.ghostRank = 0;
-    platform.ghostScore = 0;
-    platform.ghostDifficulty = d.key;
-    if (!entry?.ugcId) return;
-    const path = `ghosts/${d.key}-${entry.userId}.json`;
-    const downloaded = await safe('ghost-download', () => SDK.downloadUGCItem(entry.ugcId, path));
-    if (!downloaded?.success) return;
-    const bytes = await safe('ghost-read', () => SDK.readLocalFile(path));
-    if (!bytes) return;
-    try {
-      const data = JSON.parse(decoder.decode(bytes));
-      if (data.version !== GHOST_VERSION || data.difficulty !== d.key || !Array.isArray(data.frames)) return;
-      platform.ghost = data;
-      platform.ghostName = entry.username || 'RIVAL';
-      platform.ghostRank = entry.globalRank || 1;
-      platform.ghostScore = Number(entry.score || 0);
-      toast(`GHOST LOADED • #${platform.ghostRank} ${platform.ghostName}`, 2.2);
-    } catch (error) {
-      console.warn('[Wavedash:ghost-parse]', error);
-    }
-  }
-
-  async function submitRun(snapshot) {
-    const ids = await ensureBoards(snapshot.difficulty);
-    if (!ids) return;
-
-    const own = await safe('leaderboard-own', () => SDK.getMyLeaderboardEntries(ids.style));
-    const previous = own?.success ? own.data?.[0] : null;
-    const isStylePB = !previous || snapshot.score > Number(previous.score || 0);
-    const ugcId = isStylePB ? await createGhostUGC(snapshot) : undefined;
-    const metadata = {
+  function makePendingRecord(snapshot) {
+    return {
+      id: `${platform.userId || 'player'}-${Date.now()}-${platform.runSerial}`,
       difficulty: snapshot.difficulty.key,
+      score: snapshot.score,
       timeMs: snapshot.timeMs,
       hearts: snapshot.hearts,
       kills: snapshot.kills,
-      maxCombo: Number(snapshot.maxCombo.toFixed(2)),
+      maxCombo: snapshot.maxCombo,
       encore: snapshot.encore ? 1 : 0,
+      trace: snapshot.trace,
+      ugcId: null,
     };
+  }
 
-    const styleResult = await safe('leaderboard-style-upload', () => SDK.uploadLeaderboardScore(
-      ids.style,
-      snapshot.score,
-      true,
-      ugcId,
-      metadata,
-    ));
+  async function persistPendingRuns() {
+    const payload = JSON.stringify({ version: 1, runs: platform.pendingRuns });
+    return !!(await safe('pending-write', () => SDK.writeLocalFile(PENDING_PATH, encoder.encode(payload))));
+  }
+
+  async function loadPendingRuns() {
+    const bytes = await safe('pending-read', () => SDK.readLocalFile(PENDING_PATH));
+    if (bytes) {
+      try {
+        const payload = JSON.parse(decoder.decode(bytes));
+        if (payload?.version === 1 && Array.isArray(payload.runs)) {
+          platform.pendingRuns = payload.runs.filter(run =>
+            run && DIFFICULTIES.some(d => d.key === run.difficulty) && Number.isFinite(run.score) && Number.isFinite(run.timeMs)
+          ).slice(-MAX_PENDING_RUNS);
+        }
+      } catch (error) {
+        console.warn('[Wavedash:pending-parse]', error);
+      }
+    }
+    platform.pendingLoaded = true;
+    if (platform.online) drainPendingRuns();
+  }
+
+  async function submitPendingRun(record) {
+    const d = DIFFICULTIES.find(item => item.key === record.difficulty);
+    if (!d) return true;
+    const ids = await ensureBoards(d);
+    if (!ids) return false;
+
+    const ownStyle = await safe('leaderboard-own-style', () => SDK.getMyLeaderboardEntries(ids.style));
+    if (!ownStyle?.success) return false;
+    const previous = ownStyle.data?.[0] || null;
+    let styleRank = previous?.globalRank || null;
+    let submittedStyleRank = null;
+    let stylePB = false;
+
+    if (!previous || record.score > Number(previous.score || 0)) {
+      if (!record.ugcId) {
+        record.ugcId = await createReplayUGC(record) || null;
+        if (record.ugcId) await persistPendingRuns();
+      }
+      const metadata = {
+        difficulty: record.difficulty,
+        timeMs: record.timeMs,
+        hearts: record.hearts,
+        kills: record.kills,
+        maxCombo: Number(Number(record.maxCombo || 1).toFixed(2)),
+        encore: record.encore ? 1 : 0,
+        fullRun: 1,
+      };
+      const styleResult = await safe('leaderboard-style-upload', () => SDK.uploadLeaderboardScore(
+        ids.style,
+        record.score,
+        true,
+        record.ugcId || undefined,
+        metadata,
+      ));
+      if (!styleResult?.success) return false;
+      styleRank = styleResult.data.globalRank;
+      submittedStyleRank = styleResult.data.submittedRank;
+      stylePB = !!styleResult.data.scoreChanged;
+      if (record.ugcId && !stylePB) {
+        await safe('replay-delete-unused', () => SDK.deleteUGCItem(record.ugcId));
+        record.ugcId = null;
+        await persistPendingRuns();
+      }
+      if (record.ugcId && stylePB && previous?.ugcId && previous.ugcId !== record.ugcId) {
+        safe('replay-delete-old', () => SDK.deleteUGCItem(previous.ugcId));
+      }
+    } else if (record.ugcId && previous?.ugcId !== record.ugcId) {
+      await safe('replay-delete-stale', () => SDK.deleteUGCItem(record.ugcId));
+      record.ugcId = null;
+      await persistPendingRuns();
+    }
+
+    const timeMetadata = {
+      difficulty: record.difficulty,
+      style: record.score,
+      hearts: record.hearts,
+      kills: record.kills,
+      maxCombo: Number(Number(record.maxCombo || 1).toFixed(2)),
+      encore: record.encore ? 1 : 0,
+      fullRun: 1,
+    };
     const timeResult = await safe('leaderboard-time-upload', () => SDK.uploadLeaderboardScore(
       ids.time,
-      snapshot.timeMs,
+      record.timeMs,
       true,
       undefined,
-      { ...metadata, style: snapshot.score },
+      timeMetadata,
     ));
+    if (!timeResult?.success) return false;
 
-    if (ugcId && (!styleResult?.success || !styleResult.data.scoreChanged)) safe('ghost-delete-unused', () => SDK.deleteUGCItem(ugcId));
+    platform.lastResult = {
+      styleRank,
+      submittedStyleRank,
+      timeRank: timeResult.data.globalRank,
+      submittedTimeRank: timeResult.data.submittedRank,
+      stylePB,
+      timePB: !!timeResult.data.scoreChanged,
+    };
+    setPresence(
+      `Cleared ${d.label}`,
+      `Style ${record.score}${styleRank ? ` • #${styleRank}` : ''} • ${(record.timeMs / 1000).toFixed(1)}s`,
+      true,
+    );
+    return true;
+  }
 
-    if (styleResult?.success) {
-      platform.lastResult = {
-        styleRank: styleResult.data.globalRank,
-        submittedStyleRank: styleResult.data.submittedRank,
-        timeRank: timeResult?.success ? timeResult.data.globalRank : null,
-        stylePB: !!styleResult.data.scoreChanged,
-        timePB: !!timeResult?.data?.scoreChanged,
-      };
-      const flags = [
-        `STYLE #${styleResult.data.globalRank}`,
-        timeResult?.success ? `TIME #${timeResult.data.globalRank}` : '',
-        styleResult.data.scoreChanged ? 'NEW PB' : '',
-      ].filter(Boolean).join(' • ');
-      toast(`WAVEDASH • ${flags}`, 5);
-
-      if (ugcId && styleResult.data.scoreChanged && previous?.ugcId && previous.ugcId !== ugcId) {
-        safe('ghost-delete-old', () => SDK.deleteUGCItem(previous.ugcId));
+  async function drainPendingRuns() {
+    if (!platform.online || !platform.pendingLoaded || platform.drainingRuns) return;
+    platform.drainingRuns = true;
+    try {
+      while (platform.online && platform.pendingRuns.length) {
+        const record = platform.pendingRuns[0];
+        if (!(await submitPendingRun(record))) break;
+        platform.pendingRuns.shift();
+        await persistPendingRuns();
       }
+    } finally {
+      platform.drainingRuns = false;
     }
   }
 
+  async function queueRankedRun(snapshot) {
+    const record = makePendingRecord(snapshot);
+    platform.pendingRuns.push(record);
+    if (platform.pendingRuns.length > MAX_PENDING_RUNS) platform.pendingRuns.splice(0, platform.pendingRuns.length - MAX_PENDING_RUNS);
+    await persistPendingRuns();
+    if (platform.online) drainPendingRuns();
+  }
+
   function snapshotRun() {
-    const d = difficulty();
     return {
-      difficulty: d,
+      difficulty: difficulty(),
       score: Math.max(0, Math.round(score)),
       timeMs: Math.max(1, Math.round(runT * 1000)),
       hearts: Math.max(0, Math.round(hearts)),
@@ -376,26 +463,24 @@
   function recordClear() {
     if (platform.submittedRunSerial === platform.runSerial) return;
     platform.submittedRunSerial = platform.runSerial;
-    const snapshot = snapshotRun();
-    const key = snapshot.difficulty.key.toUpperCase();
-    queueStatAdd('RUNS_CLEARED', 1);
-    unlock('CAPN_CLEAR');
-    unlock(`${key}_CLEAR`);
-    if (snapshot.hearts === 13) unlock('PERFECT_13');
-
     if (!platform.runEligible) {
-      flushStats();
+      flushStatsNow();
       uploadCloud();
-      toast('CHECKPOINT CLEAR • LEADERBOARDS REQUIRE TRIAL 1', 4.5);
       return;
     }
 
+    const snapshot = snapshotRun();
+    const key = snapshot.difficulty.key.toUpperCase();
+    queueStatAdd('RUNS_CLEARED', 1);
     queueStatMax(`BEST_STYLE_${key}`, snapshot.score);
     queueStatMin(`BEST_TIME_${key}_MS`, snapshot.timeMs);
     queueStatMax('MAX_COMBO', snapshot.maxCombo);
-    flushStats();
+    unlock('CAPN_CLEAR');
+    unlock(`${key}_CLEAR`);
+    if (snapshot.hearts === 13) unlock('PERFECT_13');
+    flushStatsNow();
     uploadCloud();
-    submitRun(snapshot);
+    queueRankedRun(snapshot);
   }
 
   function startRun(startWave = 1) {
@@ -407,37 +492,31 @@
     platform.lastResult = null;
     platform.lastWave = wave;
     queueStatAdd('RUNS_STARTED', 1);
-    const d = difficulty();
-    setPresence(`Trial ${wave}/13 • ${d.label}`, platform.runEligible ? 'Stretching a rainbow' : 'Checkpoint retry • unranked');
-    if (platform.runEligible) loadTopGhost(d);
-    else {
-      platform.ghost = null;
-      platform.ghostName = '';
-      platform.ghostRank = 0;
-      platform.ghostScore = 0;
-      platform.ghostDifficulty = d.key;
-    }
+    refreshPresence(true);
   }
 
-  function setPresence(status, details = '') {
+  function setPresence(status, details = '', force = false) {
+    platform.desiredPresence = { status, details };
+    if (!platform.online) return;
     const key = `${status}\n${details}`;
     const now = performance.now();
-    if (key === platform.lastPresence && now - platform.lastPresenceAt < 12000) return;
+    if (!force && key === platform.lastPresence && now - platform.lastPresenceAt < 12000) return;
     platform.lastPresence = key;
     platform.lastPresenceAt = now;
     safe('presence', () => SDK.updateUserPresence({ status, details }));
   }
 
-  function refreshPresence() {
+  function refreshPresence(force = false) {
     const d = difficulty();
-    if (mode === 1) setPresence(`Trial ${wave}/13 • ${d.label}`, `Style ${Math.round(score)} • ♥ ${hearts}/13${platform.runEligible ? '' : ' • UNRANKED'}`);
-    else if (mode === 2) setPresence(`Paused • Trial ${wave}/13`, d.label);
-    else if (mode === 3) setPresence('Run flattened', `${d.label} • Style ${Math.round(score)}`);
-    else if (mode === 5 || mode === 4) setPresence('Corn army defeated!', `${d.label} • Style ${Math.round(score)}`);
-    else setPresence('Choosing a difficulty', 'Stretchicorn');
+    if (mode === 1) setPresence(`Trial ${wave}/13 • ${d.label}`, `Style ${Math.round(score)} • ♥ ${hearts}/13${platform.runEligible ? '' : ' • unranked'}`, force);
+    else if (mode === 2) setPresence(`Paused • Trial ${wave}/13`, d.label, force);
+    else if (mode === 3) setPresence('Run flattened', `${d.label} • Style ${Math.round(score)}`, force);
+    else if (mode === 5 || mode === 4) setPresence('Campaign clear', `${d.label} • Style ${Math.round(score)}${platform.runEligible ? '' : ' • unranked'}`, force);
+    else setPresence('Choosing a difficulty', 'Stretchicorn', force);
   }
 
-  // Wrap gameplay seams rather than spending js13k bytes on platform hooks.
+  // Observe existing game seams. Each wrapper calls the frozen implementation first
+  // and only records SDK-facing telemetry afterward.
   const baseReset = reset;
   reset = function (...args) {
     const startWave = Number(args[0] ?? 1);
@@ -480,11 +559,12 @@
 
   const baseSay = say;
   say = function (message, ...args) {
+    const result = baseSay.call(this, message, ...args);
     if (message === 'PARRY!') {
       queueStatAdd('PARRIES', 1);
       unlock('KERNEL_PARRY');
     }
-    return baseSay.call(this, message, ...args);
+    return result;
   };
 
   const baseSave = save;
@@ -494,153 +574,9 @@
     return result;
   };
 
-  // Add platform identity to the final title renderer without touching js13k.
-  const baseTitle = title;
-  title = function (...args) {
-    const result = baseTitle.apply(this, args);
-    const friends = platform.friendsOnline ? ` • ${platform.friendsOnline} FRIEND${platform.friendsOnline === 1 ? '' : 'S'} ONLINE` : '';
-    const ghost = platform.ghostName ? ` • GHOST #${platform.ghostRank || 1} ${platform.ghostName} ${platform.ghostScore}` : '';
-    txt(`WAVEDASH • ${platform.username}${friends}${ghost}`, W - 18, H - 14, 10, platform.online ? '#9abbb2' : '#ff8f8f', 'right');
-    txt('F2 WAVEDASH', 18, H - 14, 10, '#7d91a0');
-    if (platform.muted) txt('HOST MUTED', 18, H - 30, 10, '#ffcf69');
-    return result;
-  };
-
-  const baseVictory = victory;
-  victory = function (...args) {
-    const result = baseVictory.apply(this, args);
-    if (platform.lastResult) {
-      const ranks = [`STYLE #${platform.lastResult.styleRank}`];
-      if (platform.lastResult.timeRank) ranks.push(`TIME #${platform.lastResult.timeRank}`);
-      if (platform.lastResult.stylePB) ranks.push('NEW PB');
-      txt(`WAVEDASH • ${ranks.join(' • ')}`, W / 2, H / 2 + 120, 12, '#9bffca', 'center');
-    } else if (!platform.runEligible && (mode === 5 || mode === 4)) {
-      txt('WAVEDASH • CHECKPOINT CLEAR • UNRANKED', W / 2, H / 2 + 120, 12, '#ffd37a', 'center');
-    }
-    return result;
-  };
-
-  addEventListener('keydown', event => {
-    if (event.key === 'F2' && !event.repeat) {
-      event.preventDefault();
-      SDK.toggleOverlay?.();
-    }
-  });
-
-  // Ghost canvas is separate from the game canvas. It never changes collision,
-  // scoring, RNG, screenshot contracts or the competition renderer.
-  const ghostCanvas = document.createElement('canvas');
-  ghostCanvas.width = W;
-  ghostCanvas.height = H;
-  ghostCanvas.setAttribute('aria-hidden', 'true');
-  Object.assign(ghostCanvas.style, {
-    position: 'fixed',
-    pointerEvents: 'none',
-    zIndex: '2',
-    transformOrigin: 'top left',
-  });
-  document.body.appendChild(ghostCanvas);
-  const GX = ghostCanvas.getContext('2d');
-
-  function syncGhostCanvas() {
-    const rect = C.getBoundingClientRect();
-    ghostCanvas.style.left = `${rect.left}px`;
-    ghostCanvas.style.top = `${rect.top}px`;
-    ghostCanvas.style.width = `${rect.width}px`;
-    ghostCanvas.style.height = `${rect.height}px`;
-  }
-
-  function ghostFrameIndex(frames, targetMs) {
-    let lo = 0, hi = frames.length - 1;
-    while (lo < hi) {
-      const mid = Math.ceil((lo + hi) / 2);
-      if ((frames[mid]?.[0] ?? Infinity) <= targetMs) lo = mid;
-      else hi = mid - 1;
-    }
-    return lo;
-  }
-
-  function drawGhost() {
-    syncGhostCanvas();
-    GX.clearRect(0, 0, W, H);
-    if (mode !== 1 || !platform.ghost?.frames?.length || platform.ghostDifficulty !== difficulty().key) return;
-    const frames = platform.ghost.frames;
-    const index = ghostFrameIndex(frames, Math.round(runT * 1000));
-    const frame = frames[index];
-    if (!frame || frame.length < 5) return;
-    const [, ax, ay, px, py] = frame;
-
-    GX.save();
-    GX.globalAlpha = .25;
-    GX.lineCap = 'round';
-    const dx = px - ax, dy = py - ay, len = Math.hypot(dx, dy) || 1, ox = -dy / len, oy = dx / len;
-    const colors = ['#ff5d8f', '#ff9f43', '#ffe45a', '#6fe38a', '#61c8ff', '#b28dff'];
-    colors.forEach((color, i) => {
-      const off = (i - 2.5) * 3;
-      GX.strokeStyle = color;
-      GX.lineWidth = 3;
-      GX.beginPath();
-      GX.moveTo(ax + ox * off, ay + oy * off);
-      GX.lineTo(px + ox * off, py + oy * off);
-      GX.stroke();
-    });
-
-    GX.globalAlpha = .12;
-    GX.strokeStyle = '#fff';
-    GX.lineWidth = 2;
-    GX.beginPath();
-    for (let i = Math.max(0, index - 18), first = true; i <= index; i++) {
-      const f = frames[i];
-      if (!f) continue;
-      if (first) { GX.moveTo(f[1], f[2]); first = false; }
-      else GX.lineTo(f[1], f[2]);
-    }
-    GX.stroke();
-
-    GX.globalAlpha = .34;
-    GX.fillStyle = '#fff';
-    GX.beginPath(); GX.arc(ax, ay, 17, 0, Math.PI * 2); GX.fill();
-    GX.beginPath(); GX.arc(px, py, 12, 0, Math.PI * 2); GX.fill();
-    GX.globalAlpha = .55;
-    GX.font = '600 11px system-ui';
-    GX.textAlign = 'center';
-    GX.fillText(`#${platform.ghostRank || 1} ${platform.ghostName}`, ax, ay - 25);
-    GX.restore();
-  }
-
-  function drawToast() {
-    let el = document.querySelector('#wavedash-toast');
-    if (!platform.toast || performance.now() > platform.toastUntil) {
-      if (el) el.style.display = 'none';
-      return;
-    }
-    const rect = C.getBoundingClientRect();
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'wavedash-toast';
-      Object.assign(el.style, {
-        position: 'fixed',
-        zIndex: '3',
-        pointerEvents: 'none',
-        font: '600 12px system-ui',
-        color: '#e8f7ff',
-        background: 'rgba(9,6,16,.82)',
-        border: '1px solid rgba(97,200,255,.5)',
-        borderRadius: '7px',
-        padding: '7px 10px',
-        backdropFilter: 'blur(6px)',
-      });
-      document.body.appendChild(el);
-    }
-    el.textContent = platform.toast;
-    el.style.display = 'block';
-    el.style.left = `${rect.left + 12}px`;
-    el.style.top = `${rect.top + 12}px`;
-  }
-
   function monitor() {
     const nowMs = Math.round(runT * 1000);
-    if (mode === 1 && platform.runEligible && (platform.lastSampleMs < 0 || nowMs - platform.lastSampleMs >= 1000 / GHOST_RATE_HZ)) {
+    if (mode === 1 && platform.runEligible && (platform.lastSampleMs < 0 || nowMs - platform.lastSampleMs >= 1000 / TRACE_RATE_HZ)) {
       platform.lastSampleMs = nowMs;
       if (platform.trace.length < 12000) platform.trace.push([nowMs, Math.round(A.x), Math.round(A.y), Math.round(P.x), Math.round(P.y)]);
     }
@@ -654,9 +590,9 @@
     if (wave !== platform.lastWave) {
       const previous = platform.lastWave;
       platform.lastWave = wave;
-      if (previous === 5 && wave > 5) unlock('HUSK_CLEAR');
-      if (previous === 9 && wave > 9) unlock('COLONEL_CLEAR');
-      refreshPresence();
+      if (platform.runEligible && previous === 5 && wave > 5) unlock('HUSK_CLEAR');
+      if (platform.runEligible && previous === 9 && wave > 9) unlock('COLONEL_CLEAR');
+      refreshPresence(true);
     }
 
     if (mode !== platform.lastMode) {
@@ -664,32 +600,41 @@
       platform.lastMode = mode;
       if (mode === 5 && previousMode !== 5) recordClear();
       if (mode === 3) {
-        flushStats();
+        flushStatsNow();
         uploadCloud();
       }
-      refreshPresence();
+      refreshPresence(true);
     }
 
     if (performance.now() - platform.lastPresenceAt > 12000) refreshPresence();
-    drawGhost();
-    drawToast();
     requestAnimationFrame(monitor);
   }
 
-  // Initialize lifecycle first, then release deferred events after listeners exist.
+  function onConnected() {
+    platform.online = true;
+    platform.lastPresence = '';
+    refreshPresence(true);
+    initStats().then(() => {
+      if (platform.statsDirty) flushStatsNow();
+    });
+    initCloud();
+    initFriends();
+    initBoards().then(() => drainPendingRuns());
+    if (platform.pendingLoaded) drainPendingRuns();
+  }
+
+  function onDisconnected() {
+    platform.online = false;
+  }
+
   SDK.updateLoadProgressZeroToOne(1);
   SDK.init({ debug: false, deferEvents: true });
-  SDK.on?.(SDK.Events.BACKEND_CONNECTED, () => {
-    platform.online = true;
-    refreshPresence();
-  });
-  SDK.on?.(SDK.Events.BACKEND_DISCONNECTED, () => {
-    platform.online = false;
-    toast('WAVEDASH OFFLINE • LOCAL RUN STILL ACTIVE', 3);
-  });
-  SDK.on?.(SDK.Events.BACKEND_RECONNECTING, () => {
-    platform.online = false;
-    toast('WAVEDASH RECONNECTING…', 2);
+  SDK.on?.(SDK.Events.BACKEND_CONNECTED, onConnected);
+  SDK.on?.(SDK.Events.BACKEND_DISCONNECTED, onDisconnected);
+  SDK.on?.(SDK.Events.BACKEND_RECONNECTING, onDisconnected);
+  SDK.on?.(SDK.Events.STATS_STORED, payload => {
+    if (payload?.success) platform.statsDirty = false;
+    else scheduleStatsStore(2500);
   });
   SDK.on?.(SDK.Events.MUTE_CHANGED, payload => {
     platform.muted = !!payload.isMuted;
@@ -697,17 +642,20 @@
   SDK.on?.(SDK.Events.FULLSCREEN_CHANGED, payload => {
     platform.fullscreen = !!payload.isFullscreen;
   });
-  SDK.readyForEvents?.();
 
   platform.username = SDK.getUsername?.() || SDK.getUser?.()?.username || 'PLAYER';
   platform.userId = SDK.getUserId?.() || SDK.getUser?.()?.id || '';
   platform.muted = !!SDK.isMuted?.();
   platform.fullscreen = !!SDK.isFullscreen?.();
 
+  loadPendingRuns();
   refreshPresence();
-  initStats();
-  initCloud();
-  initFriends();
-  initBoards();
+  SDK.readyForEvents?.();
   requestAnimationFrame(monitor);
+
+  addEventListener('pagehide', () => {
+    flushStatsNow();
+    if (platform.cloudDirty) uploadCloud();
+    if (platform.online) safe('presence-clear', () => SDK.updateUserPresence({}));
+  });
 })();
