@@ -48,8 +48,8 @@ Core boards:
 Challenge boards:
 
 - `Biggest Harvest` — best eligible defeats during one existing horn slash
-- `Purist Style - Hard` — Style from a full Hard run with zero powerups
-- `Purist Style - Impossible` — Style from a full Impossible run with zero powerups
+- `Silky Style - Hard` — Style from a full Hard run with zero powerups
+- `Silky Style - Impossible` — Style from a full Impossible run with zero powerups
 
 Style and challenge boards sort descending. Clear Time sorts ascending in milliseconds. All submissions use `keepBest: true`.
 
@@ -64,17 +64,29 @@ The SDK-only observer tracks existing outcomes such as:
 - first Snap, Double Rainbow, Lucky 13, graze, parry, and x4 combo
 - Trial 5 / Trial 9 / per-difficulty campaign clears
 - five eligible defeats during one existing horn slash (`Corn Combine`)
-- thirteen grazes in one Trial before heart loss
-- thirteen parries in one run
+- thirteen grazes in one Trial before heart loss (`Great Grazer`)
+- thirteen parries in one run (`Parry Party`)
 - thirteen cumulative seconds at x4 combo
 - five Wall Smashes in one run
 - Double Rainbow within three seconds of collecting Prism Cob
 - collecting all five existing powerup types in one run
 - zero-powerup clears on each difficulty plus the all-four `Pure Spectrum` meta challenge
-- a Hard clear without ever losing a heart
-- reaching the existing Impossible Encore
+- a Hard clear without ever losing a heart (`Pristine Prance`)
+- reaching the existing Impossible Encore (`Cob Comeback`)
 - clear-time and Style PB improvements
 - global Top 13 Impossible Style once at least thirteen players are ranked
+
+Final themed names for the renamed achievements are:
+
+- `COLONEL_CLEAR` — `Colonel Chop`
+- `IMPOSSIBLE_CLEAR` — `Rainbow Royalty`
+- `FULL_HEARTS` — `Heart Hold'em`
+- `THREAD_NEEDLE` — `Great Grazer`
+- `RETURN_DEPARTMENT` — `Parry Party`
+- `NO_POWER_HARD` — `Raw Rainbow`
+- `NO_POWER_IMPOSSIBLE` — `Powerless Pony`
+- `UNTOUCHED` — `Pristine Prance`
+- `ENCORE_REACHED` — `Cob Comeback`
 
 Long-tail stat-triggered achievements:
 
@@ -105,10 +117,11 @@ npm run wavedash:push
 - all copied gameplay/rendering files are byte-identical,
 - neither SDK layer contains a renderer, canvas overlay, title/victory override, or Wavedash-specific gameplay presentation,
 - exactly eleven leaderboard definitions and 39 achievement definitions are present,
+- the final themed display names and `Silky Style` challenge-board names cannot silently drift,
 - both ranked queues survive disconnect/reconnect,
 - challenge-board submissions preserve checkpoint fairness,
 - challenge metadata includes frozen-build provenance,
-- an executable SDK mock proves slash/graze/parry/powerup observation, purist boards, PB achievements, Impossible Encore/Top-13 handling, replay attachment, cloud/stat behavior, and reconnect-safe submission.
+- an executable SDK mock proves slash/graze/parry/powerup observation, zero-powerup challenge boards, PB achievements, Impossible Encore/Top-13 handling, replay attachment, cloud/stat behavior, and reconnect-safe submission.
 
 The GitHub workflow rejects any pull-request diff outside the explicit SDK/tooling/documentation allowlist and separately proves the frozen game/runtime files are byte-identical to the submission base.
 
@@ -120,9 +133,9 @@ Import `wavedash/achievements.json` under the Stretchicorn game's Achievements s
 
 After import, mark these four achievements **Secret**:
 
-- `NO_POWER_IMPOSSIBLE` — Barely Possible
-- `UNTOUCHED` — Untouched
-- `ENCORE_REACHED` — NOT YET.
+- `NO_POWER_IMPOSSIBLE` — Powerless Pony
+- `UNTOUCHED` — Pristine Prance
+- `ENCORE_REACHED` — Cob Comeback
 - `PURE_SPECTRUM` — Pure Spectrum
 
 Then run:
@@ -156,9 +169,9 @@ Before publishing the judged build:
 1. Import/reconcile `wavedash/achievements.json`, mark the four documented achievements Secret, and make `npm run wavedash:audit` pass.
 2. Run `npm run wavedash:test`.
 3. Run `npm run wavedash:dev`.
-4. Confirm all eleven leaderboards are Visible with the expected sort/display rules.
+4. Confirm all eleven leaderboards are Visible with the expected sort/display rules, including `Silky Style - Hard` and `Silky Style - Impossible`.
 5. Trigger Snap, graze, parry, powerup, slash-harvest, and x4-combo achievements and verify persistence after reload.
-6. Verify a zero-powerup full clear earns the matching purist achievement and, on Hard/Impossible, submits the corresponding Purist Style board.
+6. Verify a zero-powerup full clear earns the matching challenge achievement and, on Hard/Impossible, submits the corresponding Silky Style board.
 7. Verify `Biggest Harvest` records the best single-slash kill count and keeps the player's best score.
 8. Change the existing Music/SFX/Mouse settings, reload, and verify cloud restoration.
 9. Complete a Trial-1 campaign and verify Style + Clear Time submissions plus attached replay-trace UGC and enriched metadata.
