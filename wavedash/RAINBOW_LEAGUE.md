@@ -6,19 +6,11 @@ There is intentionally **no Wavedash-only combat change, level change, balance c
 
 ## 1. Identity, friends, and presence
 
-The SDK reads the signed-in player identity and online-friend list, then publishes presence for existing game states such as:
+The SDK reads the signed-in player identity and online-friend list, then publishes presence for existing states: choosing difficulty, current Trial/difficulty, pause, failure, and campaign clear. Presence is refreshed after reconnect and cleared on exit. Gameplay never depends on identity/friends/presence.
 
-- choosing a difficulty
-- current Trial + difficulty
-- pause
-- run failure
-- campaign clear
+## 2. Eleven competitive leaderboards
 
-Presence is refreshed after backend reconnection and cleared on page exit. No gameplay state depends on identity, friends, or presence.
-
-## 2. Eight competitive leaderboards
-
-The SDK creates and reuses:
+Core boards:
 
 - `Style - Easy`
 - `Clear Time - Easy`
@@ -29,15 +21,17 @@ The SDK creates and reuses:
 - `Style - Impossible`
 - `Clear Time - Impossible`
 
-Style sorts descending. Clear Time sorts ascending in milliseconds. `keepBest` is enabled for every submission.
+Long-tail challenge boards:
 
-Each saved run includes flat metadata describing the already-completed run: difficulty, time/Style counterpart, hearts, kills, max combo, Encore state, powerup count, grazes, parries, Double Rainbows, best single-slash harvest, and `fullRun: 1`.
+- `Biggest Harvest`
+- `Purist Style - Hard`
+- `Purist Style - Impossible`
 
-### Ranked-run fairness
+Style and challenge boards sort descending. Clear Time sorts ascending in milliseconds. Every submission uses `keepBest: true`.
 
-Only a campaign started from Trial 1 is rank eligible. Existing checkpoint retry behavior is untouched, but checkpoint completions never call the leaderboard or replay-UGC submission path and never unlock full-campaign clear achievements.
+Challenge-board metadata records the already-completed run plus frozen-build provenance (`gameBuild` and `traceVersion`). `Biggest Harvest` submits the run's best observed single-slash eligible-defeat count. The two Purist boards submit only zero-powerup full campaigns on the named difficulty.
 
-This closes the partial-run timing exploit without changing how retries work in the game.
+Only a campaign started from Trial 1 is rank eligible. Existing checkpoint retry behavior is untouched, and checkpoint completions never call either the core or challenge ranking paths.
 
 ## 3. Thirty-nine achievements + persistent stats
 
@@ -45,16 +39,7 @@ Import `wavedash/achievements.json` in the Developer Portal. The platform layer 
 
 ### First-session discovery
 
-- `First Snap`
-- `Double Rainbow`
-- `Lucky 13`
-- `Close Shave`
-- `Return to Sender`
-- `Rainbow Engine`
-- `Husk Cracked`
-- `Colonel Down`
-- Easy / Normal / Hard / Impossible full clears
-- `Full Hearts`
+`First Snap`, `Double Rainbow`, `Lucky 13`, `Close Shave`, `Return to Sender`, `Rainbow Engine`, `Husk Cracked`, `Colonel Down`, the four difficulty clears, and `Full Hearts`.
 
 ### One-run mastery
 
@@ -73,7 +58,7 @@ Import `wavedash/achievements.json` in the Developer Portal. The platform layer 
 - `Bare Rainbow`: Hard with zero powerups
 - `Barely Possible`: Impossible with zero powerups
 - `Untouched`: Hard without ever losing a heart
-- `NOT YET.`: reach the existing Impossible Encore from a Trial-1 campaign
+- `NOT YET.`: reach the existing Impossible Encore
 - `Pure Spectrum`: complete all four zero-powerup difficulty challenges
 
 ### Long-tail return goals
@@ -87,8 +72,6 @@ Import `wavedash/achievements.json` in the Developer Portal. The platform layer 
 - `Seeing Double`: 130 Double Rainbows
 - `Cob Composter`: thirteen full campaigns
 
-Those lifetime achievements use Wavedash stat-trigger rules rather than client-side threshold guesses.
-
 ### PB and world competition
 
 - `Thirteen Seconds Faster`: improve an established clear-time PB by at least 13 seconds
@@ -96,15 +79,13 @@ Those lifetime achievements use Wavedash stat-trigger rules rather than client-s
 - `Corn Prix Champion`: improve an established Clear Time PB on every difficulty
 - `World's End`: hold a global Top-13 Impossible Style rank once at least thirteen players are ranked
 
-The PB logic compares against the player's existing Wavedash leaderboard entries before submitting the new run, so the first score establishes a baseline rather than falsely counting as an improvement.
+The PB logic compares against the player's existing Wavedash entries before submission, so the first score establishes a baseline rather than falsely counting as an improvement.
 
-Persistent stats include kills, Snaps, Double Rainbows, Lucky 13s, parries, grazes, Wall Smashes, powerups, runs started, full campaigns cleared, best combo, best single-slash harvest, per-difficulty PB-improvement flags, and per-difficulty best Style/time.
-
-Stat writes are batched. `STATS_STORED` is observed so a failed persistence event can be retried without touching gameplay.
+`World's End` is additionally reconciled on backend connection. If a player was already in the Top 13 when the board later reaches thirteen players, the SDK can unlock it without requiring another Impossible score.
 
 ### Secret achievements
 
-Wavedash secret visibility is configured in the Developer Portal/CLI rather than by the bulk-import JSON. After importing `wavedash/achievements.json`, mark these as Secret:
+After import, mark these four Secret in Wavedash:
 
 - `NO_POWER_IMPOSSIBLE` — Barely Possible
 - `UNTOUCHED` — Untouched
@@ -113,81 +94,64 @@ Wavedash secret visibility is configured in the Developer Portal/CLI rather than
 
 ## 4. Cloud saves
 
-The SDK syncs only state that already existed in the submitted game:
-
-- Music/SFX/Mouse settings from `SV`
-- per-difficulty Best Style values
-
-Remote and local PB values merge monotonically so a weaker cloud copy cannot erase a stronger local record. If the player changes an existing setting before initial cloud hydration finishes, the local setting wins and is uploaded after hydration.
+The SDK syncs only state that already existed in the submitted game: Music/SFX/Mouse settings and per-difficulty Best Style values. Remote/local PBs merge monotonically so a weaker cloud copy cannot erase a stronger local record.
 
 ## 5. Leaderboard-attached replay trace UGC
 
-A rank-eligible run passively records the existing body/head positions at 10 Hz. The trace does not feed back into simulation, input, collision, scoring, RNG, enemies, or rendering.
+A rank-eligible run passively records body/head positions at 10 Hz. The trace never feeds back into simulation, input, collisions, scoring, RNG, enemies, or rendering.
 
-When the run is a new Style PB, the trace is written with `writeLocalFile()`, uploaded as `UGCType.GAME_MANAGED`, and attached to the Style leaderboard entry through `uploadLeaderboardScore(..., ugcId, metadata)`.
+On a new Style PB, the trace is written with `writeLocalFile()`, uploaded as `UGCType.GAME_MANAGED`, and attached to the Style entry. Superseded PB replay UGC is cleaned up. The post-deadline build deliberately does not render another player's trace back into the game.
 
-This intentionally stops at the SDK/UGC boundary. The post-deadline build does **not** draw another player's trace back into the game.
+## 6. Disconnect-safe submission
 
-Superseded PB replay UGC is deleted after a better attached PB is accepted so the player's UGC storage does not accumulate abandoned files.
-
-## 6. Disconnect-safe ranked submission
-
-A full-run result is first written to a local Wavedash filesystem queue. If the backend is unavailable, the game continues normally and no remote submission is attempted.
-
-On `BACKEND_CONNECTED`, the SDK layer retries queued results. The retry flow is designed around `keepBest` and the player's existing Style and Clear Time entries so reconnects do not duplicate, downgrade, or accidentally reclassify PB achievements.
-
-The local queue is bounded and survives a page reload on the same device.
+The core Style/Time result and the three challenge-board results each use bounded Wavedash-filesystem retry queues. Offline clears are persisted first and submitted after `BACKEND_CONNECTED`. `keepBest` protects standings from reconnect retries.
 
 ## Build isolation
 
-The repository root remains the frozen game shell. `npm run wavedash:build` copies it to `wavedash-dist/` and replaces exactly one string: the original one-line Wavedash init hook becomes a script reference to `src/wavedash-platform.js`.
+The repository root remains the frozen game shell. `npm run wavedash:build` copies it to `wavedash-dist/` and replaces exactly one string: the original one-line Wavedash init hook becomes two SDK-only script references:
+
+- `src/wavedash-platform.js`
+- `wavedash/challenge-platform.js`
 
 No stylesheet override is added. All copied game/rendering files are byte-for-byte identical to the frozen source.
 
-## One-time Developer Portal setup
+## Portal integrity
 
-Import:
+Bulk-import `wavedash/achievements.json`, reconcile any previously imported 13-achievement state, and mark the four secret achievements. Then run:
 
-`wavedash/achievements.json`
+```bash
+npm run wavedash:audit
+```
 
-Then mark the four documented achievements Secret. Launch one Wavedash playtest while signed in as a Stretchicorn team member so the eight `getOrCreateLeaderboard()` calls establish team-owned boards. Verify all eight are Visible and have the expected sort/display settings.
+The audit reads the live Wavedash achievement list and fails unless it contains exactly the intended 39 achievements with matching titles/descriptions/secret flags. `npm run wavedash:push` runs this audit before uploading.
+
+Launch one Wavedash playtest while signed in as a Stretchicorn team member so the eleven `getOrCreateLeaderboard()` calls establish team-owned boards, then verify all eleven are Visible.
 
 ## Verification
 
 ```bash
 npm run wavedash:test
+npm run wavedash:audit
 npm run wavedash:dev
 ```
 
-The automated suite checks both structure and behavior:
+The automated suite checks:
 
-- Wavedash build shell differs from root only at the SDK init hook
+- Wavedash shell differs from root only at the SDK hook
 - copied gameplay/rendering files are byte-identical
-- no custom Wavedash renderer/UI layer exists
-- exactly 8 leaderboard definitions and 39 achievements exist
-- long-tail thresholds are locked to 1,300 / 13,000 / 130,000 and the other intended milestones
-- observer wrappers preserve frozen function return values
-- checkpoint clears cannot submit ranked records
-- slash, graze, parry, powerup, x4-combo, purist, PB, Encore, and Top-13 observers are SDK-only
-- a Trial-1 clear submits Style + Clear Time + PB replay UGC
-- offline full-run results persist locally and submit after reconnect
+- no custom Wavedash renderer/UI exists
+- exactly 11 leaderboard definitions and 39 achievements exist
+- long-tail thresholds are locked to the intended values
+- observer wrappers preserve frozen function returns
+- checkpoint clears cannot submit core or challenge records
+- slash/graze/parry/powerup/x4/purist/PB/Encore observers remain SDK-only
+- core and challenge offline queues drain after reconnect
+- challenge metadata includes frozen-build provenance
+- `World's End` is reconciled on reconnect
 - cloud/stat/presence calls remain platform-only side effects
 
 The pull-request workflow also rejects any changed file outside the explicit SDK/tooling/documentation allowlist.
 
-## Live sandbox checklist
+## Final live checks
 
-Before publishing:
-
-1. Import achievements/stats and mark the four secret achievements.
-2. Run `npm run wavedash:test`.
-3. Run `npm run wavedash:dev`.
-4. Verify all eight leaderboards.
-5. Exercise the first-session and one-run mastery achievements.
-6. Verify a zero-powerup clear and a powerup-using clear are classified correctly.
-7. Reload after changing existing audio/mouse settings and confirm cloud restoration.
-8. Complete a Trial-1 campaign and confirm Style + Clear Time + attached replay UGC + metadata.
-9. Establish then improve a time PB by at least thirteen seconds and confirm PB achievements.
-10. Complete a checkpoint retry and confirm no ranked/full-clear platform record is produced.
-11. Disconnect during a full-run clear, reconnect, and confirm the queued result is submitted exactly once.
-12. With thirteen or more Impossible Style entries, verify a Top-13 standing unlocks `World's End`.
+Before publishing: make `wavedash:audit` pass, run the sandbox from `wavedash-dist`, verify all 11 boards and representative achievements, test one zero-powerup Hard/Impossible run, test `Biggest Harvest`, verify replay UGC/cloud saves, test checkpoint exclusion, test an offline/reconnect clear, test `World's End` with a populated Impossible board, clear sandbox data for a clean final pass, then use `npm run wavedash:push`.
