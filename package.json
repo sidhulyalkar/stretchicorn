@@ -16,9 +16,10 @@
     "smoke": "npm run build && node scripts/run-regressions.mjs --smoke",
     "release:competition": "npm run build && node scripts/run-regressions.mjs && npm run pack:competition && npm run verify:offline && python3 scripts/package.py && npm run verify:archive && npm run check:size && npm run audit:release",
     "verify": "npm run release:competition",
-    "wavedash:build": "npm run build && node scripts/build-wavedash.mjs",
-    "wavedash:test": "npm run wavedash:build && node scripts/test-wavedash.mjs",
+    "wavedash:build": "node scripts/build-wavedash.mjs",
+    "wavedash:test": "npm run wavedash:build && node --check src/wavedash-platform.js && node --check wavedash/challenge-platform.js && node scripts/test-wavedash.mjs && node scripts/test-wavedash-platform.mjs && node wavedash/test-challenge-platform.mjs",
+    "wavedash:audit": "npm run wavedash:test && node wavedash/portal-audit.mjs",
     "wavedash:dev": "npm run wavedash:test && wavedash dev",
-    "wavedash:push": "npm run wavedash:test && wavedash build push"
+    "wavedash:push": "npm run wavedash:audit && wavedash build push"
   }
 }

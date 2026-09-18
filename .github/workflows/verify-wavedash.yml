@@ -1,23 +1,30 @@
-name: Verify Wavedash layer
+name: Verify Wavedash SDK layer
 
 on:
   push:
     branches:
-      - platform/wavedash-v0.21.0
+      - feat/wavedash-rainbow-league
+      - platform/wavedash-v0.39.0
   pull_request:
     branches:
       - main
+      - platform/wavedash-v0.39.0
     paths:
-      - 'index.html'
       - 'package.json'
+      - 'src/wavedash-platform.js'
       - 'scripts/build-wavedash.mjs'
       - 'scripts/test-wavedash.mjs'
+      - 'scripts/test-wavedash-platform.mjs'
+      - 'wavedash/**'
       - 'wavedash.example.toml'
       - 'WAVEDASH.md'
       - '.github/workflows/verify-wavedash.yml'
 
 permissions:
   contents: read
+
+env:
+  FROZEN_GAME_SHA: eee2ac40c71070ddb1502e16362e3b9490d5ce61
 
 concurrency:
   group: verify-wavedash-${{ github.workflow }}-${{ github.ref }}
@@ -26,14 +33,51 @@ concurrency:
 jobs:
   verify-wavedash:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check out candidate
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Enforce SDK-only post-deadline scope
+        shell: bash
+        run: |
+          git cat-file -e "$FROZEN_GAME_SHA^{commit}"
+          changed="$(git diff --name-only "$FROZEN_GAME_SHA"...HEAD)"
+          echo "Frozen gameplay base: $FROZEN_GAME_SHA"
+          echo "$changed"
+          forbidden="$(printf '%s\n' "$changed" | grep -Ev '^(\.github/workflows/verify-wavedash\.yml|WAVEDASH\.md|package\.json|scripts/build-wavedash\.mjs|scripts/test-wavedash\.mjs|scripts/test-wavedash-platform\.mjs|src/wavedash-platform\.js|wavedash/.*|wavedash\.example\.toml)$' || true)"
+          if [[ -n "$forbidden" ]]; then
+            echo 'Post-deadline Wavedash work must be SDK integration/tooling only. Forbidden diff from frozen gameplay commit:'
+            echo "$forbidden"
+            exit 1
+          fi
+
+      - name: Prove frozen game files are unchanged
+        shell: bash
+        run: |
+          frozen=(
+            index.html
+            src/style.css
+            src/00-core.js
+            src/01-combat.js
+            src/02-update.js
+            src/03-render.js
+            src/04-ui-input.js
+            src/03-keyart-v026.js
+          )
+          if ! git diff --quiet "$FROZEN_GAME_SHA" -- "${frozen[@]}"; then
+            echo 'A frozen game/runtime file differs from the submission base:'
+            git diff --name-only "$FROZEN_GAME_SHA" -- "${frozen[@]}"
+            exit 1
+          fi
+          echo 'PASS: frozen game/runtime files are byte-identical to the post-deadline base.'
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22'
 
-      - name: Verify isolated Wavedash build
+      - name: Verify isolated Wavedash SDK build
         run: npm run wavedash:test

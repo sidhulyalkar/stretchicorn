@@ -1,0 +1,288 @@
+{
+  "achievements": [
+    {
+      "identifier": "FIRST_SNAP",
+      "display_name": "First Snap",
+      "description": "Land your first charged Rainbow Snap.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "DOUBLE_RAINBOW",
+      "display_name": "Double Rainbow",
+      "description": "Chain two charged Snaps quickly enough to trigger Double Rainbow.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "LUCKY_13",
+      "display_name": "Lucky 13",
+      "description": "Trigger the Lucky 13 reward after thirteen eligible defeats.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "CLOSE_SHAVE",
+      "display_name": "Close Shave",
+      "description": "Graze a hostile kernel without getting hit.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "KERNEL_PARRY",
+      "display_name": "Return to Sender",
+      "description": "Parry a gold kernel with the horn.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "MAX_COMBO",
+      "display_name": "Rainbow Engine",
+      "description": "Reach the maximum x4 combat combo.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "HUSK_CLEAR",
+      "display_name": "Husk Cracked",
+      "description": "Defeat Hideaway Husk and clear Trial 5 during a full campaign.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "COLONEL_CLEAR",
+      "display_name": "Colonel Chop",
+      "description": "Defeat Kernel Colonel and clear Trial 9 during a full campaign.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "EASY_CLEAR",
+      "display_name": "Easy Pickings",
+      "description": "Clear all thirteen trials on Easy.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "NORMAL_CLEAR",
+      "display_name": "Full Shuck",
+      "description": "Clear all thirteen trials on Normal.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "HARD_CLEAR",
+      "display_name": "Hard Shuck",
+      "description": "Clear all thirteen trials on Hard.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "IMPOSSIBLE_CLEAR",
+      "display_name": "Rainbow Royalty",
+      "description": "Clear Impossible and survive its Encore.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "FULL_HEARTS",
+      "display_name": "Heart Hold'em",
+      "description": "Finish a full campaign with all thirteen hearts.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "CORN_COMBINE",
+      "display_name": "Corn Combine",
+      "description": "Defeat five eligible enemies with a single horn slash.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "THREAD_NEEDLE",
+      "display_name": "Great Grazer",
+      "description": "Graze thirteen kernels in one Trial before losing a heart.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "RETURN_DEPARTMENT",
+      "display_name": "Parry Party",
+      "description": "Parry thirteen kernels in one run.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "FULL_SPECTRUM",
+      "display_name": "Full Spectrum",
+      "description": "Spend thirteen cumulative seconds at x4 combo in one run.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "WALL_TO_WALL",
+      "display_name": "Wall to Wall",
+      "description": "Cause five Wall Smashes in one run.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "PRISM_BREAK",
+      "display_name": "Prism Break",
+      "description": "Trigger Double Rainbow within three seconds of collecting Prism Cob.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "FULL_PANTRY",
+      "display_name": "Full Pantry",
+      "description": "Collect all five powerup types in one run.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "NO_POWER_EASY",
+      "display_name": "Plain Corn",
+      "description": "Clear Easy without collecting a powerup.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "NO_POWER_NORMAL",
+      "display_name": "Dry Shuck",
+      "description": "Clear Normal without collecting a powerup.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "NO_POWER_HARD",
+      "display_name": "Raw Rainbow",
+      "description": "Clear Hard without collecting a powerup.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "NO_POWER_IMPOSSIBLE",
+      "display_name": "Powerless Pony",
+      "description": "Clear Impossible without collecting a powerup.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "UNTOUCHED",
+      "display_name": "Pristine Prance",
+      "description": "Clear Hard without ever losing a heart.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "ENCORE_REACHED",
+      "display_name": "Cob Comeback",
+      "description": "Reach the hidden Impossible Encore during a full campaign.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "POPCORN_APPRENTICE",
+      "display_name": "Popcorn Apprentice",
+      "description": "Defeat 1,300 eligible enemies across all runs.",
+      "stat_requirement": {
+        "stat": "TOTAL_KILLS",
+        "threshold": 1300
+      }
+    },
+    {
+      "identifier": "CORN_REAPER",
+      "display_name": "Corn Reaper",
+      "description": "Defeat 13,000 eligible enemies across all runs.",
+      "stat_requirement": {
+        "stat": "TOTAL_KILLS",
+        "threshold": 13000
+      }
+    },
+    {
+      "identifier": "MAIZE_MASTER",
+      "display_name": "Maize Master",
+      "description": "Defeat 130,000 eligible enemies across all runs.",
+      "stat_requirement": {
+        "stat": "TOTAL_KILLS",
+        "threshold": 130000
+      }
+    },
+    {
+      "identifier": "SERIAL_SNAPPER",
+      "display_name": "Serial Snapper",
+      "description": "Perform 1,300 charged Rainbow Snaps.",
+      "stat_requirement": {
+        "stat": "TOTAL_SNAPS",
+        "threshold": 1300
+      }
+    },
+    {
+      "identifier": "GRAZE_CRAZE",
+      "display_name": "Graze Craze",
+      "description": "Graze 1,300 hostile kernels.",
+      "stat_requirement": {
+        "stat": "TOTAL_GRAZES",
+        "threshold": 1300
+      }
+    },
+    {
+      "identifier": "RETURN_CENTER",
+      "display_name": "Return Center",
+      "description": "Parry 1,300 kernels.",
+      "stat_requirement": {
+        "stat": "PARRIES",
+        "threshold": 1300
+      }
+    },
+    {
+      "identifier": "SEEING_DOUBLE",
+      "display_name": "Seeing Double",
+      "description": "Trigger 130 Double Rainbows.",
+      "stat_requirement": {
+        "stat": "DOUBLE_RAINBOWS",
+        "threshold": 130
+      }
+    },
+    {
+      "identifier": "COB_COMPOSTER",
+      "display_name": "Cob Composter",
+      "description": "Finish thirteen full campaigns.",
+      "stat_requirement": {
+        "stat": "RUNS_CLEARED",
+        "threshold": 13
+      }
+    },
+    {
+      "identifier": "THIRTEEN_FASTER",
+      "display_name": "Thirteen Seconds Faster",
+      "description": "Beat an established clear-time personal best by at least thirteen seconds.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "DUAL_PB",
+      "display_name": "Two Rainbows, One Run",
+      "description": "Improve both your established Style and Clear Time personal bests in the same run.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "CORN_PRIX_CHAMPION",
+      "display_name": "Corn Prix Champion",
+      "description": "Improve an established Clear Time personal best on all four difficulties.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "WORLDS_END",
+      "display_name": "World's End",
+      "description": "Reach the global Top 13 for Impossible Style once at least thirteen players are ranked.",
+      "stat_requirement": null
+    },
+    {
+      "identifier": "PURE_SPECTRUM",
+      "display_name": "Pure Spectrum",
+      "description": "Complete the zero-powerup challenge on all four difficulties.",
+      "stat_requirement": null
+    }
+  ],
+  "stats": [
+    { "identifier": "TOTAL_KILLS", "display_name": "Eligible enemies defeated" },
+    { "identifier": "TOTAL_SNAPS", "display_name": "Rainbow Snaps" },
+    { "identifier": "DOUBLE_RAINBOWS", "display_name": "Double Rainbows" },
+    { "identifier": "LUCKY_13S", "display_name": "Lucky 13 triggers" },
+    { "identifier": "PARRIES", "display_name": "Kernel parries" },
+    { "identifier": "TOTAL_GRAZES", "display_name": "Kernel grazes" },
+    { "identifier": "WALL_SMASHES", "display_name": "Wall Smashes" },
+    { "identifier": "POWERUPS_COLLECTED", "display_name": "Powerups collected" },
+    { "identifier": "RUNS_STARTED", "display_name": "Runs started" },
+    { "identifier": "RUNS_CLEARED", "display_name": "Campaigns cleared" },
+    { "identifier": "MAX_COMBO", "display_name": "Best combo multiplier" },
+    { "identifier": "BEST_SLASH_KILLS", "display_name": "Best single-slash eligible defeats" },
+    { "identifier": "PB_IMPROVED_EASY", "display_name": "Easy Clear Time PB improved" },
+    { "identifier": "PB_IMPROVED_NORMAL", "display_name": "Normal Clear Time PB improved" },
+    { "identifier": "PB_IMPROVED_HARD", "display_name": "Hard Clear Time PB improved" },
+    { "identifier": "PB_IMPROVED_IMPOSSIBLE", "display_name": "Impossible Clear Time PB improved" },
+    { "identifier": "BEST_STYLE_EASY", "display_name": "Best Easy Style" },
+    { "identifier": "BEST_STYLE_NORMAL", "display_name": "Best Normal Style" },
+    { "identifier": "BEST_STYLE_HARD", "display_name": "Best Hard Style" },
+    { "identifier": "BEST_STYLE_IMPOSSIBLE", "display_name": "Best Impossible Style" },
+    { "identifier": "BEST_TIME_EASY_MS", "display_name": "Best Easy clear time (ms)" },
+    { "identifier": "BEST_TIME_NORMAL_MS", "display_name": "Best Normal clear time (ms)" },
+    { "identifier": "BEST_TIME_HARD_MS", "display_name": "Best Hard clear time (ms)" },
+    { "identifier": "BEST_TIME_IMPOSSIBLE_MS", "display_name": "Best Impossible clear time (ms)" }
+  ]
+}
