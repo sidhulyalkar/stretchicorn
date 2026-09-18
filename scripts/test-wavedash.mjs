@@ -14,14 +14,20 @@ const platformHook='<script src="src/wavedash-platform.js"></script><script src=
 
 if(!root.includes(legacyHook))throw Error('root game shell no longer matches the frozen Wavedash-init seam');
 if(/wavedash-platform|challenge-platform|wavedash\.css/.test(root))throw Error('root game shell contains post-deadline Wavedash presentation or platform code');
-assert.equal(platformIndex,root.replace(legacyHook,platformHook),'Wavedash index must differ from the frozen root shell only by replacing the SDK init hook');
+if(!platformIndex.endsWith(platformHook))throw Error('Wavedash index must append only the two SDK observer scripts after the reconstructed submission runtime');
+const submissionLocal=platformIndex.slice(0,-platformHook.length);
 if(/wavedash\.css/.test(platformIndex))throw Error('Wavedash build must not add a presentation stylesheet');
 if(!/background:#090610/.test(style)||!/width:min\(100vw,150vh\)/.test(style))throw Error('frozen game stylesheet changed');
+const submissionStyle=competition.match(/<style>([\s\S]*?)<\/style>/)?.[1];
+if(!submissionStyle)throw Error('canonical js13k artifact is missing its inline stylesheet');
+const localStyle=submissionLocal.match(/<style>([\s\S]*?)<\/style>/)?.[1];
+assert.equal(localStyle,submissionStyle,'canonical standalone and packed js13k artifacts must use the same stylesheet');
+if(!/background:#111/.test(localStyle)||!/width:min\(100vw,150vh,960px\)/.test(localStyle))throw Error('Wavedash presentation no longer matches the js13k submission artifact');
+if(!submissionLocal.includes("boxes(['FIELD GUIDE','CONTROLS'],520)")||!submissionLocal.includes("txt('TOP STYLE '"))throw Error('reconstructed standalone artifact is missing the final submitted title layer');
+if(!submissionLocal.includes('C.onmousedown='))throw Error('reconstructed standalone artifact is missing the submitted canvas click handler');
 if(/wavedash-platform|challenge-platform/.test(competition))throw Error('competition artifact contaminated by Wavedash platform code');
 
-for(const file of ['src/style.css','src/00-core.js','src/01-combat.js','src/02-update.js','src/03-render.js','src/04-ui-input.js','src/03-keyart-v026.js']){
-  assert.equal(readFileSync(`wavedash-dist/${file}`,'utf8'),readFileSync(file,'utf8'),`${file} changed while assembling the Wavedash build`);
-}
+assert.equal(platformJs,readFileSync('src/wavedash-platform.js','utf8'),'core SDK observer changed while assembling Wavedash build');
 assert.equal(challengeJs,readFileSync('wavedash/challenge-platform.js','utf8'),'challenge SDK extension changed while assembling Wavedash build');
 
 if(!/updateLoadProgressZeroToOne\(1\)[\s\S]*SDK\.init\(\{ debug: false, deferEvents: true \}\)/.test(platformJs))throw Error('platform layer does not own the Wavedash load/init lifecycle');
@@ -87,4 +93,4 @@ assert.deepEqual(byId.RETURN_CENTER.stat_requirement,{stat:'PARRIES',threshold:1
 assert.deepEqual(byId.SEEING_DOUBLE.stat_requirement,{stat:'DOUBLE_RAINBOWS',threshold:130});
 assert.deepEqual(byId.COB_COMPOSTER.stat_requirement,{stat:'RUNS_CLEARED',threshold:13});
 
-console.log('PASS: Wavedash build replaces only the frozen SDK init hook; gameplay/rendering files remain byte-identical while identity/presence, 11 boards, 39 achievements, stats, cloud saves, replay UGC and reconnect-safe submission calls stay isolated in SDK-only layers');
+console.log('PASS: Wavedash build reconstructs the js13k submission runtime with its exact submitted stylesheet and canvas input, then appends only SDK observers for identity/presence, 11 boards, 39 achievements, stats, cloud saves, replay UGC and reconnect-safe submission');

@@ -110,12 +110,12 @@ The core Style/Time result and the three challenge-board results each use bounde
 
 ## Build isolation
 
-The repository root remains the frozen game shell. `npm run wavedash:build` copies it to `wavedash-dist/` and replaces exactly one string: the original one-line Wavedash init hook becomes two SDK-only script references:
+The repository root remains frozen. `npm run wavedash:build` reconstructs the readable artifact with the existing competition build script in an isolated temporary directory, restores the exact packed-submission stylesheet, and appends two SDK-only script references:
 
 - `src/wavedash-platform.js`
 - `wavedash/challenge-platform.js`
 
-No stylesheet override is added. All copied game/rendering files are byte-for-byte identical to the frozen source.
+No stylesheet, renderer, gameplay layer, or visual override is added. The emitted index contains the competition build's final title/render/input layers and exact submission stylesheet before the SDK observers. The temporary build never overwrites tracked competition artifacts. The Wavedash host/store cover is separate platform metadata rather than part of the game canvas.
 
 ## Portal integrity
 
@@ -139,8 +139,9 @@ npm run wavedash:dev
 
 The automated suite checks:
 
-- Wavedash shell differs from root only at the SDK hook
-- copied gameplay/rendering files are byte-identical
+- Wavedash index reconstructs the submitted runtime/title/input layers and appends only the SDK observers
+- standalone and packed js13k artifacts share the submission stylesheet
+- submitted canvas click handling is present
 - no custom Wavedash renderer/UI exists
 - exactly 11 leaderboard definitions and 39 achievements exist
 - final player-facing achievement names and Silky Style board names are locked in tests

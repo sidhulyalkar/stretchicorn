@@ -8,13 +8,13 @@ George confirmed the rule directly: post-deadline work is allowed **as long as i
 
 The repository-root `index.html`, `src/style.css`, and all gameplay/rendering source files remain byte-identical to the Wavedash release base.
 
-`npm run wavedash:build` creates `wavedash-dist/` by copying those frozen files and replacing only the original one-line Wavedash init hook in the copied `index.html` with:
+`npm run wavedash:build` reconstructs the readable artifact with the existing competition build script in an isolated temporary directory, restores the exact stylesheet from the packed js13k submission, and appends only:
 
 ```html
 <script src="src/wavedash-platform.js"></script><script src="wavedash/challenge-platform.js"></script>
 ```
 
-`src/wavedash-platform.js` owns SDK initialization and the core platform telemetry. `wavedash/challenge-platform.js` is a second SDK-only observer for the three long-tail challenge boards and `World's End` reconciliation. Neither layer draws UI or writes gameplay state.
+This preserves the final submitted title/render/input layers, the submitted `#111` backdrop and `960px` canvas cap, and the exact build-time gameplay transformations instead of serving the repository's older root preview shell. The temporary rebuild never overwrites the tracked competition artifacts. `src/wavedash-platform.js` owns SDK initialization and the core platform telemetry. `wavedash/challenge-platform.js` is a second SDK-only observer for the three long-tail challenge boards and `World's End` reconciliation. Neither layer draws UI or writes gameplay state.
 
 ## SDK integrations
 
@@ -115,8 +115,9 @@ npm run wavedash:push
 
 `npm run wavedash:test` deliberately does **not** rebuild or repack the js13k submission. It verifies that:
 
-- the generated Wavedash shell differs from the frozen root shell only at the SDK init hook,
-- all copied gameplay/rendering files are byte-identical,
+- the generated Wavedash shell reconstructs the exact submitted runtime/title/input layers and appends only the two SDK observers,
+- the standalone and packed js13k artifacts use the same submission stylesheet,
+- the submitted canvas click handler is present,
 - neither SDK layer contains a renderer, canvas overlay, title/victory override, or Wavedash-specific gameplay presentation,
 - exactly eleven leaderboard definitions and 39 achievement definitions are present,
 - the final themed display names and `Silky Style` challenge-board names cannot silently drift,
@@ -162,7 +163,7 @@ entrypoint = "index.html"
 
 `wavedash.toml` and `wavedash-dist/` remain ignored so credentials/build output do not enter source control.
 
-The judged upload must use `wavedash-dist/`. Serving the repository root intentionally loads only the frozen submission's minimal Wavedash handshake and will not include the expanded SDK integration.
+The judged upload must use `wavedash-dist/`. Serving the repository root loads an older development preview shell and is not the canonical submitted artifact. The Wavedash host/store cover remains separately managed platform metadata; once mounted, the game canvas uses the js13k submission artifact.
 
 ## Final sandbox checklist
 

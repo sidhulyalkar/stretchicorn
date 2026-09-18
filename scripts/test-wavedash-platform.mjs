@@ -11,8 +11,11 @@ const settle=async(n=16)=>{for(let i=0;i<n;i++)await new Promise(resolve=>setImm
 const tick=()=>{assert(raf.length,'monitor RAF should be installed');const fn=raf.shift();now+=16;fn(now)};
 const trigger=name=>events[name]?.({isConnected:name==='connected',hasEverConnected:true,connectionCount:1,connectionRetries:0});
 
-const storage={SV:'1,1,1'};
+const storage={SV:'1,1,1','SB0.7':'6000','SB1.0':'1000'};
 const localStorage=new Proxy(storage,{get:(o,k)=>o[k],set:(o,k,v)=>(o[k]=String(v),true)});
+files.set('remote:stretchicorn/profile-v1.json',new TextEncoder().encode(JSON.stringify({
+  version:1,timestamp:1,settings:'0,1,0',best:{easy:5000,normal:2000,hard:0,impossible:0},
+})));
 
 const better=(id,next,current)=>id.includes('Clear Time')?next<current:next>current;
 const SDK={
@@ -83,9 +86,21 @@ assert.equal(initCalls,1,'SDK must initialize exactly once');
 assert.equal(platform.online,true,'deferred BACKEND_CONNECTED should mark platform online');
 assert.equal(boards.length,8,'four difficulties should create Style + Clear Time boards');
 assert.equal(new Set(boards.map(b=>b.name)).size,8,'leaderboard names must be unique');
+assert.deepEqual(boards.map(({name,sort,display})=>({name,sort,display})),[
+  {name:'Style - Easy',sort:1,display:0},{name:'Style - Normal',sort:1,display:0},
+  {name:'Style - Hard',sort:1,display:0},{name:'Style - Impossible',sort:1,display:0},
+  {name:'Clear Time - Easy',sort:0,display:2},{name:'Clear Time - Normal',sort:0,display:2},
+  {name:'Clear Time - Hard',sort:0,display:2},{name:'Clear Time - Impossible',sort:0,display:2},
+],'core boards must use the release-contract names, ordering, and display types');
 assert.equal(platform.username,'tester');
 assert.equal(platform.friendsOnline,1);
 assert(presence.length,'presence should be published after connection');
+assert.equal(storage.SV,'0,1,0','cloud settings should restore over the local profile');
+assert.equal(storage['SB0.7'],'6000','monotonic merge must keep the stronger local Easy best');
+assert.equal(storage['SB1.0'],'2000','monotonic merge must restore the stronger remote Normal best');
+const mergedCloud=JSON.parse(new TextDecoder().decode(files.get('remote:stretchicorn/profile-v1.json')));
+assert.equal(mergedCloud.settings,'0,1,0');
+assert.equal(mergedCloud.best.easy,6000);assert.equal(mergedCloud.best.normal,2000);
 
 sandbox.D=.7;
 assert.equal(sandbox.reset(5),'reset:5','reset wrapper must preserve frozen game return value');
@@ -138,6 +153,10 @@ const firstStyle=uploads.find(u=>u.id.includes('Style'));
 const firstTime=uploads.find(u=>u.id.includes('Clear Time'));
 assert.equal(firstStyle.ugcId,'ugc-1');assert.equal(firstStyle.score,2345);assert.equal(firstStyle.metadata.fullRun,1);assert.equal(firstStyle.metadata.powerups,5);assert.equal(firstStyle.metadata.bestSlash,5);
 assert.equal(firstTime.score,123456);assert.equal(firstTime.metadata.fullRun,1);assert.equal(firstTime.metadata.grazes,13);
+assert.equal(ugc[0].type,3);assert.equal(ugc[0].visibility,0);assert.match(ugc[0].path,/^replays\/stretchicorn-user-1-\d+-\d+\.json$/);
+assert(!achievements.has('THIRTEEN_FASTER'),'first recorded clear establishes a baseline and must not award a PB achievement');
+assert(!achievements.has('DUAL_PB'),'first recorded clear must not award the dual-PB achievement');
+assert.equal(stats.get('PB_IMPROVED_EASY')||0,0,'first recorded clear must not increment PB improvement stats');
 assert.equal(platform.pendingRuns.length,0,'successful submission should leave no retry residue');
 
 trigger('disconnected');backendOnline=false;
@@ -162,7 +181,15 @@ assert(achievements.has('THIRTEEN_FASTER'),'23.456 second PB improvement should 
 assert(achievements.has('DUAL_PB'),'simultaneous established Style/time improvements should earn DUAL_PB');
 assert.equal(stats.get('PB_IMPROVED_EASY'),1);
 
-achievements.add('NO_POWER_NORMAL');achievements.add('NO_POWER_HARD');
+// Directly exercise the Hard no-power/no-heart matrix rather than seeding its awards.
+sandbox.mode=0;tick();sandbox.D=1.6;sandbox.reset(1);tick();
+platform.trace=Array.from({length:30},(_,i)=>[i*100,415+i,365,485+i,365]);
+sandbox.wave=13;sandbox.score=4300;sandbox.runT=110;sandbox.hearts=13;sandbox.kills=55;sandbox.combo=4;sandbox.mode=5;
+tick();await settle(40);
+assert(achievements.has('HARD_CLEAR'));assert(achievements.has('NO_POWER_HARD'));assert(achievements.has('UNTOUCHED'));
+assert.equal(uploads.length,6,'Hard full clear should add exactly two leaderboard submissions');
+
+achievements.add('NO_POWER_NORMAL');
 leaderboardPopulation=13;sandbox.D=2.4;sandbox.reset(1);tick();
 sandbox.queen=3;sandbox.mode=1;tick();
 assert(achievements.has('ENCORE_REACHED'),'eligible Impossible Encore should unlock its hidden achievement');
@@ -172,13 +199,14 @@ tick();
 await settle(40);
 assert(achievements.has('IMPOSSIBLE_CLEAR'));assert(achievements.has('NO_POWER_IMPOSSIBLE'));assert(achievements.has('PURE_SPECTRUM'));
 assert(achievements.has('WORLDS_END'),'Impossible rank #3 with thirteen ranked players should earn WORLDS_END');
-assert.equal(uploads.length,6,'Impossible full clear should add exactly two leaderboard submissions');
+assert.equal(uploads.length,8,'Impossible full clear should add exactly two leaderboard submissions');
+assert(uploads.every(u=>u.keepBest===true),'every core leaderboard upload must preserve the best score');
 
 assert.equal(sandbox.save(),'save','save wrapper must preserve frozen game return value');
 await settle();
-assert.equal(storage.SV,'1,1,1','SDK hooks must not corrupt numeric settings serialization');
+assert.equal(storage.SV,'0,1,0','SDK hooks must not corrupt restored numeric settings serialization');
 listeners.pagehide?.();
 await settle();
 assert.equal(Object.keys(presence.at(-1)).length,0,'pagehide should clear Wavedash presence without touching gameplay');
 
-console.log('PASS: executable Wavedash mock proves SDK-only mastery tracking, purist/Encore/PB/Top-13 achievements, observer return preservation, checkpoint fairness, dual leaderboards + replay UGC, cloud/stat persistence, and reconnect-safe ranked submission');
+console.log('PASS: executable Wavedash matrix proves SDK-only mastery tracking, first-run/PB/purist/no-heart/Encore/Top-13 achievements, exact board contracts, replay UGC, monotonic cloud merge, checkpoint fairness, and reconnect-safe ranked submission');
