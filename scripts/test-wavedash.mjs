@@ -84,13 +84,23 @@ const finalNames={
   ENCORE_REACHED:'Cob Comeback',
 };
 for(const [id,name] of Object.entries(finalNames))assert.equal(byId[id].display_name,name,`${id} display name drifted`);
-assert.deepEqual(byId.POPCORN_APPRENTICE.stat_requirement,{stat:'TOTAL_KILLS',threshold:1300});
-assert.deepEqual(byId.CORN_REAPER.stat_requirement,{stat:'TOTAL_KILLS',threshold:13000});
-assert.deepEqual(byId.MAIZE_MASTER.stat_requirement,{stat:'TOTAL_KILLS',threshold:130000});
-assert.deepEqual(byId.SERIAL_SNAPPER.stat_requirement,{stat:'TOTAL_SNAPS',threshold:1300});
-assert.deepEqual(byId.GRAZE_CRAZE.stat_requirement,{stat:'TOTAL_GRAZES',threshold:1300});
-assert.deepEqual(byId.RETURN_CENTER.stat_requirement,{stat:'PARRIES',threshold:1300});
-assert.deepEqual(byId.SEEING_DOUBLE.stat_requirement,{stat:'DOUBLE_RAINBOWS',threshold:130});
-assert.deepEqual(byId.COB_COMPOSTER.stat_requirement,{stat:'RUNS_CLEARED',threshold:13});
+const automaticRules={
+  POPCORN_APPRENTICE:{stat:'TOTAL_KILLS',threshold:1300},
+  CORN_REAPER:{stat:'TOTAL_KILLS',threshold:13000},
+  MAIZE_MASTER:{stat:'TOTAL_KILLS',threshold:130000},
+  SERIAL_SNAPPER:{stat:'TOTAL_SNAPS',threshold:1300},
+  GRAZE_CRAZE:{stat:'TOTAL_GRAZES',threshold:1300},
+  RETURN_CENTER:{stat:'PARRIES',threshold:1300},
+  SEEING_DOUBLE:{stat:'DOUBLE_RAINBOWS',threshold:130},
+  COB_COMPOSTER:{stat:'RUNS_CLEARED',threshold:13},
+};
+for(const achievement of manifest.achievements){
+  assert.deepEqual(
+    achievement.stat_requirement,
+    automaticRules[achievement.identifier]||null,
+    `${achievement.identifier} has an unexpected automatic stat trigger`,
+  );
+}
+assert.equal(Object.keys(automaticRules).length,8,'exactly eight achievements should be portal stat-triggered');
 
-console.log('PASS: Wavedash build reconstructs the js13k submission runtime with its exact submitted stylesheet and canvas input, then appends only SDK observers for identity/presence, 11 boards, 39 achievements, stats, cloud saves, replay UGC and reconnect-safe submission');
+console.log('PASS: Wavedash build preserves the submitted runtime and appends only SDK observers; 39 achievements resolve to exactly 31 executable condition rules plus 8 locked portal stat rules');

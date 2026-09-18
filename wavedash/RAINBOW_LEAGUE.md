@@ -144,6 +144,9 @@ The automated suite checks:
 - submitted canvas click handling is present
 - no custom Wavedash renderer/UI exists
 - exactly 11 leaderboard definitions and 39 achievements exist
+- all 31 condition-driven achievements have executable positive cases and false-positive boundary cases
+- exactly 8 achievements are portal stat-triggered, with their stat identifiers and thresholds locked to the manifest
+- gameplay telemetry is ignored before a run starts and outside active gameplay mode
 - final player-facing achievement names and Silky Style board names are locked in tests
 - long-tail thresholds are locked to the intended values
 - observer wrappers preserve frozen function returns

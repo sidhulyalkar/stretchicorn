@@ -78,7 +78,7 @@
     currentMaxCombo: 1,
     runSerial: 0,
     submittedRunSerial: -1,
-    runEligible: true,
+    runEligible: false,
     runGrazes: 0,
     runParries: 0,
     runDoubleRainbows: 0,
@@ -99,6 +99,11 @@
 
   const difficulty = (value = D) =>
     DIFFICULTIES.reduce((best, d) => Math.abs(d.value - value) < Math.abs(best.value - value) ? d : best, DIFFICULTIES[0]);
+
+  // Action telemetry is valid only after this observer has seen reset() start a
+  // run and while the frozen game is actively playing it. This prevents menu,
+  // victory, death, or synthetic calls from satisfying gameplay achievements.
+  const activeRun = () => platform.runSerial > 0 && mode === 1;
 
   const safe = async (label, fn) => {
     try {
@@ -537,6 +542,7 @@
   }
 
   function recordClear() {
+    if (platform.runSerial <= 0) return;
     if (platform.submittedRunSerial === platform.runSerial) return;
     platform.submittedRunSerial = platform.runSerial;
     if (!platform.runEligible) {
@@ -622,17 +628,19 @@
 
   const baseStartKick = startKick;
   startKick = function (...args) {
+    const wasActive = activeRun();
     const beforeKick = kick;
     const result = baseStartKick.apply(this, args);
-    if (beforeKick <= 0 && kick > 0) platform.currentSlashKills = 0;
-    if (beforeKick <= 0 && kick > 0 && snap > 0) {
+    if (wasActive && beforeKick <= 0 && kick > 0) platform.currentSlashKills = 0;
+    if (wasActive && beforeKick <= 0 && kick > 0 && snap > 0) {
       queueStatAdd('TOTAL_SNAPS', 1);
       unlock('FIRST_SNAP');
       if (snap === 2) {
         platform.runDoubleRainbows++;
         queueStatAdd('DOUBLE_RAINBOWS', 1);
         unlock('DOUBLE_RAINBOW');
-        if (runT - platform.prismAtRunT <= 3) unlock('PRISM_BREAK');
+        const sincePrism = runT - platform.prismAtRunT;
+        if (sincePrism >= 0 && sincePrism <= 3) unlock('PRISM_BREAK');
       }
     }
     return result;
@@ -640,27 +648,32 @@
 
   const baseLucky = lucky;
   lucky = function (...args) {
+    const wasActive = activeRun();
     const result = baseLucky.apply(this, args);
-    queueStatAdd('LUCKY_13S', 1);
-    unlock('LUCKY_13');
+    if (wasActive) {
+      queueStatAdd('LUCKY_13S', 1);
+      unlock('LUCKY_13');
+    }
     return result;
   };
 
   const baseKillE = killE;
   killE = function (...args) {
+    const wasActive = activeRun();
     const before = kills;
     const result = baseKillE.apply(this, args);
     const gained = Math.max(0, kills - before);
-    if (gained) queueStatAdd('TOTAL_KILLS', gained);
+    if (wasActive && gained) queueStatAdd('TOTAL_KILLS', gained);
     return result;
   };
 
   const baseKickCollisions = kickCollisions;
   kickCollisions = function (...args) {
+    const wasActive = activeRun();
     const before = kills;
     const result = baseKickCollisions.apply(this, args);
     const gained = Math.max(0, kills - before);
-    if (gained) {
+    if (wasActive && gained) {
       platform.currentSlashKills += gained;
       platform.bestSlashKills = Math.max(platform.bestSlashKills, platform.currentSlashKills);
       queueStatMax('BEST_SLASH_KILLS', platform.bestSlashKills);
@@ -671,9 +684,10 @@
 
   const baseHurt = hurt;
   hurt = function (...args) {
+    const wasActive = activeRun();
     const before = hearts;
     const result = baseHurt.apply(this, args);
-    if (hearts < before) {
+    if (wasActive && hearts < before) {
       platform.runHeartLost = true;
       platform.trialHeartLost = true;
     }
@@ -682,7 +696,9 @@
 
   const baseSay = say;
   say = function (message, ...args) {
+    const wasActive = activeRun();
     const result = baseSay.call(this, message, ...args);
+    if (!wasActive) return result;
     if (message === 'PARRY!') {
       platform.runParries++;
       queueStatAdd('PARRIES', 1);
@@ -721,24 +737,24 @@
   function monitor() {
     const nowMs = Math.round(runT * 1000);
     const runDelta = mode === 1 ? Math.max(0, runT - platform.lastObservedRunT) : 0;
-    if (mode === 1 && combo >= 3.95 && runDelta > 0) {
+    if (activeRun() && combo >= 3.95 && runDelta > 0) {
       platform.x4Seconds += runDelta;
       if (platform.x4Seconds >= 13) unlock('FULL_SPECTRUM');
     }
     platform.lastObservedRunT = runT;
 
-    if (mode === 1 && platform.runEligible && (platform.lastSampleMs < 0 || nowMs - platform.lastSampleMs >= 1000 / TRACE_RATE_HZ)) {
+    if (activeRun() && platform.runEligible && (platform.lastSampleMs < 0 || nowMs - platform.lastSampleMs >= 1000 / TRACE_RATE_HZ)) {
       platform.lastSampleMs = nowMs;
       if (platform.trace.length < 12000) platform.trace.push([nowMs, Math.round(A.x), Math.round(A.y), Math.round(P.x), Math.round(P.y)]);
     }
 
-    if (mode === 1 && combo > platform.currentMaxCombo) {
+    if (activeRun() && combo > platform.currentMaxCombo) {
       platform.currentMaxCombo = combo;
       queueStatMax('MAX_COMBO', platform.currentMaxCombo);
       if (platform.currentMaxCombo >= 3.95) unlock('MAX_COMBO');
     }
 
-    if (platform.runEligible && mode === 1 && D > 2 && queen === 3 && !platform.encoreSeen) {
+    if (activeRun() && platform.runEligible && D > 2 && queen === 3 && !platform.encoreSeen) {
       platform.encoreSeen = true;
       unlock('ENCORE_REACHED');
     }
@@ -748,8 +764,8 @@
       platform.lastWave = wave;
       platform.trialGrazes = 0;
       platform.trialHeartLost = false;
-      if (platform.runEligible && previous === 5 && wave > 5) unlock('HUSK_CLEAR');
-      if (platform.runEligible && previous === 9 && wave > 9) unlock('COLONEL_CLEAR');
+      if (platform.runSerial > 0 && platform.runEligible && previous === 5 && wave > 5) unlock('HUSK_CLEAR');
+      if (platform.runSerial > 0 && platform.runEligible && previous === 9 && wave > 9) unlock('COLONEL_CLEAR');
       refreshPresence(true);
     }
 
