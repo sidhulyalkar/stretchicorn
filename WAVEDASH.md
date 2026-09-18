@@ -16,6 +16,8 @@ The repository-root `index.html`, `src/style.css`, and all gameplay/rendering so
 
 This preserves the final submitted title/render/input layers, the submitted `#111` backdrop and `960px` canvas cap, and the exact build-time gameplay transformations instead of serving the repository's older root preview shell. The temporary rebuild never overwrites the tracked competition artifacts. `src/wavedash-platform.js` owns SDK initialization and the core platform telemetry. `wavedash/challenge-platform.js` is a second SDK-only observer for the three long-tail challenge boards and `World's End` reconciliation. Neither layer draws UI or writes gameplay state.
 
+The frozen canvas is `960×640` (3:2). A 16:9 host slot will therefore show side margins when the complete frame is fitted without distortion or cropping. Do not stretch or crop the Wavedash build; if Wavedash exposes a host-level aspect-ratio setting, configure the player slot to 3:2 instead.
+
 ## SDK integrations
 
 The Wavedash build currently uses:
@@ -124,7 +126,7 @@ npm run wavedash:push
 - both ranked queues survive disconnect/reconnect,
 - challenge-board submissions preserve checkpoint fairness,
 - challenge metadata includes frozen-build provenance,
-- an executable SDK mock proves slash/graze/parry/powerup observation, zero-powerup challenge boards, PB achievements, Impossible Encore/Top-13 handling, replay attachment, cloud/stat behavior, and reconnect-safe submission.
+- an executable SDK matrix proves positive and negative boundaries for all 31 condition-driven achievements, exact portal rules for all 8 stat-triggered achievements, active-run gating, zero-powerup challenge boards, PB/Encore/Top-13 handling, replay attachment, cloud/stat behavior, and reconnect-safe submission.
 
 The GitHub workflow rejects any pull-request diff outside the explicit SDK/tooling/documentation allowlist and separately proves the frozen game/runtime files are byte-identical to the submission base.
 

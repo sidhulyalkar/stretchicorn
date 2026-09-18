@@ -68,7 +68,7 @@ const sandbox={
   D:1,mode:0,wave:1,score:0,runT:0,hearts:13,kills:0,combo:1,queen:0,kick:0,snap:0,slashKillGain:0,
   A:{x:445,y:360},P:{x:500,y:360},V:[1,1,1],
   reset(w=1){sandbox.wave=w;sandbox.score=0;sandbox.runT=0;sandbox.hearts=13;sandbox.kills=0;sandbox.combo=1;sandbox.kick=0;sandbox.snap=0;sandbox.queen=0;sandbox.mode=1;return`reset:${w}`},
-  startKick(){if(sandbox.kick>0)return'blocked';sandbox.kick=.24;sandbox.snap=sandbox.nextSnap||1;return'kick'},nextSnap:1,
+  startKick(){if(sandbox.kick>0)return'blocked';sandbox.kick=.24;sandbox.snap=sandbox.nextSnap??1;return'kick'},nextSnap:1,
   lucky(){return'lucky'},
   killE(){sandbox.kills++;return'kill'},
   kickCollisions(){const n=sandbox.slashKillGain;sandbox.slashKillGain=0;for(let i=0;i<n;i++)sandbox.killE({});return'collisions'},
@@ -102,6 +102,13 @@ const mergedCloud=JSON.parse(new TextDecoder().decode(files.get('remote:stretchi
 assert.equal(mergedCloud.settings,'0,1,0');
 assert.equal(mergedCloud.best.easy,6000);assert.equal(mergedCloud.best.normal,2000);
 
+assert.equal(platform.runEligible,false,'a clear cannot qualify until reset() explicitly starts Trial 1');
+sandbox.nextSnap=2;sandbox.startKick();sandbox.lucky();sandbox.killE({});sandbox.slashKillGain=5;sandbox.kickCollisions();sandbox.hurt();
+for(const message of ['PARRY!','GRAZE!','WALL SMASH','PRISM COB POWER','GOLD COB • 2X'])sandbox.say(message);
+sandbox.combo=4;tick();
+assert.equal(achievements.size,0,'menu/out-of-run calls must never unlock gameplay achievements');
+assert.equal(stats.size,0,'menu/out-of-run calls must never mutate gameplay stats');
+
 sandbox.D=.7;
 assert.equal(sandbox.reset(5),'reset:5','reset wrapper must preserve frozen game return value');
 tick();
@@ -118,28 +125,50 @@ assert.equal(stats.get('RUNS_CLEARED')||0,0,'checkpoint clear must not increment
 assert.equal(sandbox.reset(1),'reset:1');
 tick();
 assert.equal(platform.runEligible,true,'Trial 1 start must be rank eligible');
+sandbox.nextSnap=0;sandbox.kick=0;assert.equal(sandbox.startKick(),'kick');
+assert.equal(stats.get('TOTAL_SNAPS')||0,0);assert(!achievements.has('FIRST_SNAP'),'an uncharged kick must not count as a Rainbow Snap');
 sandbox.nextSnap=1;sandbox.kick=0;assert.equal(sandbox.startKick(),'kick');
 assert.equal(stats.get('TOTAL_SNAPS'),1);assert(achievements.has('FIRST_SNAP'));
-sandbox.runT=10;assert.equal(sandbox.say('PRISM COB POWER'),'say:PRISM COB POWER');
+sandbox.runT=1;sandbox.nextSnap=2;sandbox.kick=0;assert.equal(sandbox.startKick(),'kick');
+assert(achievements.has('DOUBLE_RAINBOW'));assert(!achievements.has('PRISM_BREAK'),'Double Rainbow without Prism must not unlock Prism Break');
+sandbox.runT=10;assert.equal(sandbox.say('PRISM COB POWER'),'say:PRISM COB POWER');sandbox.runT=13.1;
 sandbox.nextSnap=2;sandbox.kick=0;assert.equal(sandbox.startKick(),'kick');
-assert.equal(stats.get('DOUBLE_RAINBOWS'),1);assert(achievements.has('DOUBLE_RAINBOW'));assert(achievements.has('PRISM_BREAK'));
+assert(!achievements.has('PRISM_BREAK'),'Double Rainbow after the three-second Prism window must not unlock Prism Break');
+sandbox.runT=20;assert.equal(sandbox.say('PRISM COB POWER'),'say:PRISM COB POWER');sandbox.runT=22.9;
+sandbox.nextSnap=2;sandbox.kick=0;assert.equal(sandbox.startKick(),'kick');
+assert.equal(stats.get('DOUBLE_RAINBOWS'),3);assert(achievements.has('PRISM_BREAK'));
 assert.equal(sandbox.lucky(),'lucky');assert.equal(stats.get('LUCKY_13S'),1);assert(achievements.has('LUCKY_13'));
-for(let i=0;i<13;i++)assert.equal(sandbox.say('PARRY!'),'say:PARRY!');
+for(let i=0;i<12;i++)assert.equal(sandbox.say('PARRY!'),'say:PARRY!');
+assert(achievements.has('KERNEL_PARRY'));assert(!achievements.has('RETURN_DEPARTMENT'),'twelve parries must not satisfy the thirteen-parry rule');
+assert.equal(sandbox.say('PARRY!'),'say:PARRY!');
 assert.equal(stats.get('PARRIES'),13);assert(achievements.has('KERNEL_PARRY'));assert(achievements.has('RETURN_DEPARTMENT'));
-for(let i=0;i<13;i++)assert.equal(sandbox.say('GRAZE!'),'say:GRAZE!');
-assert.equal(stats.get('TOTAL_GRAZES'),13);assert(achievements.has('CLOSE_SHAVE'));assert(achievements.has('THREAD_NEEDLE'));
-for(let i=0;i<5;i++)sandbox.say('WALL SMASH');
+for(let i=0;i<12;i++)assert.equal(sandbox.say('GRAZE!'),'say:GRAZE!');
+assert(achievements.has('CLOSE_SHAVE'));assert(!achievements.has('THREAD_NEEDLE'),'twelve grazes must not satisfy Great Grazer');
+sandbox.hurt();sandbox.say('GRAZE!');
+assert(!achievements.has('THREAD_NEEDLE'),'a heart loss earlier in the Trial must invalidate Great Grazer for that Trial');
+platform.lastWave=1;sandbox.wave=2;tick();
+for(let i=0;i<13;i++)sandbox.say('GRAZE!');
+assert.equal(stats.get('TOTAL_GRAZES'),26);assert(achievements.has('THREAD_NEEDLE'),'a fresh Trial with thirteen clean grazes should unlock Great Grazer');
+for(let i=0;i<4;i++)sandbox.say('WALL SMASH');
+assert(!achievements.has('WALL_TO_WALL'),'four Wall Smashes must not satisfy Wall to Wall');sandbox.say('WALL SMASH');
 assert.equal(stats.get('WALL_SMASHES'),5);assert(achievements.has('WALL_TO_WALL'));
-for(const message of ['HEART KERNEL +1','HUSK SHIELD','BUTTER BOOST','GOLD COB • 2X'])sandbox.say(message);
-assert.equal(stats.get('POWERUPS_COLLECTED'),5);assert(achievements.has('FULL_PANTRY'));
+for(const message of ['HEART KERNEL +1','HUSK SHIELD','BUTTER BOOST'])sandbox.say(message);
+assert(!achievements.has('FULL_PANTRY'),'four unique powerup types must not satisfy Full Pantry');sandbox.say('GOLD COB • 2X');
+assert.equal(stats.get('POWERUPS_COLLECTED'),6);assert(achievements.has('FULL_PANTRY'));
+sandbox.kick=0;sandbox.nextSnap=1;sandbox.startKick();sandbox.slashKillGain=4;sandbox.kickCollisions();
+assert(!achievements.has('CORN_COMBINE'),'four defeats in one slash must not satisfy Corn Combine');
 sandbox.kick=0;sandbox.nextSnap=1;sandbox.startKick();sandbox.slashKillGain=5;
 assert.equal(sandbox.kickCollisions(),'collisions');assert.equal(stats.get('BEST_SLASH_KILLS'),5);assert(achievements.has('CORN_COMBINE'));
-sandbox.combo=4;for(let i=0;i<14;i++){sandbox.runT+=1;tick()}
-assert(achievements.has('MAX_COMBO'));assert(achievements.has('FULL_SPECTRUM'));
+sandbox.combo=3.9;sandbox.runT+=1;tick();assert(!achievements.has('MAX_COMBO'),'combo below x4 must not unlock Rainbow Engine');
+sandbox.combo=4;for(let i=0;i<12;i++){sandbox.runT+=1;tick()}
+assert(achievements.has('MAX_COMBO'));assert(!achievements.has('FULL_SPECTRUM'),'less than thirteen x4 seconds must not satisfy Full Spectrum');
+sandbox.runT+=1;tick();assert(achievements.has('FULL_SPECTRUM'));
 sandbox.combo=1;
 
 platform.lastWave=5;sandbox.wave=6;sandbox.mode=1;tick();
 assert(achievements.has('HUSK_CLEAR'),'Trial 5 full-run transition should unlock HUSK_CLEAR');
+platform.lastWave=9;sandbox.wave=10;tick();
+assert(achievements.has('COLONEL_CLEAR'),'Trial 9 full-run transition should unlock COLONEL_CLEAR');
 platform.trace=Array.from({length:30},(_,i)=>[i*100,400+i,350,470+i,350]);
 sandbox.wave=13;sandbox.score=2345;sandbox.runT=123.456;sandbox.hearts=13;sandbox.kills=42;sandbox.combo=4;sandbox.queen=0;sandbox.mode=5;
 tick();
@@ -151,8 +180,8 @@ assert.equal(ugc.length,1,'Style PB should create one GAME_MANAGED replay trace'
 assert.equal(uploads.length,2,'full clear should upload Style and Clear Time');
 const firstStyle=uploads.find(u=>u.id.includes('Style'));
 const firstTime=uploads.find(u=>u.id.includes('Clear Time'));
-assert.equal(firstStyle.ugcId,'ugc-1');assert.equal(firstStyle.score,2345);assert.equal(firstStyle.metadata.fullRun,1);assert.equal(firstStyle.metadata.powerups,5);assert.equal(firstStyle.metadata.bestSlash,5);
-assert.equal(firstTime.score,123456);assert.equal(firstTime.metadata.fullRun,1);assert.equal(firstTime.metadata.grazes,13);
+assert.equal(firstStyle.ugcId,'ugc-1');assert.equal(firstStyle.score,2345);assert.equal(firstStyle.metadata.fullRun,1);assert.equal(firstStyle.metadata.powerups,6);assert.equal(firstStyle.metadata.bestSlash,5);
+assert.equal(firstTime.score,123456);assert.equal(firstTime.metadata.fullRun,1);assert.equal(firstTime.metadata.grazes,26);
 assert.equal(ugc[0].type,3);assert.equal(ugc[0].visibility,0);assert.match(ugc[0].path,/^replays\/stretchicorn-user-1-\d+-\d+\.json$/);
 assert(!achievements.has('THIRTEEN_FASTER'),'first recorded clear establishes a baseline and must not award a PB achievement');
 assert(!achievements.has('DUAL_PB'),'first recorded clear must not award the dual-PB achievement');
@@ -181,26 +210,67 @@ assert(achievements.has('THIRTEEN_FASTER'),'23.456 second PB improvement should 
 assert(achievements.has('DUAL_PB'),'simultaneous established Style/time improvements should earn DUAL_PB');
 assert.equal(stats.get('PB_IMPROVED_EASY'),1);
 
-// Directly exercise the Hard no-power/no-heart matrix rather than seeding its awards.
-sandbox.mode=0;tick();sandbox.D=1.6;sandbox.reset(1);tick();
+// Losing and then restoring a heart may satisfy FULL_HEARTS, but never UNTOUCHED.
+sandbox.mode=0;tick();sandbox.D=1.6;sandbox.reset(1);tick();sandbox.hurt();sandbox.hearts=13;
 platform.trace=Array.from({length:30},(_,i)=>[i*100,415+i,365,485+i,365]);
-sandbox.wave=13;sandbox.score=4300;sandbox.runT=110;sandbox.hearts=13;sandbox.kills=55;sandbox.combo=4;sandbox.mode=5;
+sandbox.wave=13;sandbox.score=4300;sandbox.runT=110;sandbox.kills=55;sandbox.combo=4;sandbox.mode=5;
 tick();await settle(40);
-assert(achievements.has('HARD_CLEAR'));assert(achievements.has('NO_POWER_HARD'));assert(achievements.has('UNTOUCHED'));
-assert.equal(uploads.length,6,'Hard full clear should add exactly two leaderboard submissions');
+assert(achievements.has('HARD_CLEAR'));assert(achievements.has('NO_POWER_HARD'));
+assert(!achievements.has('UNTOUCHED'),'Hard clear after any heart loss must not unlock Pristine Prance');
+assert.equal(uploads.length,6,'first Hard full clear should add exactly two leaderboard submissions');
 
-achievements.add('NO_POWER_NORMAL');
-leaderboardPopulation=13;sandbox.D=2.4;sandbox.reset(1);tick();
-sandbox.queen=3;sandbox.mode=1;tick();
+sandbox.mode=0;tick();sandbox.reset(1);tick();
+platform.trace=Array.from({length:30},(_,i)=>[i*100,417+i,367,487+i,367]);
+sandbox.wave=13;sandbox.score=4800;sandbox.runT=90;sandbox.hearts=13;sandbox.kills=58;sandbox.combo=4;sandbox.mode=5;
+tick();await settle(40);
+assert(achievements.has('UNTOUCHED'),'clean full Hard clear should unlock Pristine Prance');
+assert.equal(stats.get('PB_IMPROVED_HARD'),1);assert.equal(uploads.length,8);
+
+// Exercise both the Normal baseline and a real established PB improvement.
+sandbox.mode=0;tick();sandbox.D=1;sandbox.reset(1);tick();
+platform.trace=Array.from({length:30},(_,i)=>[i*100,418+i,368,488+i,368]);
+sandbox.wave=13;sandbox.score=4000;sandbox.runT=120;sandbox.hearts=11;sandbox.kills=52;sandbox.combo=3;sandbox.mode=5;
+tick();await settle(40);
+assert(achievements.has('NORMAL_CLEAR'));assert(achievements.has('NO_POWER_NORMAL'));
+assert(!achievements.has('PURE_SPECTRUM'),'three zero-power difficulties must not satisfy Pure Spectrum');
+assert.equal(uploads.length,10);
+
+sandbox.mode=0;tick();sandbox.reset(1);tick();
+platform.trace=Array.from({length:30},(_,i)=>[i*100,419+i,369,489+i,369]);
+sandbox.wave=13;sandbox.score=4500;sandbox.runT=100;sandbox.hearts=10;sandbox.kills=54;sandbox.combo=4;sandbox.mode=5;
+tick();await settle(40);
+assert.equal(stats.get('PB_IMPROVED_NORMAL'),1);assert.equal(uploads.length,12);
+assert(!achievements.has('CORN_PRIX_CHAMPION'),'three difficulty PB improvements must not satisfy Corn Prix Champion');
+
+// A checkpoint-started Encore is not a full-campaign Encore.
+sandbox.mode=0;tick();sandbox.D=2.4;sandbox.reset(5);tick();sandbox.queen=3;tick();
+assert(!achievements.has('ENCORE_REACHED'),'checkpoint Impossible run must not unlock Cob Comeback');
+
+leaderboardPopulation=12;sandbox.mode=0;tick();sandbox.reset(1);tick();sandbox.queen=3;tick();
 assert(achievements.has('ENCORE_REACHED'),'eligible Impossible Encore should unlock its hidden achievement');
 platform.trace=Array.from({length:30},(_,i)=>[i*100,420+i,370,490+i,370]);
 sandbox.wave=13;sandbox.score=5000;sandbox.runT=90;sandbox.hearts=13;sandbox.kills=60;sandbox.combo=4;sandbox.queen=3;sandbox.mode=5;
-tick();
-await settle(40);
+tick();await settle(40);
 assert(achievements.has('IMPOSSIBLE_CLEAR'));assert(achievements.has('NO_POWER_IMPOSSIBLE'));assert(achievements.has('PURE_SPECTRUM'));
-assert(achievements.has('WORLDS_END'),'Impossible rank #3 with thirteen ranked players should earn WORLDS_END');
-assert.equal(uploads.length,8,'Impossible full clear should add exactly two leaderboard submissions');
+assert(!achievements.has('WORLDS_END'),'Top 13 rank must not unlock World’s End before thirteen players are ranked');
+assert.equal(uploads.length,14);
+
+leaderboardPopulation=13;sandbox.mode=0;tick();sandbox.reset(1);tick();sandbox.queen=3;tick();
+platform.trace=Array.from({length:30},(_,i)=>[i*100,422+i,372,492+i,372]);
+sandbox.wave=13;sandbox.score=5500;sandbox.runT=70;sandbox.hearts=12;sandbox.kills=65;sandbox.combo=4;sandbox.queen=3;sandbox.mode=5;
+tick();await settle(40);
+assert(achievements.has('WORLDS_END'),'Top 13 Impossible rank with thirteen ranked players should unlock World’s End');
+assert.equal(stats.get('PB_IMPROVED_IMPOSSIBLE'),1);assert(achievements.has('CORN_PRIX_CHAMPION'));
+assert.equal(uploads.length,16,'four baseline clears and four improvements should each submit Style + Clear Time');
 assert(uploads.every(u=>u.keepBest===true),'every core leaderboard upload must preserve the best score');
+
+const manualAchievementIds=[
+  'FIRST_SNAP','DOUBLE_RAINBOW','LUCKY_13','CLOSE_SHAVE','KERNEL_PARRY','MAX_COMBO','HUSK_CLEAR','COLONEL_CLEAR',
+  'EASY_CLEAR','NORMAL_CLEAR','HARD_CLEAR','IMPOSSIBLE_CLEAR','FULL_HEARTS','CORN_COMBINE','THREAD_NEEDLE','RETURN_DEPARTMENT',
+  'FULL_SPECTRUM','WALL_TO_WALL','PRISM_BREAK','FULL_PANTRY','NO_POWER_EASY','NO_POWER_NORMAL','NO_POWER_HARD','NO_POWER_IMPOSSIBLE',
+  'UNTOUCHED','ENCORE_REACHED','THIRTEEN_FASTER','DUAL_PB','CORN_PRIX_CHAMPION','WORLDS_END','PURE_SPECTRUM',
+];
+assert.deepEqual(manualAchievementIds.filter(id=>!achievements.has(id)),[],'all 31 condition-driven achievements must be proven by executable positive cases');
 
 assert.equal(sandbox.save(),'save','save wrapper must preserve frozen game return value');
 await settle();
@@ -209,4 +279,4 @@ listeners.pagehide?.();
 await settle();
 assert.equal(Object.keys(presence.at(-1)).length,0,'pagehide should clear Wavedash presence without touching gameplay');
 
-console.log('PASS: executable Wavedash matrix proves SDK-only mastery tracking, first-run/PB/purist/no-heart/Encore/Top-13 achievements, exact board contracts, replay UGC, monotonic cloud merge, checkpoint fairness, and reconnect-safe ranked submission');
+console.log('PASS: executable Wavedash matrix proves all 31 condition-driven achievements, false-positive boundaries, active-run gating, exact board contracts, replay UGC, monotonic cloud merge, checkpoint fairness, and reconnect-safe ranked submission');

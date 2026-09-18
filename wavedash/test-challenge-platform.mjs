@@ -73,8 +73,13 @@ platform.online=true;trigger('connected');await settle(32);
 assert.equal(challenge.pending.length,0,'reconnect should drain challenge queue');
 assert.equal(uploads.length,5,'reconnect should submit queued harvest + Silky Style result exactly once');
 
-worldOwn={globalRank:8,score:9000};worldTop=Array.from({length:13},(_,i)=>({globalRank:i+1,score:10000-i}));
+worldOwn={globalRank:8,score:9000};worldTop=Array.from({length:12},(_,i)=>({globalRank:i+1,score:10000-i}));
 trigger('connected');await runTimers();await settle();
+assert(!achievements.has('WORLDS_END'),'Worlds End must not unlock with fewer than thirteen ranked players');
+worldOwn={globalRank:14,score:9000};worldTop=Array.from({length:13},(_,i)=>({globalRank:i+1,score:10000-i}));
+trigger('connected');await runTimers();await settle();
+assert(!achievements.has('WORLDS_END'),'Worlds End must not unlock below global rank 13');
+worldOwn={globalRank:8,score:9000};trigger('connected');await runTimers();await settle();
 assert(achievements.has('WORLDS_END'),'startup/reconnect reconciliation should unlock Worlds End once Top 13 is populated');
 
 sandbox.mode=0;tick();platform.runSerial=5;platform.runEligible=true;platform.runPowerups=0;platform.bestSlashKills=9;platform.runGrazes=20;platform.runParries=18;platform.runDoubleRainbows=6;sandbox.D=2.4;sandbox.score=9000;sandbox.runT=280;sandbox.hearts=9;sandbox.kills=620;sandbox.mode=5;tick();await settle(32);
